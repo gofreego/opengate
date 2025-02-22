@@ -1,5 +1,10 @@
-setup: 
+setup:
+	swag init 
 	go mod tidy
+
+install:
+	go install github.com/swaggo/swag/cmd/swag@latest
+
 run:
 	go run main.go
 clean:

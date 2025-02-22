@@ -28,6 +28,9 @@ func New(c *Config) *Controller {
 	}
 }
 
+// swagger doc
+// @title API Gateway
+// @version 1
 func (c *Controller) Run(ctx context.Context) error {
 	if !c.cfg.Debug {
 		gin.SetMode(gin.ReleaseMode)
@@ -52,6 +55,7 @@ func (c *Controller) Run(ctx context.Context) error {
 	}
 
 	logger.Info(ctx, "Starting API Gateway on port %d", c.cfg.Port)
+	logger.Info(ctx, "😎 Swagger docs available at 🌐 http://localhost:%d/internal/swagger/index.html 🌐", c.cfg.Port)
 	if err := c.server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		logger.Error(ctx, "Failed to start server: %v", err)
 		return fmt.Errorf("failed to start server: %v", err)

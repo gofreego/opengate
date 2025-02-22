@@ -1,0 +1,42 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "contact": {}
+    },
+    "paths": {
+        "/health/liveness": {
+            "get": {
+                "description": "Check if the service is alive",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Check if the service is alive",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/health/readiness": {
+            "get": {
+                "description": "Check if the service is ready",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Check if the service is ready",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

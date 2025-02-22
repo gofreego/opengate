@@ -4,7 +4,7 @@ logger:
     Build: "prod"
     Level: "info"
 ctrl:
-    port: 0
+    port: 8081
     debug: false
 service: {}
 repository: {}

@@ -13,7 +13,9 @@ type Repository struct {
 }
 
 func NewRepository(cfg *Config) *Repository {
-	return &Repository{}
+	return &Repository{
+		cfg: cfg,
+	}
 }
 
 func (r *Repository) GetRoutesConfig(ctx context.Context) ([]dao.RouteConfig, error) {
@@ -23,12 +25,12 @@ func (r *Repository) GetRoutesConfig(ctx context.Context) ([]dao.RouteConfig, er
 			Name:        "user service",
 			Description: "user service route configurations",
 			Match: dao.MatchConfig{
-				Host:    "localhost",
-				Prefix:  "/user",
+				Host:    "",
+				Prefix:  "/photo",
 				Regex:   "",
 				Methods: []string{"GET", "POST"},
 			},
-			Target: "http://localhost:8080",
+			Target: "https://images.unsplash.com",
 		},
 	}, nil
 }

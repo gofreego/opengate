@@ -1,0 +1,10 @@
+name: "API Gateway"
+logger:
+    AppName: "apigateway"
+    Build: "prod"
+    Level: "info"
+ctrl:
+    port: 0
+    debug: false
+service: {}
+repository: {}

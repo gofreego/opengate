@@ -3,6 +3,8 @@ package main
 import (
 	"api-gateway/internal/config"
 	"api-gateway/internal/controller"
+	"api-gateway/internal/repository"
+	"api-gateway/internal/service"
 	"context"
 	"flag"
 
@@ -24,7 +26,11 @@ func main() {
 	}
 	logger.Debug(ctx, "Configurations: \n%s", bytes)
 
-	ctrl := controller.New(&cfg.Ctrl)
+	// repository
+	repo := repository.NewRepository(&cfg.Repository)
+	service := service.NewService(ctx, &cfg.Service, repo)
+
+	ctrl := controller.New(&cfg.Ctrl, service)
 	// starting the controller
 	go ctrl.Run(ctx)
 

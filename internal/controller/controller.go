@@ -4,6 +4,7 @@ import (
 	"api-gateway/internal/controller/gateway"
 	"api-gateway/internal/controller/health"
 	"api-gateway/internal/controller/internal"
+	"api-gateway/internal/service"
 	"context"
 	"fmt"
 	"net/http"
@@ -18,13 +19,15 @@ type Config struct {
 }
 
 type Controller struct {
-	cfg    *Config
-	server *http.Server
+	cfg     *Config
+	server  *http.Server
+	service *service.Service
 }
 
-func New(c *Config) *Controller {
+func New(c *Config, service *service.Service) *Controller {
 	return &Controller{
-		cfg: c,
+		cfg:     c,
+		service: service,
 	}
 }
 
@@ -46,7 +49,7 @@ func (c *Controller) Run(ctx context.Context) error {
 	internalController.Register(ctx, router)
 
 	// registering gateway controller
-	gatewayController := gateway.NewGatewayController()
+	gatewayController := gateway.NewGatewayController(ctx, c.service)
 	gatewayController.Register(ctx, router)
 
 	c.server = &http.Server{

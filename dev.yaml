@@ -1,10 +1,13 @@
-name: "API Gateway"
+name: API Gateway
 logger:
-    AppName: "apigateway"
-    Build: "prod"
-    Level: "info"
+    AppName: apigateway
+    Build: dev
+    Level: debug
 ctrl:
     port: 8081
     debug: false
-service: {}
-repository: {}
+service:
+    middlewares: {}
+repository:
+    name: "files"
+    files: {}

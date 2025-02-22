@@ -1,21 +1,20 @@
 package service
 
 import (
-	"net/http/httputil"
-	"net/url"
-
 	"github.com/gin-gonic/gin"
+	"github.com/gofreego/goutils/response"
 )
 
-// ReverseProxy forwards requests to the appropriate backend service
-func ReverseProxy(c *gin.Context, target string) {
-	targetURL, err := url.Parse(target)
+func (s *Service) Route(ctx *gin.Context) {
+	id, err := s.match.GetMatchID(ctx)
 	if err != nil {
-		c.JSON(500, gin.H{"error": "Invalid target URL"})
+		response.WriteError(ctx, err)
 		return
 	}
 
-	proxy := httputil.NewSingleHostReverseProxy(targetURL)
-	c.Request.Host = targetURL.Host
-	proxy.ServeHTTP(c.Writer, c.Request)
+	err = s.middlewares.ExecuteMiddleware(ctx, id)
+	if err != nil {
+		response.WriteError(ctx, err)
+		return
+	}
 }

@@ -79,8 +79,8 @@ github.com/go-zookeeper/zk v1.0.3 h1:7M2kwOsc//9VeeFiPtf+uSJlVpU66x9Ba5+8XK7/TDg
 github.com/go-zookeeper/zk v1.0.3/go.mod h1:nOB03cncLtlp4t+UAkGSV+9beXP/akpekBwL+UX1Qcw=
 github.com/goccy/go-json v0.10.5 h1:Fq85nIqj+gXn/S5ahsiTlK3TmC85qgirsdTP/+DeaC4=
 github.com/goccy/go-json v0.10.5/go.mod h1:oq7eo15ShAhp70Anwd5lgX2pLfOS3QCiwU/PULtXL6M=
-github.com/gofreego/goutils v1.0.7 h1:AOz1XzdMeUWkX81ut6/F7Q2kOxCPPiQaz/74hwafe7Y=
-github.com/gofreego/goutils v1.0.7/go.mod h1:ZJgUeWrr/L0AkpwG+AwzcBPzAAUaLi2M5LljGExDEX0=
+github.com/gofreego/goutils v1.0.8 h1:BXffj7+i+NENEFZLFPi7D9sDgYQaHt6B8IZn+XZ0RUI=
+github.com/gofreego/goutils v1.0.8/go.mod h1:ZJgUeWrr/L0AkpwG+AwzcBPzAAUaLi2M5LljGExDEX0=
 github.com/gogo/protobuf v1.1.1/go.mod h1:r8qH/GZQm5c6nD/R0oafs1akxWv10x8SbQlK7atdtwQ=
 github.com/golang/protobuf v1.2.0/go.mod h1:6lQm79b+lXiMfvg/cZm0SGofjICqVBUtrP5yJMmIC1U=
 github.com/golang/protobuf v1.3.1/go.mod h1:6lQm79b+lXiMfvg/cZm0SGofjICqVBUtrP5yJMmIC1U=

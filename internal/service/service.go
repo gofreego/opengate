@@ -38,9 +38,33 @@ func NewService(ctx context.Context, cfg *Config, repo repository.Repository) *S
 	if err != nil {
 		logger.Panic(ctx, "failed to update middlewares, Err:%s", err.Error())
 	}
-	return &Service{
+	srv := &Service{
 		match:       matchService,
 		middlewares: middlewareService,
 		repo:        repo,
+	}
+
+	// Watch for route config changes
+	go srv.WatchRoutesConfigChanges(ctx)
+	return srv
+}
+
+func (s *Service) WatchRoutesConfigChanges(ctx context.Context) {
+	routeConfigChan, err := s.repo.WatchRoutesConfigChanges(ctx)
+	if err != nil {
+		logger.Panic(ctx, "failed to watch route config changes: Err:%v", err.Error())
+		return
+	}
+	for routeConfig := range routeConfigChan {
+
+		err := s.match.UpdateRoutesMatch(ctx, routeConfig)
+		if err != nil {
+			logger.Error(ctx, "failed to update match: Err:%v", err.Error())
+		}
+		err = s.middlewares.UpdateMiddlewares(ctx, routeConfig)
+		if err != nil {
+			logger.Error(ctx, "failed to update middleware: Err:%v", err.Error())
+		}
+
 	}
 }

@@ -10,4 +10,6 @@ service:
     middlewares: {}
 repository:
     name: "files"
-    files: {}
+    files:
+        path: resources/routes
+        RefreshIntervalSec: 5  

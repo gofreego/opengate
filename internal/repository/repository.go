@@ -7,8 +7,8 @@ import (
 )
 
 type Repository interface {
-	GetRoutesConfig(ctx context.Context) ([]dao.RouteConfig, error)
-	WatchRoutesConfig(ctx context.Context) (<-chan []dao.RouteConfig, error)
+	GetRoutesConfig(ctx context.Context) ([]*dao.RouteConfig, error)
+	WatchRoutesConfigChanges(ctx context.Context) (<-chan *dao.RouteConfig, error)
 }
 
 type Config struct {

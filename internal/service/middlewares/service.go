@@ -22,7 +22,7 @@ func NewMiddlewareService(config *Config) *MiddlewareService {
 	}
 }
 
-func (s *MiddlewareService) UpdateMiddlewares(ctx context.Context, cfg ...dao.RouteConfig) error {
+func (s *MiddlewareService) UpdateMiddlewares(ctx context.Context, cfg ...*dao.RouteConfig) error {
 	for _, c := range cfg {
 
 		var middlewares []Middleware

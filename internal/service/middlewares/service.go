@@ -27,7 +27,7 @@ func (s *MiddlewareService) UpdateMiddlewares(ctx context.Context, cfg ...*dao.R
 
 		var middlewares []Middleware
 		// default last middleware
-		reverseProxyMiddleware, err := s.getReverseProxyMiddleware(c.Target)
+		reverseProxyMiddleware, err := s.GetReverseProxyMiddleware(c.Target)
 		if err != nil {
 			logger.Error(ctx, "failed to get reverse proxy middleware for id: %s, Err: %s", c.ID, err.Error())
 			continue

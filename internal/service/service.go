@@ -2,6 +2,7 @@ package service
 
 import (
 	"api-gateway/internal/repository"
+	"api-gateway/internal/service/authentication"
 	"api-gateway/internal/service/match"
 	"api-gateway/internal/service/middlewares"
 	"context"
@@ -10,13 +11,15 @@ import (
 )
 
 type Config struct {
-	Middlewares middlewares.Config
+	Authentication authentication.Config
+	Middlewares    middlewares.Config
 }
 
 type Service struct {
 	match       *match.MatchService
 	middlewares *middlewares.MiddlewareService
-	repo        repository.Repository
+
+	repo repository.Repository
 }
 
 func NewService(ctx context.Context, cfg *Config, repo repository.Repository) *Service {

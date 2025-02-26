@@ -9,6 +9,12 @@ import (
 	"gopkg.in/yaml.v3"
 )
 
+type RouteAuthConfig struct {
+	AuthType string   `yaml:"auth_type" bson:"authType"`
+	Required bool     `yaml:"required" bson:"required"`
+	Roles    []string `yaml:"roles" bson:"roles,omitempty"`
+}
+
 // MatchConfig holds matching rules for a route
 type MatchConfig struct {
 	Host    string   `yaml:"host" bson:"host,omitempty"`
@@ -45,11 +51,12 @@ func (m *MatchConfig) Validate() error {
 
 // RouteConfig defines a single API Gateway route
 type RouteConfig struct {
-	ID          string      `yaml:"id" bson:"_id"`
-	Name        string      `yaml:"name" bson:"name"`
-	Description string      `yaml:"description" bson:"description"`
-	Match       MatchConfig `yaml:"match" bson:"match"`
-	Target      string      `yaml:"target" bson:"target"`
+	ID          string          `yaml:"id" bson:"_id"`
+	Name        string          `yaml:"name" bson:"name"`
+	Description string          `yaml:"description" bson:"description"`
+	Match       MatchConfig     `yaml:"match" bson:"match"`
+	Auth        RouteAuthConfig `yaml:"auth" bson:"auth"`
+	Target      string          `yaml:"target" bson:"target"`
 }
 
 func (r *RouteConfig) Validate() error {

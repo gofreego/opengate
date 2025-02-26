@@ -10,7 +10,7 @@ import (
 )
 
 // ReverseProxy forwards requests to the appropriate backend service
-func (s *MiddlewareService) getReverseProxyMiddleware(target string) (Middleware, error) {
+func (s *MiddlewareService) GetReverseProxyMiddleware(target string) (Middleware, error) {
 	targetURL, err := url.Parse(target)
 	if err != nil {
 		return nil, customerrors.New(http.StatusInternalServerError, "invalid target url")

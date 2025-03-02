@@ -2,7 +2,8 @@ id: "1"
 name: "openauth"
 description: "openauth route config"
 match:
-    host: "openauth.softshaala.in"
-    prefix: ""
-    regex: ""
-    methods: ["GET"]
+    host: ""
+    prefix: "/testservice"
+    regex: "tt"
+    methods: ["GET","POST"]
+target: "http://localhost:7070"

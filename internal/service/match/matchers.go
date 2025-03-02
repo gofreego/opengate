@@ -2,6 +2,7 @@ package match
 
 import (
 	"api-gateway/internal/models/dao"
+	"context"
 	"regexp"
 	"strings"
 
@@ -32,17 +33,18 @@ func (m *matchers) isMatching(ctx *gin.Context) bool {
 	return true
 }
 
-func (s *MatchService) getMatchers(cfg *dao.RouteConfig) []Matcher {
+func (s *MatchService) getMatchers(ctx context.Context, cfg *dao.RouteConfig) []Matcher {
 
 	var matchers []Matcher
 
 	if cfg.Match.Regex != "" {
+		regex, err := regexp.Compile(cfg.Match.Regex)
+		if err != nil {
+			logger.Error(ctx, "error while compiling regex for ID - %s : Err: %s ", cfg.ID, err.Error())
+			return nil
+		}
 		regexMatcher := func(ctx *gin.Context) bool {
-			match, err := regexp.MatchString(cfg.Match.Regex, ctx.Request.URL.Path)
-			if err != nil {
-				logger.Error(ctx, "error while matching regex for ID - %s : Err: %s ", cfg.ID, err.Error())
-				return false
-			}
+			match := regex.MatchString(ctx.Request.URL.String())
 			return match
 		}
 		matchers = append(matchers, regexMatcher)
@@ -50,7 +52,7 @@ func (s *MatchService) getMatchers(cfg *dao.RouteConfig) []Matcher {
 
 	if cfg.Match.Prefix != "" {
 		prefixMatcher := func(ctx *gin.Context) bool {
-			return strings.HasPrefix(ctx.Request.URL.Path, cfg.Match.Prefix)
+			return strings.HasPrefix(ctx.Request.URL.String(), cfg.Match.Prefix)
 		}
 		matchers = append(matchers, prefixMatcher)
 	}

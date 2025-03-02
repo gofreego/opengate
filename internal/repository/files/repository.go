@@ -34,38 +34,45 @@ func NewRepository(cfg *Config) *Repository {
 }
 
 // ReadFile reads the file and returns the route config
-func (r *Repository) ReadFile(ctx context.Context, filename string) (*dao.RouteConfig, error) {
+func (r *Repository) ReadFile(ctx context.Context, filename string, value any) error {
 	v := viper.New()
 	v.SetConfigFile(r.cfg.Path + "/" + filename)
-	var isJson bool
 	if strings.HasSuffix(filename, ".yaml") || strings.HasSuffix(filename, ".yml") {
 		v.SetConfigType("yaml")
 	} else if strings.HasSuffix(filename, ".json") {
 		v.SetConfigType("json")
-		isJson = true
 	} else {
 		logger.Error(ctx, "unsupported file type: %s", filename)
-		return nil, fmt.Errorf("unsupported file type: %s", filename)
+		return fmt.Errorf("unsupported file type: %s", filename)
 	}
 
 	if err := v.ReadInConfig(); err != nil {
 		logger.Error(ctx, "failed to read file: %s", filename)
-		return nil, err
+		return err
 	}
 
-	var routeConfig dao.RouteConfig
-	if err := v.Unmarshal(&routeConfig); err != nil {
+	if err := v.Unmarshal(value); err != nil {
 		logger.Error(ctx, "failed to unmarshal file: %s", filename)
+		return err
+	}
+	return nil
+}
+
+func (r *Repository) readRouteConfig(ctx context.Context, filename string) (*dao.RouteConfig, error) {
+	var routeConfig *dao.RouteConfig = new(dao.RouteConfig)
+	err := r.ReadFile(ctx, filename, routeConfig)
+	if err != nil {
+		logger.Error(ctx, "failed to read file: %s", filename)
 		return nil, err
 	}
-
-	err := routeConfig.Validate()
+	var isJson bool = strings.HasSuffix(filename, ".json")
+	err = routeConfig.Validate()
 	if err != nil {
 		logger.Error(ctx, "invalid route config file: %s, \n%s", filename, routeConfig.String(isJson))
 		return nil, err
 	}
 	logger.Info(ctx, "route config for file :%s imported as \n%s", filename, routeConfig.String(isJson))
-	return &routeConfig, nil
+	return routeConfig, nil
 }
 
 // read all the files in the directory and return the list of route configs
@@ -79,9 +86,9 @@ func (r *Repository) GetRoutesConfig(ctx context.Context) ([]*dao.RouteConfig, e
 	var routeConfigs []*dao.RouteConfig
 	for _, file := range files {
 		if !file.IsDir() {
-			routeConfig, err := r.ReadFile(ctx, file.Name())
+			routeConfig, err := r.readRouteConfig(ctx, file.Name())
 			if err != nil {
-				logger.Error(ctx, "failed to read file: %s", file.Name())
+				logger.Error(ctx, "failed to read route config: %s", file.Name())
 				continue
 			}
 			routeConfigs = append(routeConfigs, routeConfig)
@@ -124,9 +131,9 @@ func (r *Repository) watch(ctx context.Context) {
 			if !info.IsDir() {
 				if fileInfo, ok := r.watchDetails[file.Name()]; !ok || (fileInfo.ModTime() != info.ModTime()) {
 					logger.Debug(ctx, "file changed: %s", file.Name())
-					routeConfig, err := r.ReadFile(ctx, file.Name())
+					routeConfig, err := r.readRouteConfig(ctx, file.Name())
 					if err != nil {
-						logger.Error(ctx, "failed to read file: %s", file.Name())
+						logger.Error(ctx, "failed to read route config file: %s", file.Name())
 						continue
 					}
 					r.eventPublisher.Publish(routeConfig)

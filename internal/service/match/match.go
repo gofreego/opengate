@@ -28,17 +28,17 @@ func (s *MatchService) UpdateRoutesMatch(ctx context.Context, matches ...*dao.Ro
 		// updating for host matcher
 		if m.Match.Host != "" {
 			if hostMatchers, found := s.allHostMatchers[m.Match.Host]; found {
-				hostMatchers[m.ID] = NewMatchers(m.ID, s.getMatchers(m))
+				hostMatchers[m.ID] = NewMatchers(m.ID, s.getMatchers(ctx, m))
 			} else {
 				s.allHostMatchers[m.Match.Host] = make(map[string]matchers)
-				s.allHostMatchers[m.Match.Host][m.ID] = NewMatchers(m.ID, s.getMatchers(m))
+				s.allHostMatchers[m.Match.Host][m.ID] = NewMatchers(m.ID, s.getMatchers(ctx, m))
 			}
 			delete(s.otherMatchers, m.ID)
 			continue
 		}
 
 		// updating for others where host is configured
-		s.otherMatchers[m.ID] = NewMatchers(m.ID, s.getMatchers(m))
+		s.otherMatchers[m.ID] = NewMatchers(m.ID, s.getMatchers(ctx, m))
 		//deleting from host matchers
 		for host, hostMatchers := range s.allHostMatchers {
 			if _, found := hostMatchers[m.ID]; found {

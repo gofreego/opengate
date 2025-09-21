@@ -25,7 +25,7 @@ Repository:
     tls: false
 Service:
   ChangeDetector:
-    RouteUpdateInterval: 30
+    RouteUpdateInterval: 30s
   Auth:
     Name: "OpenAuth"
     OpenAuth:

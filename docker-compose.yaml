@@ -1,0 +1,10 @@
+version: '3.8'
+services:
+  opengate:
+    image: opengate:latest
+    container_name: opengate
+    restart: always
+    ports:
+      - "8083:8083"
+    environment:
+      EXAMPLE_ENV: value

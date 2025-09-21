@@ -1,9 +1,0 @@
-id: "1"
-name: "openauth"
-description: "openauth route config"
-match:
-    host: ""
-    prefix: "/testservice"
-    regex: "tt"
-    methods: ["GET","POST"]
-target: "http://localhost:7070"

@@ -1,73 +1,43 @@
 package service
 
 import (
-	"api-gateway/internal/repository"
-	"api-gateway/internal/service/authentication"
-	"api-gateway/internal/service/match"
-	"api-gateway/internal/service/middlewares"
 	"context"
 
-	"github.com/gofreego/goutils/logger"
+	"github.com/gofreego/goutils/cache"
+	"github.com/gofreego/opengate/internal/models"
+	"github.com/gofreego/opengate/internal/service/auth"
+	changedetector "github.com/gofreego/opengate/internal/service/change_detector"
+	routemanager "github.com/gofreego/opengate/internal/service/route_manager"
 )
 
 type Config struct {
-	Authentication authentication.Config
-	Middlewares    middlewares.Config
+	Auth           auth.Config           `yaml:"Auth"`
+	ChangeDetector changedetector.Config `yaml:"ChangeDetector"`
+}
+
+type Repository interface {
+	Ping(ctx context.Context) error
+	GetRoutes(ctx context.Context) ([]*models.ServiceRoute, error)
 }
 
 type Service struct {
-	match       *match.MatchService
-	middlewares *middlewares.MiddlewareService
-
-	repo repository.Repository
+	repo         Repository
+	routeManager routemanager.Manager
+	authManager  auth.AuthManager
+	cfg          *Config
 }
 
-func NewService(ctx context.Context, cfg *Config, repo repository.Repository) *Service {
-
-	matchService := match.NewMatchService()
-	middlewareService := middlewares.NewMiddlewareService(&cfg.Middlewares)
-
-	routeConfigs, err := repo.GetRoutesConfig(ctx)
+func NewService(ctx context.Context, cfg *Config, repo Repository, cache cache.Cache) *Service {
+	authManager, err := auth.NewAuthManager(ctx, &cfg.Auth, cache)
 	if err != nil {
-		logger.Panic(ctx, "failed to fetch route configs: Err:%v", err.Error())
-		return nil
+		panic("failed to create AuthManager: " + err.Error())
 	}
-	err = matchService.UpdateRoutesMatch(ctx, routeConfigs...)
-	if err != nil {
-		logger.Panic(ctx, "failed to update match, Err:%s", err.Error())
-		return nil
+	service := &Service{
+		cfg:          cfg,
+		repo:         repo,
+		routeManager: routemanager.New(),
+		authManager:  authManager,
 	}
-	err = middlewareService.UpdateMiddlewares(ctx, routeConfigs...)
-	if err != nil {
-		logger.Panic(ctx, "failed to update middlewares, Err:%s", err.Error())
-	}
-	srv := &Service{
-		match:       matchService,
-		middlewares: middlewareService,
-		repo:        repo,
-	}
-
-	// Watch for route config changes
-	go srv.WatchRoutesConfigChanges(ctx)
-	return srv
-}
-
-func (s *Service) WatchRoutesConfigChanges(ctx context.Context) {
-	routeConfigChan, err := s.repo.WatchRoutesConfigChanges(ctx)
-	if err != nil {
-		logger.Panic(ctx, "failed to watch route config changes: Err:%v", err.Error())
-		return
-	}
-	for routeConfig := range routeConfigChan {
-
-		err := s.match.UpdateRoutesMatch(ctx, routeConfig)
-		if err != nil {
-			logger.Error(ctx, "failed to update match: Err:%v", err.Error())
-		}
-		err = s.middlewares.UpdateMiddlewares(ctx, routeConfig)
-		if err != nil {
-			logger.Error(ctx, "failed to update middleware: Err:%v", err.Error())
-		}
-
-	}
+	go changedetector.New(repo, service.routeManager, &cfg.ChangeDetector).DetectChanges(ctx)
+	return service
 }

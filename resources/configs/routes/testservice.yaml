@@ -1,0 +1,36 @@
+# Service configuration for testservice
+# This configuration defines how the gateway should route requests to the test service
+
+# Service identifier - used for logging and management
+Name: testservice
+
+# Path prefix that triggers this route (incoming requests matching this prefix will be routed here)
+PathPrefix: /testservice
+
+# Target URL where requests should be forwarded
+TargetURL: http://localhost:8081
+
+# Whether to remove the PathPrefix from the forwarded request
+# false = forward full path, true = strip the prefix before forwarding
+StripPrefix: false
+
+# Authentication configuration
+Authentication:
+  # Whether authentication is required for this service
+  Required: false
+  Except:
+    - Path: "/testservice/ping"
+      Methods: ["GET"]
+  # Optional: Define specific paths/methods that are exceptions to the auth requirement
+  # Except:
+  #   - Path: "/health"
+  #     Methods: ["GET"]
+  #   - Path: "/metrics"
+  #     Methods: ["GET", "POST"]
+
+# Middleware stack to apply to requests (processed in order)
+Middleware:
+  - cors
+
+# Request timeout for forwarded requests
+Timeout: 30s

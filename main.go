@@ -1,39 +1,46 @@
 package main
 
 import (
-	"api-gateway/internal/config"
-	"api-gateway/internal/controller"
-	"api-gateway/internal/repository"
-	"api-gateway/internal/service"
 	"context"
 	"flag"
 
+	"github.com/gofreego/opengate/cmd/http_server"
+	"github.com/gofreego/opengate/internal/configs"
+	"github.com/gofreego/opengate/internal/repository"
+	"github.com/gofreego/opengate/internal/service"
+
 	"github.com/gofreego/goutils/apputils"
+	"github.com/gofreego/goutils/cache"
 	"github.com/gofreego/goutils/logger"
-	"gopkg.in/yaml.v3"
+)
+
+var (
+	env  string
+	path string
 )
 
 func main() {
+	flag.StringVar(&env, "env", "dev", "-env=dev")
+	flag.StringVar(&path, "path", ".", "-path=./")
 	flag.Parse()
-	var ctx context.Context = context.Background()
-	cfg := config.GetConfig(ctx)
-	cfg.Logger.InitiateLogger()
-	// logging the config
-	bytes, err := yaml.Marshal(cfg)
-	if err != nil {
-		logger.Panic(ctx, "Failed to marshal config: %v", err)
-		return
+	ctx := context.Background()
+
+	conf := configs.LoadConfig(ctx, path, env)
+
+	conf.Logger.InitiateLogger()
+	logger.AddMiddleLayers(logger.RequestMiddleLayer)
+
+	// Create repository instance
+	repo := repository.GetInstance(ctx, &conf.Repository)
+	var cacheInstance cache.Cache
+	if conf.Cache.Name != "" {
+		cacheInstance = cache.NewCache(ctx, &conf.Cache)
 	}
-	logger.Debug(ctx, "Configurations: \n%s", bytes)
+	// Create service instance
+	svc := service.NewService(ctx, &conf.Service, repo, cacheInstance)
 
-	// repository
-	repo := repository.NewRepository(&cfg.Repository)
-	service := service.NewService(ctx, &cfg.Service, repo)
-
-	ctrl := controller.New(&cfg.Ctrl, service)
-	// starting the controller
-	go ctrl.Run(ctx)
-
-	// Graceful shutdown goroutine
-	apputils.GracefulShutdown(ctx, ctrl)
+	// Create HTTP server with proper config
+	app := http_server.NewHTTPServer(&conf.Server, svc, env)
+	go app.Run(ctx)
+	apputils.GracefulShutdown(ctx, app)
 }

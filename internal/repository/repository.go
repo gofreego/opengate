@@ -1,32 +1,65 @@
 package repository
 
 import (
-	"api-gateway/internal/models/dao"
-	"api-gateway/internal/repository/files"
 	"context"
+	"sync"
+
+	"github.com/gofreego/openauth/pkg/clients/openauth"
+	"github.com/gofreego/opengate/internal/repository/local"
+	openauthRepo "github.com/gofreego/opengate/internal/repository/openauth"
+	"github.com/gofreego/opengate/internal/service"
 )
 
-type Repository interface {
-	GetRoutesConfig(ctx context.Context) ([]*dao.RouteConfig, error)
-	WatchRoutesConfigChanges(ctx context.Context) (<-chan *dao.RouteConfig, error)
-}
-
-type Config struct {
-	Name  string
-	Files files.Config
-}
+type Name string
 
 const (
-	FILES_REPOSITORY    = "files"
-	MONGO_REPOSITORY    = "mongo"
-	POSTGRES_REPOSITORY = "postgres"
-	CONSUL_REPOSITORY   = "consul"
+	Local    Name = "Local"
+	OpenAuth Name = "OpenAuth"
 )
 
-func NewRepository(cfg *Config) Repository {
-	switch cfg.Name {
-	case FILES_REPOSITORY:
-		return files.NewRepository(&cfg.Files)
+type Config struct {
+	Name     Name                  `yaml:"Name"`
+	Local    local.Config          `yaml:"Local"`
+	OpenAuth openauth.ClientConfig `yaml:"OpenAuth"`
+}
+
+var (
+	instance service.Repository
+	once     sync.Once
+	mu       sync.RWMutex
+)
+
+// GetInstance returns the singleton instance of the repository
+func GetInstance(ctx context.Context, cfg *Config) service.Repository {
+	mu.RLock()
+	if instance != nil {
+		defer mu.RUnlock()
+		return instance
 	}
-	panic("unknown repository name")
+	mu.RUnlock()
+
+	once.Do(func() {
+		mu.Lock()
+		defer mu.Unlock()
+		if instance == nil {
+			switch cfg.Name {
+			case Local:
+				repo, err := local.NewRepository(ctx, &cfg.Local)
+				if err != nil {
+					panic("failed to create repository: " + err.Error())
+				}
+				instance = repo
+			case OpenAuth:
+				repo, err := openauthRepo.NewRepository(ctx, &cfg.OpenAuth)
+				if err != nil {
+					panic("failed to create repository: " + err.Error())
+				}
+				instance = repo
+			default:
+				panic("unsupported repository: " + string(cfg.Name))
+			}
+		}
+	})
+
+	return instance
 }

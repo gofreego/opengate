@@ -1,0 +1,131 @@
+package service
+
+import (
+	"net/http"
+	"net/http/httputil"
+	"net/url"
+	"strings"
+	"time"
+
+	"github.com/gin-gonic/gin"
+	"github.com/gofreego/goutils/logger"
+	"github.com/gofreego/opengate/internal/models"
+)
+
+func (s *Service) RouteRequest(ctx *gin.Context) {
+	// Get the route for this request
+	route := s.routeManager.GetRouteByRequest(ctx.Request)
+	if route == nil {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": "No route found for this request"})
+		return
+	}
+
+	// Check authentication if required
+	if route.Authentication.IsAuthenticationRequired(ctx.Request.URL.Path, ctx.Request.Method) {
+		if err := s.authManager.Authenticate(ctx); err != nil {
+			logger.Warn(ctx, "Authentication failed for route: %s, error: %v", route.Name, err)
+			ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication required"})
+			return
+		}
+	}
+
+	// Use ProxyPass to handle the request
+	s.proxyPass(ctx, route)
+}
+
+// proxyPass handles the proxying of requests to the target service
+func (s *Service) proxyPass(ctx *gin.Context, route *models.ServiceRoute) {
+	// Parse target URL
+	targetURL, err := url.Parse(route.TargetURL)
+	if err != nil {
+		logger.Error(ctx, "Failed to parse target URL: %v", err)
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": "Invalid target URL"})
+		return
+	}
+
+	// Create reverse proxy with httputil
+	proxy := httputil.NewSingleHostReverseProxy(targetURL)
+
+	// Configure proxy settings
+	s.configureProxy(proxy, route, ctx)
+
+	// Handle path modification if needed
+	if route.StripPrefix {
+		originalPath := ctx.Request.URL.Path
+		if strings.HasPrefix(originalPath, route.PathPrefix) {
+			ctx.Request.URL.Path = strings.TrimPrefix(originalPath, route.PathPrefix)
+			if !strings.HasPrefix(ctx.Request.URL.Path, "/") && ctx.Request.URL.Path != "" {
+				ctx.Request.URL.Path = "/" + ctx.Request.URL.Path
+			}
+		}
+	}
+
+	// Execute the proxy
+	proxy.ServeHTTP(ctx.Writer, ctx.Request)
+}
+
+func (s *Service) configureProxy(proxy *httputil.ReverseProxy, route *models.ServiceRoute, ctx *gin.Context) {
+	// Set timeout by configuring transport
+	timeout := route.Timeout
+	if timeout == 0 {
+		timeout = 30 * time.Second // Default timeout
+	}
+
+	// Configure transport with timeout
+	proxy.Transport = &http.Transport{
+		ResponseHeaderTimeout: timeout,
+		IdleConnTimeout:       timeout,
+	}
+
+	// Configure error handler
+	proxy.ErrorHandler = func(w http.ResponseWriter, r *http.Request, err error) {
+		logger.Error(r.Context(), "Proxy error: %v", err)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadGateway)
+		w.Write([]byte(`{"error": "Service unavailable"}`))
+	}
+
+	// Configure director for request modification
+	originalDirector := proxy.Director
+	proxy.Director = func(req *http.Request) {
+		originalDirector(req)
+		// Add forwarding headers
+		req.Header.Set("X-Forwarded-Host", req.Host)
+		req.Header.Set("X-Real-IP", getClientIP(req))
+		req.Header.Set("X-Forwarded-Proto", getScheme(req))
+	}
+}
+
+// getClientIP extracts the real client IP from request
+func getClientIP(req *http.Request) string {
+	// Check X-Forwarded-For header first
+	if xff := req.Header.Get("X-Forwarded-For"); xff != "" {
+		// Take the first IP in the chain
+		if idx := strings.Index(xff, ","); idx > 0 {
+			return strings.TrimSpace(xff[:idx])
+		}
+		return strings.TrimSpace(xff)
+	}
+
+	// Check X-Real-IP header
+	if xri := req.Header.Get("X-Real-IP"); xri != "" {
+		return xri
+	}
+
+	// Fall back to RemoteAddr
+	if idx := strings.LastIndex(req.RemoteAddr, ":"); idx > 0 {
+		return req.RemoteAddr[:idx]
+	}
+	return req.RemoteAddr
+}
+
+// getScheme determines the request scheme
+func getScheme(req *http.Request) string {
+	if req.TLS != nil {
+		return "https"
+	}
+	if scheme := req.Header.Get("X-Forwarded-Proto"); scheme != "" {
+		return scheme
+	}
+	return "http"
+}

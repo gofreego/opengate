@@ -1,15 +1,41 @@
-name: API Gateway
-logger:
-    AppName: apigateway
-    Build: dev
-    Level: debug
-ctrl:
-    port: 8081
-    debug: false
-service:
-    middlewares: {}
-repository:
-    name: "files"
-    files:
-        path: resources/routes
-        RefreshIntervalSec: 5  
+LogConfig: true
+Logger:
+  AppName: opengate
+  Build: dev
+  Level: debug
+AppNames:
+- HTTP_SERVER
+Server:
+  Port: 8080
+  GinMode: debug
+  ReadTimeout: 30s
+  WriteTimeout: 30s
+  IdleTimeout: 120s
+  MaxHeaderBytes: 1048576
+  EnableCors: true
+Repository:
+  Name: Local
+  Local: 
+    RoutesFolderPath: ./resources/configs/routes/
+  OpenAuth:
+    endpoint: localhost:8086
+    username: admin
+    password: admin123
+    timeout: 5s
+    tls: false
+Service:
+  ChangeDetector:
+    RouteUpdateInterval: 30
+  Auth:
+    Name: "OpenAuth"
+    OpenAuth:
+      endpoint: "localhost:8086"
+      username: "admin"
+      password: "admin123"
+      tls: false
+      timeout: 30s
+Cache:
+  name: memory
+Debug:
+  Enabled: true
+  EnablePprof: true

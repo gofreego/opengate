@@ -1,15 +1,16 @@
-# Use a minimal base image
 FROM alpine:latest
 
-# Set the working directory inside the container
+# Set your working directory (optional)
 WORKDIR /app
 
-# Copy the binary from your local machine to the container
-COPY application ./
-COPY dev.yml ./
+# Install any additional packages (replace with your needs)
+COPY application .
+COPY dev.yaml .
+COPY api/docs /app/api/docs
+RUN chmod +x application
 
-RUN chmod +x ./application
-# Expose any necessary ports (if your Go binary is a server)
-EXPOSE 8000
-# Command to run your Go binary
-ENTRYPOINT ["./application"]
+# Expose the ports the application uses
+EXPOSE 8085 8086
+
+# Define the command to run your application
+CMD [ "/app/application" ]

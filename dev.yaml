@@ -6,7 +6,7 @@ Logger:
 AppNames:
 - HTTP_SERVER
 Server:
-  Port: 8083
+  Port: 8080
   GinMode: debug
   ReadTimeout: 30s
   WriteTimeout: 30s
@@ -14,26 +14,26 @@ Server:
   MaxHeaderBytes: 1048576
   EnableCors: true
 Repository:
-  Name: Local
+  Name: OpenAuth
   Local: 
     RoutesFolderPath: ./resources/configs/routes/
   OpenAuth:
-    endpoint: localhost:8086
-    username: admin
-    password: admin123
-    timeout: 5s
-    tls: false
+    Host: localhost:8086
+    Username: admin
+    Password: admin123
+    Timeout: 5s
+    Tls: false
 Service:
   ChangeDetector:
-    RouteUpdateInterval: 30s
+    RouteUpdateInterval: 10s
   Auth:
     Name: "OpenAuth"
     OpenAuth:
-      endpoint: "localhost:8086"
-      username: "admin"
-      password: "admin123"
-      tls: false
-      timeout: 30s
+      Host: "localhost:8086"
+      Username: "admin"
+      Password: "admin123"
+      Tls: false
+      Timeout: 30s
 Cache:
   name: memory
 Debug:

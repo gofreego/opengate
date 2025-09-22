@@ -70,6 +70,7 @@ func (cd *changeDetector) DetectChanges(ctx context.Context) error {
 
 // checkAndUpdateRoutes checks for changes and updates routes if necessary
 func (cd *changeDetector) checkAndUpdateRoutes(ctx context.Context) error {
+	logger.Info(ctx, "Checking for route changes")
 	// Fetch latest routes from repository
 	latestRoutes, err := cd.repo.GetRoutes(ctx)
 	if err != nil {

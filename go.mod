@@ -5,7 +5,7 @@ go 1.23.3
 require (
 	github.com/gin-gonic/gin v1.10.1
 	github.com/gofreego/goutils v1.3.8
-	github.com/gofreego/openauth v1.0.4
+	github.com/gofreego/openauth v1.0.5
 	google.golang.org/grpc v1.75.0
 	gopkg.in/yaml.v3 v3.0.1
 )

@@ -6,7 +6,7 @@ Logger:
 AppNames:
 - HTTP_SERVER
 Server:
-  Port: 8080
+  Port: 8083
   GinMode: debug
   ReadTimeout: 30s
   WriteTimeout: 30s

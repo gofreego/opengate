@@ -6,7 +6,7 @@ WORKDIR /app
 # Install any additional packages (replace with your needs)
 COPY application .
 COPY dev.yaml .
-COPY api/docs /app/api/docs
+COPY resources/configs/routes /app/resources/configs/routes
 RUN chmod +x application
 
 # Expose the ports the application uses

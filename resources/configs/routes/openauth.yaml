@@ -1,0 +1,7 @@
+Name: openauth
+PathPrefix: /openauth
+TargetURL: http://192.168.1.100:8085
+StripPrefix: false
+Authentication:
+  Required: false
+Timeout: 30s

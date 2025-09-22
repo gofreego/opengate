@@ -41,6 +41,7 @@ func (r *Repository) GetRoutes(ctx context.Context) ([]*models.ServiceRoute, err
 			logger.Error(ctx, "Failed to unmarshal route config: %v", err)
 			continue
 		}
+		route.UpdatedAt = config.UpdatedAt
 		routes = append(routes, &route)
 	}
 	return routes, nil

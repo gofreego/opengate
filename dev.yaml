@@ -18,7 +18,7 @@ Repository:
   Local: 
     RoutesFolderPath: ./resources/configs/routes/
   OpenAuth:
-    Host: localhost:8086
+    Host: 192.168.1.100:8086
     Username: admin
     Password: admin123
     Timeout: 5s
@@ -29,9 +29,9 @@ Service:
   Auth:
     Name: "OpenAuth"
     OpenAuth:
-      Host: "localhost:8086"
-      Username: "admin"
-      Password: "admin123"
+      Host: 192.168.1.100:8086
+      Username: admin
+      Password: admin123
       Tls: false
       Timeout: 30s
 Cache:

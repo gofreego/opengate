@@ -14,6 +14,7 @@ import (
 	"github.com/gofreego/openauth/api/openauth_v1"
 	"github.com/gofreego/openauth/pkg/clients/openauth"
 	"github.com/gofreego/openauth/pkg/jwtutils"
+	"github.com/gofreego/opengate/internal/constants"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 )
@@ -37,14 +38,21 @@ func NewOpenAuthStrategy(ctx context.Context, config *openauth.ClientConfig, cac
 }
 
 func (s *OpenAuthStrategy) Authenticate(ctx *gin.Context) error {
-	context := ctx.Request.Context()
+	reqContext := ctx.Request.Context()
 	token := ctx.GetHeader("Authorization")
 	if authenticated, err := s.isAuthenticatedInCache(token); err == nil && authenticated {
+		// Even for cached auth, we need claims for headers
+		_, claims, err := s.getJWTDetails(token)
+		if err != nil {
+			logger.Error(ctx, "Failed to get JWT details from cache: %v", err)
+			return err
+		}
+		ctx.Set(constants.JWT_CLAIMS, claims)
 		return nil
 	}
-	expiresAt, err := s.getJWTExpriry(token)
+	expiresAt, claims, err := s.getJWTDetails(token)
 	if err != nil {
-		logger.Error(ctx, "Failed to get JWT expiry: %v", err)
+		logger.Error(ctx, "Failed to get JWT details: %v", err)
 		return err
 	}
 
@@ -52,14 +60,17 @@ func (s *OpenAuthStrategy) Authenticate(ctx *gin.Context) error {
 		return fmt.Errorf("token is expired")
 	}
 
+	// Store claims in gin context
+	ctx.Set(constants.JWT_CLAIMS, claims)
+
 	// Set additional headers for the authentication request
 	authRequest := &openauth_v1.IsAuthenticatedRequest{
 		AccessToken: ctx.GetHeader("Authorization"),
 	}
 
-	context = metadata.AppendToOutgoingContext(context, "Authorization", ctx.GetHeader("Authorization"))
+	reqContext = metadata.AppendToOutgoingContext(reqContext, "Authorization", ctx.GetHeader("Authorization"))
 
-	_, err = s.client.IsAuthenticated(context, authRequest)
+	_, err = s.client.IsAuthenticated(reqContext, authRequest)
 	if err != nil {
 		s.setCache(ctx.GetHeader("Authorization"), false, time.Minute)
 		logger.Error(ctx, "Authentication error: %v", err)
@@ -93,14 +104,14 @@ func (s *OpenAuthStrategy) setCache(authToken string, isAuthenticated bool, dura
 	}
 }
 
-func (s *OpenAuthStrategy) getJWTExpriry(token string) (*time.Time, error) {
+func (s *OpenAuthStrategy) getJWTDetails(token string) (*time.Time, *jwtutils.JWTClaims, error) {
 	// Remove "Bearer " prefix if present
 	token = strings.TrimPrefix(token, "Bearer ")
 
 	// JWT tokens have 3 parts separated by dots: header.payload.signature
 	parts := strings.Split(token, ".")
 	if len(parts) != 3 {
-		return nil, fmt.Errorf("invalid JWT token format")
+		return nil, nil, fmt.Errorf("invalid JWT token format")
 	}
 
 	// Decode the payload (second part)
@@ -114,15 +125,15 @@ func (s *OpenAuthStrategy) getJWTExpriry(token string) (*time.Time, error) {
 	// Decode base64
 	decoded, err := base64.URLEncoding.DecodeString(payload)
 	if err != nil {
-		return nil, fmt.Errorf("failed to decode JWT payload: %w", err)
+		return nil, nil, fmt.Errorf("failed to decode JWT payload: %w", err)
 	}
 
 	// Parse JSON payload
 	var claims jwtutils.JWTClaims
 	if err := json.Unmarshal(decoded, &claims); err != nil {
-		return nil, fmt.Errorf("failed to parse JWT claims: %w", err)
+		return nil, nil, fmt.Errorf("failed to parse JWT claims: %w", err)
 	}
-	return &claims.RegisteredClaims.ExpiresAt.Time, nil
+	return &claims.RegisteredClaims.ExpiresAt.Time, &claims, nil
 }
 
 func (s *OpenAuthStrategy) Close() error {

@@ -1,6 +1,7 @@
 package service
 
 import (
+	"fmt"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
@@ -9,6 +10,8 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/gofreego/goutils/logger"
+	"github.com/gofreego/openauth/pkg/jwtutils"
+	"github.com/gofreego/opengate/internal/constants"
 	"github.com/gofreego/opengate/internal/models"
 )
 
@@ -47,7 +50,7 @@ func (s *Service) proxyPass(ctx *gin.Context, route *models.ServiceRoute) {
 	proxy := httputil.NewSingleHostReverseProxy(targetURL)
 
 	// Configure proxy settings
-	s.configureProxy(proxy, route, ctx)
+	s.configureProxy(ctx, proxy, route)
 
 	// Handle path modification if needed
 	if route.StripPrefix {
@@ -64,7 +67,7 @@ func (s *Service) proxyPass(ctx *gin.Context, route *models.ServiceRoute) {
 	proxy.ServeHTTP(ctx.Writer, ctx.Request)
 }
 
-func (s *Service) configureProxy(proxy *httputil.ReverseProxy, route *models.ServiceRoute, ctx *gin.Context) {
+func (s *Service) configureProxy(ctx *gin.Context, proxy *httputil.ReverseProxy, route *models.ServiceRoute) {
 	// Set timeout by configuring transport
 	timeout := route.Timeout
 	if timeout == 0 {
@@ -93,6 +96,18 @@ func (s *Service) configureProxy(proxy *httputil.ReverseProxy, route *models.Ser
 		req.Header.Set("X-Forwarded-Host", req.Host)
 		req.Header.Set("X-Real-IP", getClientIP(req))
 		req.Header.Set("X-Forwarded-Proto", getScheme(req))
+
+		// Add user headers from JWT claims if authentication was required
+		if claims, exists := ctx.Get(constants.JWT_CLAIMS); exists {
+			if jwtClaims, ok := claims.(*jwtutils.JWTClaims); ok {
+				if jwtClaims.UserID != 0 {
+					req.Header.Set("X-USER-ID", fmt.Sprintf("%d", jwtClaims.UserID))
+				}
+				if jwtClaims.UserUUID != "" {
+					req.Header.Set("X-USER-UUID", jwtClaims.UserUUID)
+				}
+			}
+		}
 	}
 }
 

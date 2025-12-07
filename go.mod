@@ -5,7 +5,7 @@ go 1.23.3
 require (
 	github.com/gin-gonic/gin v1.10.1
 	github.com/gofreego/goutils v1.3.8
-	github.com/gofreego/openauth v1.0.5
+	github.com/gofreego/openauth v1.0.8-0.20251207051252-3ca52c4ef853
 	google.golang.org/grpc v1.75.0
 	gopkg.in/yaml.v3 v3.0.1
 )
@@ -45,6 +45,7 @@ require (
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.7 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
+	github.com/lib/pq v1.10.9 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect

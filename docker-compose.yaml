@@ -1,6 +1,9 @@
 version: '3.8'
 services:
   opengate:
+    build:
+      context: .
+      dockerfile: Dockerfile
     image: opengate:latest
     container_name: opengate
     restart: always

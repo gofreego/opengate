@@ -1,6 +1,7 @@
 package models
 
 import (
+	"strings"
 	"time"
 )
 
@@ -38,14 +39,16 @@ func (auth *Authentication) IsAuthenticationRequired(path, method string) bool {
 
 func (auth *Authentication) isExcepted(path, method string) bool {
 	for _, except := range auth.Except {
-		if except.Path == path {
-			if len(except.Methods) == 0 {
+		// if path is not prefix of except.Path, then it is not excepted
+		if !strings.HasPrefix(path, except.Path) {
+			continue
+		}
+		if len(except.Methods) == 0 {
+			return true
+		}
+		for _, m := range except.Methods {
+			if m == method {
 				return true
-			}
-			for _, m := range except.Methods {
-				if m == method {
-					return true
-				}
 			}
 		}
 	}

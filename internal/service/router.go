@@ -94,7 +94,7 @@ func (s *Service) configureProxy(ctx *gin.Context, proxy *httputil.ReverseProxy,
 		originalDirector(req)
 
 		// Clear user headers to prevent spoofing
-		req.Header.Del("Authorization")
+		req.Header.Del(constants.HEADER_AUTHORIZATION)
 		req.Header.Del(constants.HEADER_USER_ID)
 		req.Header.Del(constants.HEADER_USER_UUID)
 		req.Header.Del(constants.HEADER_PROFILE_IDS)

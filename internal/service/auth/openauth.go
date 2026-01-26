@@ -39,7 +39,7 @@ func NewOpenAuthStrategy(ctx context.Context, config *openauth.ClientConfig, cac
 
 func (s *OpenAuthStrategy) Authenticate(ctx *gin.Context) error {
 	reqContext := ctx.Request.Context()
-	token := ctx.GetHeader("Authorization")
+	token := ctx.GetHeader(constants.HEADER_AUTHORIZATION)
 	if authenticated, err := s.isAuthenticatedInCache(token); err == nil && authenticated {
 		// Even for cached auth, we need claims for headers
 		_, claims, err := s.getJWTDetails(token)
@@ -65,18 +65,18 @@ func (s *OpenAuthStrategy) Authenticate(ctx *gin.Context) error {
 
 	// Set additional headers for the authentication request
 	authRequest := &openauth_v1.IsAuthenticatedRequest{
-		AccessToken: ctx.GetHeader("Authorization"),
+		AccessToken: ctx.GetHeader(constants.HEADER_AUTHORIZATION),
 	}
 
-	reqContext = metadata.AppendToOutgoingContext(reqContext, "Authorization", ctx.GetHeader("Authorization"))
+	reqContext = metadata.AppendToOutgoingContext(reqContext, constants.HEADER_AUTHORIZATION, ctx.GetHeader(constants.HEADER_AUTHORIZATION))
 
 	_, err = s.client.IsAuthenticated(reqContext, authRequest)
 	if err != nil {
-		s.setCache(ctx.GetHeader("Authorization"), false, time.Minute)
+		s.setCache(ctx.GetHeader(constants.HEADER_AUTHORIZATION), false, time.Minute)
 		logger.Error(ctx, "Authentication error: %v", err)
 		return err
 	}
-	s.setCache(ctx.GetHeader("Authorization"), true, time.Until(*expiresAt))
+	s.setCache(ctx.GetHeader(constants.HEADER_AUTHORIZATION), true, time.Until(*expiresAt))
 	return nil
 }
 

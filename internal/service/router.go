@@ -24,7 +24,7 @@ func (s *Service) RouteRequest(ctx *gin.Context) {
 	}
 
 	// Check authentication if required
-	if route.Authentication.IsAuthenticationRequired(ctx.Request.URL.Path, ctx.Request.Method) {
+	if isAuthenticationHeaderAvailable(ctx) || route.Authentication.IsAuthenticationRequired(ctx.Request.URL.Path, ctx.Request.Method) {
 		if err := s.authManager.Authenticate(ctx); err != nil {
 			logger.Warn(ctx, "Authentication failed for route: %s, error: %v", route.Name, err)
 			ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication required"})
@@ -161,4 +161,9 @@ func getScheme(req *http.Request) string {
 		return scheme
 	}
 	return "http"
+}
+
+func isAuthenticationHeaderAvailable(ctx *gin.Context) bool {
+	authHeader := ctx.Request.Header.Get(constants.HEADER_AUTHORIZATION)
+	return authHeader != ""
 }

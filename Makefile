@@ -32,3 +32,14 @@ install:
 setup:
 	sh ./api/protoc.sh
 	go mod tidy
+
+redeploy:
+	@echo "Redeploying the application"
+	@echo "Pulling latest changes from git"
+	git pull
+	@echo "Building the docker imamge"
+	docker compose build
+	@echo "Stopping existing docker containers"
+	docker compose down
+	@echo "Starting the docker containers"
+	docker compose up -d

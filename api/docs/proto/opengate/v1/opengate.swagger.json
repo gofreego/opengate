@@ -1,0 +1,588 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "OpenGate API",
+    "description": "OpenGate API Gateway - Configuration and Route Management",
+    "version": "v1.0.0"
+  },
+  "tags": [
+    {
+      "name": "Ping",
+      "description": "Health check endpoints"
+    },
+    {
+      "name": "Configs",
+      "description": "Endpoints for managing route configurations"
+    },
+    {
+      "name": "Routes",
+      "description": "Endpoints for retrieving routes for routing"
+    },
+    {
+      "name": "OpenGateService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/opengate/v1/configs": {
+      "get": {
+        "summary": "List configs",
+        "description": "List route configurations with pagination support.",
+        "operationId": "OpenGateService_ListConfigs",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListConfigsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "required": false,
+            "type": "integer",
+            "format": "int32"
+          },
+          {
+            "name": "search",
+            "description": "Optional search term for name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Configs"
+        ]
+      },
+      "post": {
+        "summary": "Create a new config",
+        "description": "Create a new route configuration. Name must be unique.",
+        "operationId": "OpenGateService_CreateConfig",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1CreateConfigResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1CreateConfigRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Configs"
+        ]
+      }
+    },
+    "/opengate/v1/configs/{id}": {
+      "get": {
+        "summary": "Get a config by ID",
+        "description": "Retrieve a route configuration by its ID.",
+        "operationId": "OpenGateService_GetConfig",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetConfigResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "Configs"
+        ]
+      },
+      "delete": {
+        "summary": "Delete a config",
+        "description": "Delete a route configuration by its ID.",
+        "operationId": "OpenGateService_DeleteConfig",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1DeleteConfigResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          }
+        ],
+        "tags": [
+          "Configs"
+        ]
+      },
+      "put": {
+        "summary": "Update a config",
+        "description": "Update an existing route configuration.",
+        "operationId": "OpenGateService_UpdateConfig",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpdateConfigResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string",
+            "format": "int64"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/OpenGateServiceUpdateConfigBody"
+            }
+          }
+        ],
+        "tags": [
+          "Configs"
+        ]
+      }
+    },
+    "/opengate/v1/ping": {
+      "get": {
+        "summary": "Ping the server",
+        "description": "Check if the server is alive.",
+        "operationId": "OpenGateService_Ping",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1PingResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "message",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Ping"
+        ]
+      }
+    },
+    "/opengate/v1/routes": {
+      "get": {
+        "summary": "Get all routes",
+        "description": "Retrieve all routes for the routing manager.",
+        "operationId": "OpenGateService_GetRoutes",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetRoutesResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "Routes"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "OpenGateServiceUpdateConfigBody": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "pathPrefix": {
+          "type": "string"
+        },
+        "targetUrl": {
+          "type": "string"
+        },
+        "stripPrefix": {
+          "type": "boolean"
+        },
+        "authentication": {
+          "$ref": "#/definitions/v1Authentication"
+        },
+        "middleware": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "timeout": {
+          "type": "string",
+          "format": "int64"
+        }
+      },
+      "title": "UpdateConfigRequest is the request to update an existing config"
+    },
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1Authentication": {
+      "type": "object",
+      "properties": {
+        "required": {
+          "type": "boolean"
+        },
+        "except": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1AuthenticationException"
+          },
+          "title": "if required is true, excepted paths/methods do not require authentication\nif required is false, excepted paths/methods require authentication"
+        }
+      },
+      "title": "Authentication defines authentication settings for a route"
+    },
+    "v1AuthenticationException": {
+      "type": "object",
+      "properties": {
+        "path": {
+          "type": "string"
+        },
+        "methods": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      },
+      "title": "AuthenticationException defines paths/methods excepted from authentication rules"
+    },
+    "v1Config": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "pathPrefix": {
+          "type": "string"
+        },
+        "targetUrl": {
+          "type": "string"
+        },
+        "stripPrefix": {
+          "type": "boolean"
+        },
+        "authentication": {
+          "$ref": "#/definitions/v1Authentication"
+        },
+        "middleware": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "timeout": {
+          "type": "string",
+          "format": "int64",
+          "title": "Timeout in nanoseconds"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "int64",
+          "title": "Unix timestamp"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "int64",
+          "title": "Unix timestamp"
+        }
+      },
+      "title": "Config represents a service route configuration"
+    },
+    "v1CreateConfigRequest": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "pathPrefix": {
+          "type": "string"
+        },
+        "targetUrl": {
+          "type": "string"
+        },
+        "stripPrefix": {
+          "type": "boolean"
+        },
+        "authentication": {
+          "$ref": "#/definitions/v1Authentication"
+        },
+        "middleware": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "timeout": {
+          "type": "string",
+          "format": "int64",
+          "title": "Timeout in nanoseconds, default 30s if not provided"
+        }
+      },
+      "title": "CreateConfigRequest is the request to create a new config"
+    },
+    "v1CreateConfigResponse": {
+      "type": "object",
+      "properties": {
+        "config": {
+          "$ref": "#/definitions/v1Config"
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "title": "CreateConfigResponse is the response after creating a config"
+    },
+    "v1DeleteConfigResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      },
+      "title": "DeleteConfigResponse is the response after deleting a config"
+    },
+    "v1GetConfigResponse": {
+      "type": "object",
+      "properties": {
+        "config": {
+          "$ref": "#/definitions/v1Config"
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "title": "GetConfigResponse is the response containing the requested config"
+    },
+    "v1GetRoutesResponse": {
+      "type": "object",
+      "properties": {
+        "routes": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Route"
+          }
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "title": "GetRoutesResponse contains all routes for the routing manager"
+    },
+    "v1ListConfigsResponse": {
+      "type": "object",
+      "properties": {
+        "configs": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "$ref": "#/definitions/v1Config"
+          }
+        },
+        "total": {
+          "type": "integer",
+          "format": "int32",
+          "title": "Total count for pagination"
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "title": "ListConfigsResponse is the response containing a list of configs"
+    },
+    "v1PingResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      },
+      "description": "PingResponse is the response message for the Ping RPC method."
+    },
+    "v1Route": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "pathPrefix": {
+          "type": "string"
+        },
+        "targetUrl": {
+          "type": "string"
+        },
+        "stripPrefix": {
+          "type": "boolean"
+        },
+        "authentication": {
+          "$ref": "#/definitions/v1Authentication"
+        },
+        "middleware": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "timeout": {
+          "type": "string",
+          "format": "int64"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "int64"
+        }
+      },
+      "title": "Route represents a simplified route for the routing manager"
+    },
+    "v1UpdateConfigResponse": {
+      "type": "object",
+      "properties": {
+        "config": {
+          "$ref": "#/definitions/v1Config"
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "title": "UpdateConfigResponse is the response after updating a config"
+    }
+  },
+  "securityDefinitions": {
+    "Permissions": {
+      "type": "apiKey",
+      "description": "Comma-separated list of user permissions.",
+      "name": "X-User-Perms",
+      "in": "header"
+    },
+    "UserID": {
+      "type": "apiKey",
+      "description": "User ID for identification.",
+      "name": "X-User-Id",
+      "in": "header"
+    }
+  },
+  "security": [
+    {
+      "Permissions": [],
+      "UserID": []
+    }
+  ]
+}

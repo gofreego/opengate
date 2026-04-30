@@ -7,20 +7,23 @@ import (
 	"github.com/gofreego/openauth/pkg/clients/openauth"
 	"github.com/gofreego/opengate/internal/repository/local"
 	openauthRepo "github.com/gofreego/opengate/internal/repository/openauth"
+	"github.com/gofreego/opengate/internal/repository/postgresql"
 	"github.com/gofreego/opengate/internal/service"
 )
 
 type Name string
 
 const (
-	Local    Name = "Local"
-	OpenAuth Name = "OpenAuth"
+	Local      Name = "Local"
+	OpenAuth   Name = "OpenAuth"
+	PostgreSQL Name = "PostgreSQL"
 )
 
 type Config struct {
-	Name     Name                  `yaml:"Name"`
-	Local    local.Config          `yaml:"Local"`
-	OpenAuth openauth.ClientConfig `yaml:"OpenAuth"`
+	Name       Name                  `yaml:"Name"`
+	Local      local.Config          `yaml:"Local"`
+	OpenAuth   openauth.ClientConfig `yaml:"OpenAuth"`
+	PostgreSQL postgresql.Config     `yaml:"PostgreSQL"`
 }
 
 var (
@@ -51,6 +54,12 @@ func GetInstance(ctx context.Context, cfg *Config) service.Repository {
 				instance = repo
 			case OpenAuth:
 				repo, err := openauthRepo.NewRepository(ctx, &cfg.OpenAuth)
+				if err != nil {
+					panic("failed to create repository: " + err.Error())
+				}
+				instance = repo
+			case PostgreSQL:
+				repo, err := postgresql.NewRepository(ctx, &cfg.PostgreSQL)
 				if err != nil {
 					panic("failed to create repository: " + err.Error())
 				}

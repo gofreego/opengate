@@ -18,6 +18,13 @@ type Config struct {
 type Repository interface {
 	Ping(ctx context.Context) error
 	GetRoutes(ctx context.Context) ([]*models.ServiceRoute, error)
+
+	// Config CRUD operations
+	CreateConfig(ctx context.Context, config *models.Config) (*models.Config, error)
+	GetConfigByID(ctx context.Context, id int64) (*models.Config, error)
+	ListConfigs(ctx context.Context, filter *models.ConfigFilter) ([]*models.Config, int, error)
+	UpdateConfig(ctx context.Context, config *models.Config) (*models.Config, error)
+	DeleteConfig(ctx context.Context, id int64) error
 }
 
 type Service struct {

@@ -1,0 +1,125 @@
+syntax = "proto3";
+package v1;
+
+import "validate/validate.proto";
+
+option go_package = "./opengate_v1";
+
+// AuthenticationException defines paths/methods excepted from authentication rules
+message AuthenticationException {
+    string path = 1;
+    repeated string methods = 2;
+}
+
+// Authentication defines authentication settings for a route
+message Authentication {
+    bool required = 1;
+    // if required is true, excepted paths/methods do not require authentication
+    // if required is false, excepted paths/methods require authentication
+    repeated AuthenticationException except = 2;
+}
+
+// Config represents a service route configuration
+message Config {
+    int64 id = 1;
+    string name = 2;
+    string path_prefix = 3;
+    string target_url = 4;
+    bool strip_prefix = 5;
+    Authentication authentication = 6;
+    repeated string middleware = 7;
+    int64 timeout = 8; // Timeout in nanoseconds
+    int64 created_at = 9; // Unix timestamp
+    int64 updated_at = 10; // Unix timestamp
+}
+
+// CreateConfigRequest is the request to create a new config
+message CreateConfigRequest {
+    string name = 1 [(validate.rules).string.min_len = 1];
+    string path_prefix = 2 [(validate.rules).string.min_len = 1];
+    string target_url = 3 [(validate.rules).string.min_len = 1];
+    bool strip_prefix = 4;
+    Authentication authentication = 5;
+    repeated string middleware = 6;
+    int64 timeout = 7; // Timeout in nanoseconds, default 30s if not provided
+}
+
+// CreateConfigResponse is the response after creating a config
+message CreateConfigResponse {
+    Config config = 1;
+    string message = 2;
+}
+
+// GetConfigRequest is the request to get a config by ID
+message GetConfigRequest {
+    int64 id = 1 [(validate.rules).int64.gt = 0];
+}
+
+// GetConfigResponse is the response containing the requested config
+message GetConfigResponse {
+    Config config = 1;
+    string message = 2;
+}
+
+// ListConfigsRequest is the request to list configs with pagination
+message ListConfigsRequest {
+    int32 limit = 1 [(validate.rules).int32 = {gt: 0, lte: 100}];
+    int32 offset = 2 [(validate.rules).int32.gte = 0];
+    string search = 3; // Optional search term for name
+}
+
+// ListConfigsResponse is the response containing a list of configs
+message ListConfigsResponse {
+    repeated Config configs = 1;
+    int32 total = 2; // Total count for pagination
+    string message = 3;
+}
+
+// GetRoutesRequest is the request to get all routes for routing purposes
+message GetRoutesRequest {}
+
+// Route represents a simplified route for the routing manager
+message Route {
+    string name = 1;
+    string path_prefix = 2;
+    string target_url = 3;
+    bool strip_prefix = 4;
+    Authentication authentication = 5;
+    repeated string middleware = 6;
+    int64 timeout = 7;
+    int64 updated_at = 8;
+}
+
+// GetRoutesResponse contains all routes for the routing manager
+message GetRoutesResponse {
+    repeated Route routes = 1;
+    string message = 2;
+}
+
+// UpdateConfigRequest is the request to update an existing config
+message UpdateConfigRequest {
+    int64 id = 1 [(validate.rules).int64.gt = 0];
+    string name = 2 [(validate.rules).string.min_len = 1];
+    string path_prefix = 3 [(validate.rules).string.min_len = 1];
+    string target_url = 4 [(validate.rules).string.min_len = 1];
+    bool strip_prefix = 5;
+    Authentication authentication = 6;
+    repeated string middleware = 7;
+    int64 timeout = 8;
+}
+
+// UpdateConfigResponse is the response after updating a config
+message UpdateConfigResponse {
+    Config config = 1;
+    string message = 2;
+}
+
+// DeleteConfigRequest is the request to delete a config
+message DeleteConfigRequest {
+    int64 id = 1 [(validate.rules).int64.gt = 0];
+}
+
+// DeleteConfigResponse is the response after deleting a config
+message DeleteConfigResponse {
+    string message = 1;
+}

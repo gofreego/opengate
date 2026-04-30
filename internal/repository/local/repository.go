@@ -3,6 +3,7 @@ package local
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/fs"
 	"os"
@@ -13,6 +14,9 @@ import (
 	"github.com/gofreego/opengate/internal/models"
 	"gopkg.in/yaml.v3"
 )
+
+// ErrNotImplemented is returned for operations not supported by local repository
+var ErrNotImplemented = errors.New("operation not implemented for local repository")
 
 type Config struct {
 	// path to folder containing route definitions in JSON or YAML format
@@ -131,4 +135,29 @@ func (r *Repository) parseRouteFile(ctx context.Context, filePath string) (*mode
 	}
 
 	return &route, nil
+}
+
+// CreateConfig is not implemented for local repository
+func (r *Repository) CreateConfig(ctx context.Context, config *models.Config) (*models.Config, error) {
+	return nil, ErrNotImplemented
+}
+
+// GetConfigByID is not implemented for local repository
+func (r *Repository) GetConfigByID(ctx context.Context, id int64) (*models.Config, error) {
+	return nil, ErrNotImplemented
+}
+
+// ListConfigs is not implemented for local repository
+func (r *Repository) ListConfigs(ctx context.Context, filter *models.ConfigFilter) ([]*models.Config, int, error) {
+	return nil, 0, ErrNotImplemented
+}
+
+// UpdateConfig is not implemented for local repository
+func (r *Repository) UpdateConfig(ctx context.Context, config *models.Config) (*models.Config, error) {
+	return nil, ErrNotImplemented
+}
+
+// DeleteConfig is not implemented for local repository
+func (r *Repository) DeleteConfig(ctx context.Context, id int64) error {
+	return ErrNotImplemented
 }

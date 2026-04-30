@@ -33,6 +33,14 @@ setup:
 	sh ./api/protoc.sh
 	go mod tidy
 
+migrate:
+	sql-migrator ./migrator.yaml
+
+migrate-down:
+	@sed 's/Action: up/Action: down/' migrator.yaml > migrator_down.yaml
+	sql-migrator ./migrator_down.yaml
+	@rm migrator_down.yaml
+
 redeploy:
 	@echo "Redeploying the application"
 	@echo "Pulling latest changes from git"

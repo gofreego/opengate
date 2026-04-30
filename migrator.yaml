@@ -1,0 +1,14 @@
+Repository:
+  Name: Postgres
+  Postgres:
+    primary:
+      Host: localhost
+      Port: 5433
+      Username: "admin"
+      Password: OSwfiTlc1r5W7Z
+      DBName: opengate
+      SSLMode: disable
+    replica: []
+Migrator:
+  Action: up
+  Path: ./resources/migrations

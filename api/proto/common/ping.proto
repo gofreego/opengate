@@ -1,0 +1,14 @@
+syntax = "proto3";
+package opengate.v1;
+
+option go_package = "./opengate_v1";
+
+// PingRequest is the request message for the Ping RPC method.
+message PingRequest {
+    string message = 1;
+}
+
+// PingResponse is the response message for the Ping RPC method.
+message PingResponse {
+    string message = 1;
+}

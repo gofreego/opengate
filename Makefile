@@ -1,6 +1,6 @@
-build: clean
+build: clean build-ui
 	go build -o application .
-build-linux: clean
+build-linux: clean build-ui
 	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o application .
 run:
 	go run main.go
@@ -8,6 +8,16 @@ test:
 	go test -v ./...
 clean:
 	rm -f application
+
+# UI build commands
+build-ui:
+	cd admin && npm install && npm run build
+
+dev-ui:
+	cd admin && npm run dev
+
+clean-ui:
+	cd admin && rm -rf dist node_modules
 
 docker: build-linux
 	docker build -t opengate .

@@ -2,7 +2,10 @@ package main
 
 import (
 	"context"
+	"embed"
 	"flag"
+	"io/fs"
+	"net/http"
 
 	"github.com/gofreego/opengate/cmd/http_server"
 	"github.com/gofreego/opengate/internal/configs"
@@ -18,6 +21,26 @@ var (
 	env  string
 	path string
 )
+
+//go:embed all:admin/dist
+var uiDist embed.FS
+
+func getUIFileSystem() http.FileSystem {
+	// Re-map the embedded filesystem to the root of 'dist'
+	fsys, err := fs.Sub(uiDist, "admin/dist")
+	if err != nil {
+		panic(err)
+	}
+	return http.FS(fsys)
+}
+
+func getIndexHTML() []byte {
+	data, err := fs.ReadFile(uiDist, "admin/dist/index.html")
+	if err != nil {
+		panic(err)
+	}
+	return data
+}
 
 func main() {
 	flag.StringVar(&env, "env", "dev", "-env=dev")
@@ -39,8 +62,8 @@ func main() {
 	// Create service instance
 	svc := service.NewService(ctx, &conf.Service, repo, cacheInstance)
 
-	// Create HTTP server (combines API + proxy on same port)
-	httpServer := http_server.NewHTTPServer(&conf.Server, svc, env)
+	// Create HTTP server (combines API + proxy + UI on same port)
+	httpServer := http_server.NewHTTPServer(&conf.Server, svc, env, getUIFileSystem(), getIndexHTML())
 	go httpServer.Run(ctx)
 
 	apputils.GracefulShutdown(ctx, httpServer)

@@ -31,10 +31,11 @@ type Config struct {
 }
 
 type HTTPServer struct {
-	cfg     *Config
-	server  *http.Server
-	service *service.Service
-	env     string
+	cfg       *Config
+	server    *http.Server
+	service   *service.Service
+	env       string
+	uiHandler http.Handler
 }
 
 func (a *HTTPServer) Name() string {
@@ -50,11 +51,12 @@ func (a *HTTPServer) Shutdown(ctx context.Context) {
 	}
 }
 
-func NewHTTPServer(cfg *Config, service *service.Service, env string) *HTTPServer {
+func NewHTTPServer(cfg *Config, service *service.Service, env string, uifs http.FileSystem, indexHTML []byte) *HTTPServer {
 	return &HTTPServer{
-		cfg:     cfg,
-		service: service,
-		env:     env,
+		cfg:       cfg,
+		service:   service,
+		env:       env,
+		uiHandler: getUIHandler(uifs, indexHTML),
 	}
 }
 
@@ -109,6 +111,12 @@ func (a *HTTPServer) Run(ctx context.Context) error {
 			return
 		}
 
+		// Direct UI requests or root to uiHandler
+		if strings.HasPrefix(path, "/gateway") || path == "/" {
+			a.uiHandler.ServeHTTP(w, r)
+			return
+		}
+
 		// All other requests go to gin router (proxy)
 		ginRouter.ServeHTTP(w, r)
 	})
@@ -132,6 +140,7 @@ func (a *HTTPServer) Run(ctx context.Context) error {
 		logger.Info(ctx, "Debug dashboard available at `http://localhost:%d/opengate/v1/debug`", a.cfg.Port)
 	}
 	logger.Info(ctx, "Started HTTP server on port %d", a.cfg.Port)
+	logger.Info(ctx, "Admin UI available at `http://localhost:%d/gateway/`", a.cfg.Port)
 	logger.Info(ctx, "API endpoints available at `http://localhost:%d/opengate/v1/`", a.cfg.Port)
 	logger.Info(ctx, "Swagger UI available at `http://localhost:%d/opengate/v1/swagger`", a.cfg.Port)
 

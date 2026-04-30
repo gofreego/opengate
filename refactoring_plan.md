@@ -79,14 +79,14 @@ This plan outlines the implementation of Config management features in the OpenG
 
 ### Phase 4: Service Layer
 
-- [ ] **4.1 Create config service methods**
+- [x] **4.1 Create config service methods** ✅
   - Create `internal/service/config.go`
   - Implement `CreateConfig` with validation
   - Implement `GetConfigByID`
   - Implement `ListConfigs` with pagination
   - Implement `GetRoutes` (returns all routes for routing)
 
-- [ ] **4.2 Add business logic validation**
+- [x] **4.2 Add business logic validation** ✅
   - Validate required fields
   - Validate unique name constraint (at service level)
   - Validate URL format for target_url
@@ -95,25 +95,26 @@ This plan outlines the implementation of Config management features in the OpenG
 
 ### Phase 5: gRPC/HTTP Handlers
 
-- [ ] **5.1 Create gRPC server implementation**
-  - Create `cmd/grpc_server/grpc.go`
-  - Implement OpenGateService interface
-  - Wire up to service layer
+- [x] **5.1 Create gRPC server implementation** ✅
+  - Service struct embeds `UnimplementedOpenGateServiceServer`
+  - Service directly implements gRPC methods (Ping, CreateConfig, etc.)
+  - Following catalogservice pattern
 
-- [ ] **5.2 Update HTTP server**
-  - Update `cmd/http_server/http.go` to support gRPC-gateway
-  - Register HTTP routes for config management
-  - Add proper error handling and response formatting
+- [x] **5.2 Update HTTP server** ✅
+  - Updated `cmd/http_server/http.go` to combine gin + grpc-gateway
+  - `/opengate/v1/*` routes use grpc-gateway mux
+  - All other routes use gin router for proxy
+  - Single port serves both API and proxy
 
 ---
 
 ### Phase 6: Configuration & Wiring
 
-- [ ] **6.1 Update dev.yaml configuration**
+- [x] **6.1 Update dev.yaml configuration** ✅
   - Add PostgreSQL connection configuration
   - Add repository type selection (postgresql)
 
-- [ ] **6.2 Update main.go**
+- [x] **6.2 Update main.go** ✅
   - Wire up PostgreSQL repository
   - Initialize config service
 

@@ -4,6 +4,9 @@ import (
 	"context"
 	"sync"
 
+	"github.com/gofreego/goutils/databases"
+	"github.com/gofreego/goutils/databases/connections/sql"
+	"github.com/gofreego/goutils/logger"
 	"github.com/gofreego/openauth/pkg/clients/openauth"
 	"github.com/gofreego/opengate/internal/repository/local"
 	openauthRepo "github.com/gofreego/opengate/internal/repository/openauth"
@@ -23,7 +26,7 @@ type Config struct {
 	Name       Name                  `yaml:"Name"`
 	Local      local.Config          `yaml:"Local"`
 	OpenAuth   openauth.ClientConfig `yaml:"OpenAuth"`
-	PostgreSQL postgresql.Config     `yaml:"PostgreSQL"`
+	PostgreSQL sql.Config            `yaml:"PostgreSQL"`
 }
 
 var (
@@ -59,11 +62,15 @@ func GetInstance(ctx context.Context, cfg *Config) service.Repository {
 				}
 				instance = repo
 			case PostgreSQL:
+				if cfg.PostgreSQL.Name == "" {
+					cfg.PostgreSQL.Name = databases.Postgres
+				}
 				repo, err := postgresql.NewRepository(ctx, &cfg.PostgreSQL)
 				if err != nil {
-					panic("failed to create repository: " + err.Error())
+					logger.Panic(ctx, "Failed to create PostgreSQL repository: %v", err)
 				}
 				instance = repo
+				logger.Info(ctx, "PostgreSQL repository initialized successfully")
 			default:
 				panic("unsupported repository: " + string(cfg.Name))
 			}

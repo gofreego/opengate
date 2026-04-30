@@ -6,57 +6,31 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 	"time"
 
+	sqlutils "github.com/gofreego/goutils/databases/connections/sql"
 	"github.com/gofreego/goutils/logger"
 	"github.com/gofreego/opengate/internal/models"
-	_ "github.com/lib/pq"
 )
-
-// Config holds PostgreSQL connection configuration
-type Config struct {
-	Host     string `yaml:"Host"`
-	Port     int    `yaml:"Port"`
-	User     string `yaml:"User"`
-	Password string `yaml:"Password"`
-	DBName   string `yaml:"DBName"`
-	SSLMode  string `yaml:"SSLMode"`
-}
 
 // Repository implements the service.Repository interface using PostgreSQL
 type Repository struct {
-	db  *sql.DB
-	cfg *Config
+	connManager sqlutils.DBManager
 }
 
 // NewRepository creates a new PostgreSQL repository instance
-func NewRepository(ctx context.Context, cfg *Config) (*Repository, error) {
-	connStr := fmt.Sprintf(
-		"host=%s port=%d user=%s password=%s dbname=%s sslmode=%s",
-		cfg.Host, cfg.Port, cfg.User, cfg.Password, cfg.DBName, cfg.SSLMode,
-	)
-
-	db, err := sql.Open("postgres", connStr)
+func NewRepository(ctx context.Context, cfg *sqlutils.Config) (*Repository, error) {
+	connManager, err := sqlutils.NewDBManager(cfg)
 	if err != nil {
-		return nil, fmt.Errorf("failed to open database connection: %w", err)
+		return nil, err
 	}
-
-	// Test the connection
-	if err := db.PingContext(ctx); err != nil {
-		return nil, fmt.Errorf("failed to ping database: %w", err)
-	}
-
-	logger.Info(ctx, "Connected to PostgreSQL database: %s", cfg.DBName)
-
-	return &Repository{
-		db:  db,
-		cfg: cfg,
-	}, nil
+	return &Repository{connManager: connManager}, nil
 }
 
 // Ping checks the database connection
 func (r *Repository) Ping(ctx context.Context) error {
-	return r.db.PingContext(ctx)
+	return r.connManager.Primary().Ping()
 }
 
 // GetRoutes retrieves all routes for the routing manager
@@ -68,7 +42,7 @@ func (r *Repository) GetRoutes(ctx context.Context) ([]*models.ServiceRoute, err
 		ORDER BY name
 	`
 
-	rows, err := r.db.QueryContext(ctx, query)
+	rows, err := r.connManager.Primary().QueryContext(ctx, query)
 	if err != nil {
 		return nil, fmt.Errorf("failed to query configs: %w", err)
 	}
@@ -112,7 +86,7 @@ func (r *Repository) CreateConfig(ctx context.Context, config *models.Config) (*
 	var id int64
 	var createdAt, updatedAt time.Time
 
-	err = r.db.QueryRowContext(ctx, query,
+	err = r.connManager.Primary().QueryRowContext(ctx, query,
 		config.Name,
 		config.PathPrefix,
 		config.TargetURL,
@@ -146,7 +120,7 @@ func (r *Repository) GetConfigByID(ctx context.Context, id int64) (*models.Confi
 		WHERE id = $1
 	`
 
-	row := r.db.QueryRowContext(ctx, query, id)
+	row := r.connManager.Primary().QueryRowContext(ctx, query, id)
 	config, err := r.scanConfigRow(row)
 	if err != nil {
 		if errors.Is(err, sql.ErrNoRows) {
@@ -174,7 +148,7 @@ func (r *Repository) ListConfigs(ctx context.Context, filter *models.ConfigFilte
 	// Get total count
 	countQuery := "SELECT COUNT(*) " + baseQuery
 	var total int
-	err := r.db.QueryRowContext(ctx, countQuery, args...).Scan(&total)
+	err := r.connManager.Primary().QueryRowContext(ctx, countQuery, args...).Scan(&total)
 	if err != nil {
 		return nil, 0, fmt.Errorf("failed to count configs: %w", err)
 	}
@@ -190,7 +164,7 @@ func (r *Repository) ListConfigs(ctx context.Context, filter *models.ConfigFilte
 
 	args = append(args, filter.Limit, filter.Offset)
 
-	rows, err := r.db.QueryContext(ctx, selectQuery, args...)
+	rows, err := r.connManager.Primary().QueryContext(ctx, selectQuery, args...)
 	if err != nil {
 		return nil, 0, fmt.Errorf("failed to query configs: %w", err)
 	}
@@ -234,7 +208,7 @@ func (r *Repository) UpdateConfig(ctx context.Context, config *models.Config) (*
 	`
 
 	var createdAt, updatedAt time.Time
-	err = r.db.QueryRowContext(ctx, query,
+	err = r.connManager.Primary().QueryRowContext(ctx, query,
 		config.Name,
 		config.PathPrefix,
 		config.TargetURL,
@@ -265,7 +239,7 @@ func (r *Repository) UpdateConfig(ctx context.Context, config *models.Config) (*
 func (r *Repository) DeleteConfig(ctx context.Context, id int64) error {
 	query := `DELETE FROM configs WHERE id = $1`
 
-	result, err := r.db.ExecContext(ctx, query, id)
+	result, err := r.connManager.Primary().ExecContext(ctx, query, id)
 	if err != nil {
 		return fmt.Errorf("failed to delete config: %w", err)
 	}
@@ -363,23 +337,9 @@ func (r *Repository) scanConfigRow(row *sql.Row) (*models.Config, error) {
 // isUniqueViolation checks if the error is a PostgreSQL unique constraint violation
 func isUniqueViolation(err error) bool {
 	// PostgreSQL unique violation error code is 23505
-	return err != nil && (contains(err.Error(), "unique constraint") || contains(err.Error(), "duplicate key"))
-}
-
-func contains(s, substr string) bool {
-	return len(s) >= len(substr) && (s == substr || len(s) > 0 && containsRune(s, substr))
-}
-
-func containsRune(s, substr string) bool {
-	for i := 0; i <= len(s)-len(substr); i++ {
-		if s[i:i+len(substr)] == substr {
-			return true
-		}
+	if err == nil {
+		return false
 	}
-	return false
-}
-
-// Close closes the database connection
-func (r *Repository) Close() error {
-	return r.db.Close()
+	errMsg := err.Error()
+	return strings.Contains(errMsg, "unique constraint") || strings.Contains(errMsg, "duplicate key")
 }

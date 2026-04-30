@@ -288,7 +288,7 @@ func RegisterOpenGateServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/v1.OpenGateService/Ping", runtime.WithHTTPPathPattern("/opengate/v1/ping"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/opengate.v1.OpenGateService/Ping", runtime.WithHTTPPathPattern("/opengate/v1/ping"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -308,7 +308,7 @@ func RegisterOpenGateServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/v1.OpenGateService/CreateConfig", runtime.WithHTTPPathPattern("/opengate/v1/configs"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/opengate.v1.OpenGateService/CreateConfig", runtime.WithHTTPPathPattern("/opengate/v1/configs"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -328,7 +328,7 @@ func RegisterOpenGateServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/v1.OpenGateService/GetConfig", runtime.WithHTTPPathPattern("/opengate/v1/configs/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/opengate.v1.OpenGateService/GetConfig", runtime.WithHTTPPathPattern("/opengate/v1/configs/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -348,7 +348,7 @@ func RegisterOpenGateServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/v1.OpenGateService/ListConfigs", runtime.WithHTTPPathPattern("/opengate/v1/configs"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/opengate.v1.OpenGateService/ListConfigs", runtime.WithHTTPPathPattern("/opengate/v1/configs"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -368,7 +368,7 @@ func RegisterOpenGateServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/v1.OpenGateService/UpdateConfig", runtime.WithHTTPPathPattern("/opengate/v1/configs/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/opengate.v1.OpenGateService/UpdateConfig", runtime.WithHTTPPathPattern("/opengate/v1/configs/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -388,7 +388,7 @@ func RegisterOpenGateServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/v1.OpenGateService/DeleteConfig", runtime.WithHTTPPathPattern("/opengate/v1/configs/{id}"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/opengate.v1.OpenGateService/DeleteConfig", runtime.WithHTTPPathPattern("/opengate/v1/configs/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -408,7 +408,7 @@ func RegisterOpenGateServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 		var stream runtime.ServerTransportStream
 		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/v1.OpenGateService/GetRoutes", runtime.WithHTTPPathPattern("/opengate/v1/routes"))
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/opengate.v1.OpenGateService/GetRoutes", runtime.WithHTTPPathPattern("/opengate/v1/routes"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -466,7 +466,7 @@ func RegisterOpenGateServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/v1.OpenGateService/Ping", runtime.WithHTTPPathPattern("/opengate/v1/ping"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/opengate.v1.OpenGateService/Ping", runtime.WithHTTPPathPattern("/opengate/v1/ping"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -483,7 +483,7 @@ func RegisterOpenGateServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/v1.OpenGateService/CreateConfig", runtime.WithHTTPPathPattern("/opengate/v1/configs"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/opengate.v1.OpenGateService/CreateConfig", runtime.WithHTTPPathPattern("/opengate/v1/configs"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -500,7 +500,7 @@ func RegisterOpenGateServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/v1.OpenGateService/GetConfig", runtime.WithHTTPPathPattern("/opengate/v1/configs/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/opengate.v1.OpenGateService/GetConfig", runtime.WithHTTPPathPattern("/opengate/v1/configs/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -517,7 +517,7 @@ func RegisterOpenGateServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/v1.OpenGateService/ListConfigs", runtime.WithHTTPPathPattern("/opengate/v1/configs"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/opengate.v1.OpenGateService/ListConfigs", runtime.WithHTTPPathPattern("/opengate/v1/configs"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -534,7 +534,7 @@ func RegisterOpenGateServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/v1.OpenGateService/UpdateConfig", runtime.WithHTTPPathPattern("/opengate/v1/configs/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/opengate.v1.OpenGateService/UpdateConfig", runtime.WithHTTPPathPattern("/opengate/v1/configs/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -551,7 +551,7 @@ func RegisterOpenGateServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/v1.OpenGateService/DeleteConfig", runtime.WithHTTPPathPattern("/opengate/v1/configs/{id}"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/opengate.v1.OpenGateService/DeleteConfig", runtime.WithHTTPPathPattern("/opengate/v1/configs/{id}"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return
@@ -568,7 +568,7 @@ func RegisterOpenGateServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		ctx, cancel := context.WithCancel(req.Context())
 		defer cancel()
 		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
-		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/v1.OpenGateService/GetRoutes", runtime.WithHTTPPathPattern("/opengate/v1/routes"))
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/opengate.v1.OpenGateService/GetRoutes", runtime.WithHTTPPathPattern("/opengate/v1/routes"))
 		if err != nil {
 			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
 			return

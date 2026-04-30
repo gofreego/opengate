@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/gofreego/goutils/cache"
+	"github.com/gofreego/opengate/api/opengate_v1"
 	"github.com/gofreego/opengate/internal/models"
 	"github.com/gofreego/opengate/internal/service/auth"
 	changedetector "github.com/gofreego/opengate/internal/service/change_detector"
@@ -32,6 +33,7 @@ type Service struct {
 	routeManager routemanager.Manager
 	authManager  auth.AuthManager
 	cfg          *Config
+	opengate_v1.UnimplementedOpenGateServiceServer
 }
 
 func NewService(ctx context.Context, cfg *Config, repo Repository, cache cache.Cache) *Service {

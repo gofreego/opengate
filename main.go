@@ -39,8 +39,9 @@ func main() {
 	// Create service instance
 	svc := service.NewService(ctx, &conf.Service, repo, cacheInstance)
 
-	// Create HTTP server with proper config
-	app := http_server.NewHTTPServer(&conf.Server, svc, env)
-	go app.Run(ctx)
-	apputils.GracefulShutdown(ctx, app)
+	// Create HTTP server (combines API + proxy on same port)
+	httpServer := http_server.NewHTTPServer(&conf.Server, svc, env)
+	go httpServer.Run(ctx)
+
+	apputils.GracefulShutdown(ctx, httpServer)
 }

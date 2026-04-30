@@ -1,11 +1,11 @@
 syntax = "proto3";
-package v1;
+package opengate.v1;
 
 option go_package = "./opengate_v1";
 
 import "google/api/annotations.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
-import "proto/common/ping.proto";
+import "proto/opengate/common/ping.proto";
 import "proto/opengate/v1/config.proto";
 
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {

@@ -19,13 +19,13 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	OpenGateService_Ping_FullMethodName         = "/v1.OpenGateService/Ping"
-	OpenGateService_CreateConfig_FullMethodName = "/v1.OpenGateService/CreateConfig"
-	OpenGateService_GetConfig_FullMethodName    = "/v1.OpenGateService/GetConfig"
-	OpenGateService_ListConfigs_FullMethodName  = "/v1.OpenGateService/ListConfigs"
-	OpenGateService_UpdateConfig_FullMethodName = "/v1.OpenGateService/UpdateConfig"
-	OpenGateService_DeleteConfig_FullMethodName = "/v1.OpenGateService/DeleteConfig"
-	OpenGateService_GetRoutes_FullMethodName    = "/v1.OpenGateService/GetRoutes"
+	OpenGateService_Ping_FullMethodName         = "/opengate.v1.OpenGateService/Ping"
+	OpenGateService_CreateConfig_FullMethodName = "/opengate.v1.OpenGateService/CreateConfig"
+	OpenGateService_GetConfig_FullMethodName    = "/opengate.v1.OpenGateService/GetConfig"
+	OpenGateService_ListConfigs_FullMethodName  = "/opengate.v1.OpenGateService/ListConfigs"
+	OpenGateService_UpdateConfig_FullMethodName = "/opengate.v1.OpenGateService/UpdateConfig"
+	OpenGateService_DeleteConfig_FullMethodName = "/opengate.v1.OpenGateService/DeleteConfig"
+	OpenGateService_GetRoutes_FullMethodName    = "/opengate.v1.OpenGateService/GetRoutes"
 )
 
 // OpenGateServiceClient is the client API for OpenGateService service.
@@ -326,7 +326,7 @@ func _OpenGateService_GetRoutes_Handler(srv interface{}, ctx context.Context, de
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var OpenGateService_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "v1.OpenGateService",
+	ServiceName: "opengate.v1.OpenGateService",
 	HandlerType: (*OpenGateServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{

@@ -1052,13 +1052,13 @@ var File_proto_opengate_v1_config_proto protoreflect.FileDescriptor
 
 const file_proto_opengate_v1_config_proto_rawDesc = "" +
 	"\n" +
-	"\x1eproto/opengate/v1/config.proto\x12\x02v1\x1a\x17validate/validate.proto\"G\n" +
+	"\x1eproto/opengate/v1/config.proto\x12\vopengate.v1\x1a\x17validate/validate.proto\"G\n" +
 	"\x17AuthenticationException\x12\x12\n" +
 	"\x04path\x18\x01 \x01(\tR\x04path\x12\x18\n" +
-	"\amethods\x18\x02 \x03(\tR\amethods\"a\n" +
+	"\amethods\x18\x02 \x03(\tR\amethods\"j\n" +
 	"\x0eAuthentication\x12\x1a\n" +
-	"\brequired\x18\x01 \x01(\bR\brequired\x123\n" +
-	"\x06except\x18\x02 \x03(\v2\x1b.v1.AuthenticationExceptionR\x06except\"\xc3\x02\n" +
+	"\brequired\x18\x01 \x01(\bR\brequired\x12<\n" +
+	"\x06except\x18\x02 \x03(\v2$.opengate.v1.AuthenticationExceptionR\x06except\"\xcc\x02\n" +
 	"\x06Config\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\x03R\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1f\n" +
@@ -1066,8 +1066,8 @@ const file_proto_opengate_v1_config_proto_rawDesc = "" +
 	"pathPrefix\x12\x1d\n" +
 	"\n" +
 	"target_url\x18\x04 \x01(\tR\ttargetUrl\x12!\n" +
-	"\fstrip_prefix\x18\x05 \x01(\bR\vstripPrefix\x12:\n" +
-	"\x0eauthentication\x18\x06 \x01(\v2\x12.v1.AuthenticationR\x0eauthentication\x12\x1e\n" +
+	"\fstrip_prefix\x18\x05 \x01(\bR\vstripPrefix\x12C\n" +
+	"\x0eauthentication\x18\x06 \x01(\v2\x1b.opengate.v1.AuthenticationR\x0eauthentication\x12\x1e\n" +
 	"\n" +
 	"middleware\x18\a \x03(\tR\n" +
 	"middleware\x12\x18\n" +
@@ -1076,56 +1076,53 @@ const file_proto_opengate_v1_config_proto_rawDesc = "" +
 	"created_at\x18\t \x01(\x03R\tcreatedAt\x12\x1d\n" +
 	"\n" +
 	"updated_at\x18\n" +
-	" \x01(\x03R\tupdatedAt\"\x9d\x02\n" +
+	" \x01(\x03R\tupdatedAt\"\xa6\x02\n" +
 	"\x13CreateConfigRequest\x12\x1b\n" +
 	"\x04name\x18\x01 \x01(\tB\a\xfaB\x04r\x02\x10\x01R\x04name\x12(\n" +
 	"\vpath_prefix\x18\x02 \x01(\tB\a\xfaB\x04r\x02\x10\x01R\n" +
 	"pathPrefix\x12&\n" +
 	"\n" +
 	"target_url\x18\x03 \x01(\tB\a\xfaB\x04r\x02\x10\x01R\ttargetUrl\x12!\n" +
-	"\fstrip_prefix\x18\x04 \x01(\bR\vstripPrefix\x12:\n" +
-	"\x0eauthentication\x18\x05 \x01(\v2\x12.v1.AuthenticationR\x0eauthentication\x12\x1e\n" +
+	"\fstrip_prefix\x18\x04 \x01(\bR\vstripPrefix\x12C\n" +
+	"\x0eauthentication\x18\x05 \x01(\v2\x1b.opengate.v1.AuthenticationR\x0eauthentication\x12\x1e\n" +
 	"\n" +
 	"middleware\x18\x06 \x03(\tR\n" +
 	"middleware\x12\x18\n" +
-	"\atimeout\x18\a \x01(\x03R\atimeout\"T\n" +
-	"\x14CreateConfigResponse\x12\"\n" +
-	"\x06config\x18\x01 \x01(\v2\n" +
-	".v1.ConfigR\x06config\x12\x18\n" +
+	"\atimeout\x18\a \x01(\x03R\atimeout\"]\n" +
+	"\x14CreateConfigResponse\x12+\n" +
+	"\x06config\x18\x01 \x01(\v2\x13.opengate.v1.ConfigR\x06config\x12\x18\n" +
 	"\amessage\x18\x02 \x01(\tR\amessage\"+\n" +
 	"\x10GetConfigRequest\x12\x17\n" +
-	"\x02id\x18\x01 \x01(\x03B\a\xfaB\x04\"\x02 \x00R\x02id\"Q\n" +
-	"\x11GetConfigResponse\x12\"\n" +
-	"\x06config\x18\x01 \x01(\v2\n" +
-	".v1.ConfigR\x06config\x12\x18\n" +
+	"\x02id\x18\x01 \x01(\x03B\a\xfaB\x04\"\x02 \x00R\x02id\"Z\n" +
+	"\x11GetConfigResponse\x12+\n" +
+	"\x06config\x18\x01 \x01(\v2\x13.opengate.v1.ConfigR\x06config\x12\x18\n" +
 	"\amessage\x18\x02 \x01(\tR\amessage\"n\n" +
 	"\x12ListConfigsRequest\x12\x1f\n" +
 	"\x05limit\x18\x01 \x01(\x05B\t\xfaB\x06\x1a\x04\x18d \x00R\x05limit\x12\x1f\n" +
 	"\x06offset\x18\x02 \x01(\x05B\a\xfaB\x04\x1a\x02(\x00R\x06offset\x12\x16\n" +
-	"\x06search\x18\x03 \x01(\tR\x06search\"k\n" +
-	"\x13ListConfigsResponse\x12$\n" +
-	"\aconfigs\x18\x01 \x03(\v2\n" +
-	".v1.ConfigR\aconfigs\x12\x14\n" +
+	"\x06search\x18\x03 \x01(\tR\x06search\"t\n" +
+	"\x13ListConfigsResponse\x12-\n" +
+	"\aconfigs\x18\x01 \x03(\v2\x13.opengate.v1.ConfigR\aconfigs\x12\x14\n" +
 	"\x05total\x18\x02 \x01(\x05R\x05total\x12\x18\n" +
 	"\amessage\x18\x03 \x01(\tR\amessage\"\x12\n" +
-	"\x10GetRoutesRequest\"\x93\x02\n" +
+	"\x10GetRoutesRequest\"\x9c\x02\n" +
 	"\x05Route\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1f\n" +
 	"\vpath_prefix\x18\x02 \x01(\tR\n" +
 	"pathPrefix\x12\x1d\n" +
 	"\n" +
 	"target_url\x18\x03 \x01(\tR\ttargetUrl\x12!\n" +
-	"\fstrip_prefix\x18\x04 \x01(\bR\vstripPrefix\x12:\n" +
-	"\x0eauthentication\x18\x05 \x01(\v2\x12.v1.AuthenticationR\x0eauthentication\x12\x1e\n" +
+	"\fstrip_prefix\x18\x04 \x01(\bR\vstripPrefix\x12C\n" +
+	"\x0eauthentication\x18\x05 \x01(\v2\x1b.opengate.v1.AuthenticationR\x0eauthentication\x12\x1e\n" +
 	"\n" +
 	"middleware\x18\x06 \x03(\tR\n" +
 	"middleware\x12\x18\n" +
 	"\atimeout\x18\a \x01(\x03R\atimeout\x12\x1d\n" +
 	"\n" +
-	"updated_at\x18\b \x01(\x03R\tupdatedAt\"P\n" +
-	"\x11GetRoutesResponse\x12!\n" +
-	"\x06routes\x18\x01 \x03(\v2\t.v1.RouteR\x06routes\x12\x18\n" +
-	"\amessage\x18\x02 \x01(\tR\amessage\"\xb6\x02\n" +
+	"updated_at\x18\b \x01(\x03R\tupdatedAt\"Y\n" +
+	"\x11GetRoutesResponse\x12*\n" +
+	"\x06routes\x18\x01 \x03(\v2\x12.opengate.v1.RouteR\x06routes\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\"\xbf\x02\n" +
 	"\x13UpdateConfigRequest\x12\x17\n" +
 	"\x02id\x18\x01 \x01(\x03B\a\xfaB\x04\"\x02 \x00R\x02id\x12\x1b\n" +
 	"\x04name\x18\x02 \x01(\tB\a\xfaB\x04r\x02\x10\x01R\x04name\x12(\n" +
@@ -1133,15 +1130,14 @@ const file_proto_opengate_v1_config_proto_rawDesc = "" +
 	"pathPrefix\x12&\n" +
 	"\n" +
 	"target_url\x18\x04 \x01(\tB\a\xfaB\x04r\x02\x10\x01R\ttargetUrl\x12!\n" +
-	"\fstrip_prefix\x18\x05 \x01(\bR\vstripPrefix\x12:\n" +
-	"\x0eauthentication\x18\x06 \x01(\v2\x12.v1.AuthenticationR\x0eauthentication\x12\x1e\n" +
+	"\fstrip_prefix\x18\x05 \x01(\bR\vstripPrefix\x12C\n" +
+	"\x0eauthentication\x18\x06 \x01(\v2\x1b.opengate.v1.AuthenticationR\x0eauthentication\x12\x1e\n" +
 	"\n" +
 	"middleware\x18\a \x03(\tR\n" +
 	"middleware\x12\x18\n" +
-	"\atimeout\x18\b \x01(\x03R\atimeout\"T\n" +
-	"\x14UpdateConfigResponse\x12\"\n" +
-	"\x06config\x18\x01 \x01(\v2\n" +
-	".v1.ConfigR\x06config\x12\x18\n" +
+	"\atimeout\x18\b \x01(\x03R\atimeout\"]\n" +
+	"\x14UpdateConfigResponse\x12+\n" +
+	"\x06config\x18\x01 \x01(\v2\x13.opengate.v1.ConfigR\x06config\x12\x18\n" +
 	"\amessage\x18\x02 \x01(\tR\amessage\".\n" +
 	"\x13DeleteConfigRequest\x12\x17\n" +
 	"\x02id\x18\x01 \x01(\x03B\a\xfaB\x04\"\x02 \x00R\x02id\"0\n" +
@@ -1162,34 +1158,34 @@ func file_proto_opengate_v1_config_proto_rawDescGZIP() []byte {
 
 var file_proto_opengate_v1_config_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
 var file_proto_opengate_v1_config_proto_goTypes = []any{
-	(*AuthenticationException)(nil), // 0: v1.AuthenticationException
-	(*Authentication)(nil),          // 1: v1.Authentication
-	(*Config)(nil),                  // 2: v1.Config
-	(*CreateConfigRequest)(nil),     // 3: v1.CreateConfigRequest
-	(*CreateConfigResponse)(nil),    // 4: v1.CreateConfigResponse
-	(*GetConfigRequest)(nil),        // 5: v1.GetConfigRequest
-	(*GetConfigResponse)(nil),       // 6: v1.GetConfigResponse
-	(*ListConfigsRequest)(nil),      // 7: v1.ListConfigsRequest
-	(*ListConfigsResponse)(nil),     // 8: v1.ListConfigsResponse
-	(*GetRoutesRequest)(nil),        // 9: v1.GetRoutesRequest
-	(*Route)(nil),                   // 10: v1.Route
-	(*GetRoutesResponse)(nil),       // 11: v1.GetRoutesResponse
-	(*UpdateConfigRequest)(nil),     // 12: v1.UpdateConfigRequest
-	(*UpdateConfigResponse)(nil),    // 13: v1.UpdateConfigResponse
-	(*DeleteConfigRequest)(nil),     // 14: v1.DeleteConfigRequest
-	(*DeleteConfigResponse)(nil),    // 15: v1.DeleteConfigResponse
+	(*AuthenticationException)(nil), // 0: opengate.v1.AuthenticationException
+	(*Authentication)(nil),          // 1: opengate.v1.Authentication
+	(*Config)(nil),                  // 2: opengate.v1.Config
+	(*CreateConfigRequest)(nil),     // 3: opengate.v1.CreateConfigRequest
+	(*CreateConfigResponse)(nil),    // 4: opengate.v1.CreateConfigResponse
+	(*GetConfigRequest)(nil),        // 5: opengate.v1.GetConfigRequest
+	(*GetConfigResponse)(nil),       // 6: opengate.v1.GetConfigResponse
+	(*ListConfigsRequest)(nil),      // 7: opengate.v1.ListConfigsRequest
+	(*ListConfigsResponse)(nil),     // 8: opengate.v1.ListConfigsResponse
+	(*GetRoutesRequest)(nil),        // 9: opengate.v1.GetRoutesRequest
+	(*Route)(nil),                   // 10: opengate.v1.Route
+	(*GetRoutesResponse)(nil),       // 11: opengate.v1.GetRoutesResponse
+	(*UpdateConfigRequest)(nil),     // 12: opengate.v1.UpdateConfigRequest
+	(*UpdateConfigResponse)(nil),    // 13: opengate.v1.UpdateConfigResponse
+	(*DeleteConfigRequest)(nil),     // 14: opengate.v1.DeleteConfigRequest
+	(*DeleteConfigResponse)(nil),    // 15: opengate.v1.DeleteConfigResponse
 }
 var file_proto_opengate_v1_config_proto_depIdxs = []int32{
-	0,  // 0: v1.Authentication.except:type_name -> v1.AuthenticationException
-	1,  // 1: v1.Config.authentication:type_name -> v1.Authentication
-	1,  // 2: v1.CreateConfigRequest.authentication:type_name -> v1.Authentication
-	2,  // 3: v1.CreateConfigResponse.config:type_name -> v1.Config
-	2,  // 4: v1.GetConfigResponse.config:type_name -> v1.Config
-	2,  // 5: v1.ListConfigsResponse.configs:type_name -> v1.Config
-	1,  // 6: v1.Route.authentication:type_name -> v1.Authentication
-	10, // 7: v1.GetRoutesResponse.routes:type_name -> v1.Route
-	1,  // 8: v1.UpdateConfigRequest.authentication:type_name -> v1.Authentication
-	2,  // 9: v1.UpdateConfigResponse.config:type_name -> v1.Config
+	0,  // 0: opengate.v1.Authentication.except:type_name -> opengate.v1.AuthenticationException
+	1,  // 1: opengate.v1.Config.authentication:type_name -> opengate.v1.Authentication
+	1,  // 2: opengate.v1.CreateConfigRequest.authentication:type_name -> opengate.v1.Authentication
+	2,  // 3: opengate.v1.CreateConfigResponse.config:type_name -> opengate.v1.Config
+	2,  // 4: opengate.v1.GetConfigResponse.config:type_name -> opengate.v1.Config
+	2,  // 5: opengate.v1.ListConfigsResponse.configs:type_name -> opengate.v1.Config
+	1,  // 6: opengate.v1.Route.authentication:type_name -> opengate.v1.Authentication
+	10, // 7: opengate.v1.GetRoutesResponse.routes:type_name -> opengate.v1.Route
+	1,  // 8: opengate.v1.UpdateConfigRequest.authentication:type_name -> opengate.v1.Authentication
+	2,  // 9: opengate.v1.UpdateConfigResponse.config:type_name -> opengate.v1.Config
 	10, // [10:10] is the sub-list for method output_type
 	10, // [10:10] is the sub-list for method input_type
 	10, // [10:10] is the sub-list for extension type_name

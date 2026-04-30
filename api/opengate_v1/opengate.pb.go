@@ -26,21 +26,22 @@ var File_proto_opengate_v1_opengate_proto protoreflect.FileDescriptor
 
 const file_proto_opengate_v1_opengate_proto_rawDesc = "" +
 	"\n" +
-	" proto/opengate/v1/opengate.proto\x12\x02v1\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a\x17proto/common/ping.proto\x1a\x1eproto/opengate/v1/config.proto2\xa2\t\n" +
-	"\x0fOpenGateService\x12}\n" +
-	"\x04Ping\x12\x0f.v1.PingRequest\x1a\x10.v1.PingResponse\"R\x92A6\n" +
-	"\x04Ping\x12\x0fPing the server\x1a\x1dCheck if the server is alive.\x82\xd3\xe4\x93\x02\x13\x12\x11/opengate/v1/ping\x12\xbb\x01\n" +
-	"\fCreateConfig\x12\x17.v1.CreateConfigRequest\x1a\x18.v1.CreateConfigResponse\"x\x92AV\n" +
-	"\aConfigs\x12\x13Create a new config\x1a6Create a new route configuration. Name must be unique.\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/opengate/v1/configs\x12\xa6\x01\n" +
-	"\tGetConfig\x12\x14.v1.GetConfigRequest\x1a\x15.v1.GetConfigResponse\"l\x92AH\n" +
-	"\aConfigs\x12\x12Get a config by ID\x1a)Retrieve a route configuration by its ID.\x82\xd3\xe4\x93\x02\x1b\x12\x19/opengate/v1/configs/{id}\x12\xaa\x01\n" +
-	"\vListConfigs\x12\x16.v1.ListConfigsRequest\x1a\x17.v1.ListConfigsResponse\"j\x92AK\n" +
-	"\aConfigs\x12\fList configs\x1a2List route configurations with pagination support.\x82\xd3\xe4\x93\x02\x16\x12\x14/opengate/v1/configs\x12\xad\x01\n" +
-	"\fUpdateConfig\x12\x17.v1.UpdateConfigRequest\x1a\x18.v1.UpdateConfigResponse\"j\x92AC\n" +
-	"\aConfigs\x12\x0fUpdate a config\x1a'Update an existing route configuration.\x82\xd3\xe4\x93\x02\x1e:\x01*\x1a\x19/opengate/v1/configs/{id}\x12\xaa\x01\n" +
-	"\fDeleteConfig\x12\x17.v1.DeleteConfigRequest\x1a\x18.v1.DeleteConfigResponse\"g\x92AC\n" +
-	"\aConfigs\x12\x0fDelete a config\x1a'Delete a route configuration by its ID.\x82\xd3\xe4\x93\x02\x1b*\x19/opengate/v1/configs/{id}\x12\x9e\x01\n" +
-	"\tGetRoutes\x12\x14.v1.GetRoutesRequest\x1a\x15.v1.GetRoutesResponse\"d\x92AF\n" +
+	" proto/opengate/v1/opengate.proto\x12\vopengate.v1\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a proto/opengate/common/ping.proto\x1a\x1eproto/opengate/v1/config.proto2\xa1\n" +
+	"\n" +
+	"\x0fOpenGateService\x12\x8f\x01\n" +
+	"\x04Ping\x12\x18.opengate.v1.PingRequest\x1a\x19.opengate.v1.PingResponse\"R\x92A6\n" +
+	"\x04Ping\x12\x0fPing the server\x1a\x1dCheck if the server is alive.\x82\xd3\xe4\x93\x02\x13\x12\x11/opengate/v1/ping\x12\xcd\x01\n" +
+	"\fCreateConfig\x12 .opengate.v1.CreateConfigRequest\x1a!.opengate.v1.CreateConfigResponse\"x\x92AV\n" +
+	"\aConfigs\x12\x13Create a new config\x1a6Create a new route configuration. Name must be unique.\x82\xd3\xe4\x93\x02\x19:\x01*\"\x14/opengate/v1/configs\x12\xb8\x01\n" +
+	"\tGetConfig\x12\x1d.opengate.v1.GetConfigRequest\x1a\x1e.opengate.v1.GetConfigResponse\"l\x92AH\n" +
+	"\aConfigs\x12\x12Get a config by ID\x1a)Retrieve a route configuration by its ID.\x82\xd3\xe4\x93\x02\x1b\x12\x19/opengate/v1/configs/{id}\x12\xbc\x01\n" +
+	"\vListConfigs\x12\x1f.opengate.v1.ListConfigsRequest\x1a .opengate.v1.ListConfigsResponse\"j\x92AK\n" +
+	"\aConfigs\x12\fList configs\x1a2List route configurations with pagination support.\x82\xd3\xe4\x93\x02\x16\x12\x14/opengate/v1/configs\x12\xbf\x01\n" +
+	"\fUpdateConfig\x12 .opengate.v1.UpdateConfigRequest\x1a!.opengate.v1.UpdateConfigResponse\"j\x92AC\n" +
+	"\aConfigs\x12\x0fUpdate a config\x1a'Update an existing route configuration.\x82\xd3\xe4\x93\x02\x1e:\x01*\x1a\x19/opengate/v1/configs/{id}\x12\xbc\x01\n" +
+	"\fDeleteConfig\x12 .opengate.v1.DeleteConfigRequest\x1a!.opengate.v1.DeleteConfigResponse\"g\x92AC\n" +
+	"\aConfigs\x12\x0fDelete a config\x1a'Delete a route configuration by its ID.\x82\xd3\xe4\x93\x02\x1b*\x19/opengate/v1/configs/{id}\x12\xb0\x01\n" +
+	"\tGetRoutes\x12\x1d.opengate.v1.GetRoutesRequest\x1a\x1e.opengate.v1.GetRoutesResponse\"d\x92AF\n" +
 	"\x06Routes\x12\x0eGet all routes\x1a,Retrieve all routes for the routing manager.\x82\xd3\xe4\x93\x02\x15\x12\x13/opengate/v1/routesB\x9d\x03\x92A\x8a\x03\x12Q\n" +
 	"\fOpenGate API\x129OpenGate API Gateway - Configuration and Route Management2\x06v1.0.0Z\x86\x01\n" +
 	"L\n" +
@@ -57,36 +58,36 @@ const file_proto_opengate_v1_opengate_proto_rawDesc = "" +
 	"\x06Routes\x12+Endpoints for retrieving routes for routingZ\r./opengate_v1b\x06proto3"
 
 var file_proto_opengate_v1_opengate_proto_goTypes = []any{
-	(*PingRequest)(nil),          // 0: v1.PingRequest
-	(*CreateConfigRequest)(nil),  // 1: v1.CreateConfigRequest
-	(*GetConfigRequest)(nil),     // 2: v1.GetConfigRequest
-	(*ListConfigsRequest)(nil),   // 3: v1.ListConfigsRequest
-	(*UpdateConfigRequest)(nil),  // 4: v1.UpdateConfigRequest
-	(*DeleteConfigRequest)(nil),  // 5: v1.DeleteConfigRequest
-	(*GetRoutesRequest)(nil),     // 6: v1.GetRoutesRequest
-	(*PingResponse)(nil),         // 7: v1.PingResponse
-	(*CreateConfigResponse)(nil), // 8: v1.CreateConfigResponse
-	(*GetConfigResponse)(nil),    // 9: v1.GetConfigResponse
-	(*ListConfigsResponse)(nil),  // 10: v1.ListConfigsResponse
-	(*UpdateConfigResponse)(nil), // 11: v1.UpdateConfigResponse
-	(*DeleteConfigResponse)(nil), // 12: v1.DeleteConfigResponse
-	(*GetRoutesResponse)(nil),    // 13: v1.GetRoutesResponse
+	(*PingRequest)(nil),          // 0: opengate.v1.PingRequest
+	(*CreateConfigRequest)(nil),  // 1: opengate.v1.CreateConfigRequest
+	(*GetConfigRequest)(nil),     // 2: opengate.v1.GetConfigRequest
+	(*ListConfigsRequest)(nil),   // 3: opengate.v1.ListConfigsRequest
+	(*UpdateConfigRequest)(nil),  // 4: opengate.v1.UpdateConfigRequest
+	(*DeleteConfigRequest)(nil),  // 5: opengate.v1.DeleteConfigRequest
+	(*GetRoutesRequest)(nil),     // 6: opengate.v1.GetRoutesRequest
+	(*PingResponse)(nil),         // 7: opengate.v1.PingResponse
+	(*CreateConfigResponse)(nil), // 8: opengate.v1.CreateConfigResponse
+	(*GetConfigResponse)(nil),    // 9: opengate.v1.GetConfigResponse
+	(*ListConfigsResponse)(nil),  // 10: opengate.v1.ListConfigsResponse
+	(*UpdateConfigResponse)(nil), // 11: opengate.v1.UpdateConfigResponse
+	(*DeleteConfigResponse)(nil), // 12: opengate.v1.DeleteConfigResponse
+	(*GetRoutesResponse)(nil),    // 13: opengate.v1.GetRoutesResponse
 }
 var file_proto_opengate_v1_opengate_proto_depIdxs = []int32{
-	0,  // 0: v1.OpenGateService.Ping:input_type -> v1.PingRequest
-	1,  // 1: v1.OpenGateService.CreateConfig:input_type -> v1.CreateConfigRequest
-	2,  // 2: v1.OpenGateService.GetConfig:input_type -> v1.GetConfigRequest
-	3,  // 3: v1.OpenGateService.ListConfigs:input_type -> v1.ListConfigsRequest
-	4,  // 4: v1.OpenGateService.UpdateConfig:input_type -> v1.UpdateConfigRequest
-	5,  // 5: v1.OpenGateService.DeleteConfig:input_type -> v1.DeleteConfigRequest
-	6,  // 6: v1.OpenGateService.GetRoutes:input_type -> v1.GetRoutesRequest
-	7,  // 7: v1.OpenGateService.Ping:output_type -> v1.PingResponse
-	8,  // 8: v1.OpenGateService.CreateConfig:output_type -> v1.CreateConfigResponse
-	9,  // 9: v1.OpenGateService.GetConfig:output_type -> v1.GetConfigResponse
-	10, // 10: v1.OpenGateService.ListConfigs:output_type -> v1.ListConfigsResponse
-	11, // 11: v1.OpenGateService.UpdateConfig:output_type -> v1.UpdateConfigResponse
-	12, // 12: v1.OpenGateService.DeleteConfig:output_type -> v1.DeleteConfigResponse
-	13, // 13: v1.OpenGateService.GetRoutes:output_type -> v1.GetRoutesResponse
+	0,  // 0: opengate.v1.OpenGateService.Ping:input_type -> opengate.v1.PingRequest
+	1,  // 1: opengate.v1.OpenGateService.CreateConfig:input_type -> opengate.v1.CreateConfigRequest
+	2,  // 2: opengate.v1.OpenGateService.GetConfig:input_type -> opengate.v1.GetConfigRequest
+	3,  // 3: opengate.v1.OpenGateService.ListConfigs:input_type -> opengate.v1.ListConfigsRequest
+	4,  // 4: opengate.v1.OpenGateService.UpdateConfig:input_type -> opengate.v1.UpdateConfigRequest
+	5,  // 5: opengate.v1.OpenGateService.DeleteConfig:input_type -> opengate.v1.DeleteConfigRequest
+	6,  // 6: opengate.v1.OpenGateService.GetRoutes:input_type -> opengate.v1.GetRoutesRequest
+	7,  // 7: opengate.v1.OpenGateService.Ping:output_type -> opengate.v1.PingResponse
+	8,  // 8: opengate.v1.OpenGateService.CreateConfig:output_type -> opengate.v1.CreateConfigResponse
+	9,  // 9: opengate.v1.OpenGateService.GetConfig:output_type -> opengate.v1.GetConfigResponse
+	10, // 10: opengate.v1.OpenGateService.ListConfigs:output_type -> opengate.v1.ListConfigsResponse
+	11, // 11: opengate.v1.OpenGateService.UpdateConfig:output_type -> opengate.v1.UpdateConfigResponse
+	12, // 12: opengate.v1.OpenGateService.DeleteConfig:output_type -> opengate.v1.DeleteConfigResponse
+	13, // 13: opengate.v1.OpenGateService.GetRoutes:output_type -> opengate.v1.GetRoutesResponse
 	7,  // [7:14] is the sub-list for method output_type
 	0,  // [0:7] is the sub-list for method input_type
 	0,  // [0:0] is the sub-list for extension type_name
@@ -99,7 +100,7 @@ func file_proto_opengate_v1_opengate_proto_init() {
 	if File_proto_opengate_v1_opengate_proto != nil {
 		return
 	}
-	file_proto_common_ping_proto_init()
+	file_proto_opengate_common_ping_proto_init()
 	file_proto_opengate_v1_config_proto_init()
 	type x struct{}
 	out := protoimpl.TypeBuilder{

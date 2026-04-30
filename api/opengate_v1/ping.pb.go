@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.36.7
 // 	protoc        (unknown)
-// source: proto/common/ping.proto
+// source: proto/opengate/common/ping.proto
 
 package opengate_v1
 
@@ -31,7 +31,7 @@ type PingRequest struct {
 
 func (x *PingRequest) Reset() {
 	*x = PingRequest{}
-	mi := &file_proto_common_ping_proto_msgTypes[0]
+	mi := &file_proto_opengate_common_ping_proto_msgTypes[0]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -43,7 +43,7 @@ func (x *PingRequest) String() string {
 func (*PingRequest) ProtoMessage() {}
 
 func (x *PingRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_common_ping_proto_msgTypes[0]
+	mi := &file_proto_opengate_common_ping_proto_msgTypes[0]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -56,7 +56,7 @@ func (x *PingRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PingRequest.ProtoReflect.Descriptor instead.
 func (*PingRequest) Descriptor() ([]byte, []int) {
-	return file_proto_common_ping_proto_rawDescGZIP(), []int{0}
+	return file_proto_opengate_common_ping_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *PingRequest) GetMessage() string {
@@ -76,7 +76,7 @@ type PingResponse struct {
 
 func (x *PingResponse) Reset() {
 	*x = PingResponse{}
-	mi := &file_proto_common_ping_proto_msgTypes[1]
+	mi := &file_proto_opengate_common_ping_proto_msgTypes[1]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -88,7 +88,7 @@ func (x *PingResponse) String() string {
 func (*PingResponse) ProtoMessage() {}
 
 func (x *PingResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_proto_common_ping_proto_msgTypes[1]
+	mi := &file_proto_opengate_common_ping_proto_msgTypes[1]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -101,7 +101,7 @@ func (x *PingResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use PingResponse.ProtoReflect.Descriptor instead.
 func (*PingResponse) Descriptor() ([]byte, []int) {
-	return file_proto_common_ping_proto_rawDescGZIP(), []int{1}
+	return file_proto_opengate_common_ping_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *PingResponse) GetMessage() string {
@@ -111,34 +111,34 @@ func (x *PingResponse) GetMessage() string {
 	return ""
 }
 
-var File_proto_common_ping_proto protoreflect.FileDescriptor
+var File_proto_opengate_common_ping_proto protoreflect.FileDescriptor
 
-const file_proto_common_ping_proto_rawDesc = "" +
+const file_proto_opengate_common_ping_proto_rawDesc = "" +
 	"\n" +
-	"\x17proto/common/ping.proto\x12\x02v1\"'\n" +
+	" proto/opengate/common/ping.proto\x12\vopengate.v1\"'\n" +
 	"\vPingRequest\x12\x18\n" +
 	"\amessage\x18\x01 \x01(\tR\amessage\"(\n" +
 	"\fPingResponse\x12\x18\n" +
 	"\amessage\x18\x01 \x01(\tR\amessageB\x0fZ\r./opengate_v1b\x06proto3"
 
 var (
-	file_proto_common_ping_proto_rawDescOnce sync.Once
-	file_proto_common_ping_proto_rawDescData []byte
+	file_proto_opengate_common_ping_proto_rawDescOnce sync.Once
+	file_proto_opengate_common_ping_proto_rawDescData []byte
 )
 
-func file_proto_common_ping_proto_rawDescGZIP() []byte {
-	file_proto_common_ping_proto_rawDescOnce.Do(func() {
-		file_proto_common_ping_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_proto_common_ping_proto_rawDesc), len(file_proto_common_ping_proto_rawDesc)))
+func file_proto_opengate_common_ping_proto_rawDescGZIP() []byte {
+	file_proto_opengate_common_ping_proto_rawDescOnce.Do(func() {
+		file_proto_opengate_common_ping_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_proto_opengate_common_ping_proto_rawDesc), len(file_proto_opengate_common_ping_proto_rawDesc)))
 	})
-	return file_proto_common_ping_proto_rawDescData
+	return file_proto_opengate_common_ping_proto_rawDescData
 }
 
-var file_proto_common_ping_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
-var file_proto_common_ping_proto_goTypes = []any{
-	(*PingRequest)(nil),  // 0: v1.PingRequest
-	(*PingResponse)(nil), // 1: v1.PingResponse
+var file_proto_opengate_common_ping_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_proto_opengate_common_ping_proto_goTypes = []any{
+	(*PingRequest)(nil),  // 0: opengate.v1.PingRequest
+	(*PingResponse)(nil), // 1: opengate.v1.PingResponse
 }
-var file_proto_common_ping_proto_depIdxs = []int32{
+var file_proto_opengate_common_ping_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for method output_type
 	0, // [0:0] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
@@ -146,26 +146,26 @@ var file_proto_common_ping_proto_depIdxs = []int32{
 	0, // [0:0] is the sub-list for field type_name
 }
 
-func init() { file_proto_common_ping_proto_init() }
-func file_proto_common_ping_proto_init() {
-	if File_proto_common_ping_proto != nil {
+func init() { file_proto_opengate_common_ping_proto_init() }
+func file_proto_opengate_common_ping_proto_init() {
+	if File_proto_opengate_common_ping_proto != nil {
 		return
 	}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_common_ping_proto_rawDesc), len(file_proto_common_ping_proto_rawDesc)),
+			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_opengate_common_ping_proto_rawDesc), len(file_proto_opengate_common_ping_proto_rawDesc)),
 			NumEnums:      0,
 			NumMessages:   2,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
-		GoTypes:           file_proto_common_ping_proto_goTypes,
-		DependencyIndexes: file_proto_common_ping_proto_depIdxs,
-		MessageInfos:      file_proto_common_ping_proto_msgTypes,
+		GoTypes:           file_proto_opengate_common_ping_proto_goTypes,
+		DependencyIndexes: file_proto_opengate_common_ping_proto_depIdxs,
+		MessageInfos:      file_proto_opengate_common_ping_proto_msgTypes,
 	}.Build()
-	File_proto_common_ping_proto = out.File
-	file_proto_common_ping_proto_goTypes = nil
-	file_proto_common_ping_proto_depIdxs = nil
+	File_proto_opengate_common_ping_proto = out.File
+	file_proto_opengate_common_ping_proto_goTypes = nil
+	file_proto_opengate_common_ping_proto_depIdxs = nil
 }

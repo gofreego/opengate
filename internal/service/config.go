@@ -135,8 +135,8 @@ func (s *Service) DeleteConfig(ctx context.Context, req *opengate_v1.DeleteConfi
 	}, nil
 }
 
-// GetAllRoutes retrieves all routes for the routing manager
-func (s *Service) GetAllRoutes(ctx context.Context, req *opengate_v1.GetRoutesRequest) (*opengate_v1.GetRoutesResponse, error) {
+// GetRoutes retrieves all routes for the routing manager
+func (s *Service) GetRoutes(ctx context.Context, req *opengate_v1.GetRoutesRequest) (*opengate_v1.GetRoutesResponse, error) {
 	routes, err := s.repo.GetRoutes(ctx)
 	if err != nil {
 		return nil, err

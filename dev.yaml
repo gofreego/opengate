@@ -7,7 +7,7 @@ AppNames:
 - HTTP_SERVER
 - GATEWAY_SERVER
 AdminServer:
-  Port: 8083
+  Port: 8080
   GinMode: debug
   ReadTimeout: 30s
   WriteTimeout: 30s
@@ -15,7 +15,7 @@ AdminServer:
   MaxHeaderBytes: 1048576
   EnableCors: true
 GatewayServer:
-  Port: 8080
+  Port: 8083
   GinMode: debug
   ReadTimeout: 30s
   WriteTimeout: 30s
@@ -66,6 +66,18 @@ Service:
       Authentication:
         Required: false
       Timeout: 30s
+    - Name: opengate
+      PathPrefix: /opengate
+      TargetURL: http://localhost:8080
+      StripPrefix: true
+      Authentication:
+        Required: false
+    - Name: gateway 
+      PathPrefix: /gateway
+      TargetURL: http://localhost:8080
+      StripPrefix: false
+      Authentication:
+        Required: false
 Cache:
   name: memory
 Debug:

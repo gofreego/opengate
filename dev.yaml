@@ -63,7 +63,7 @@ Service:
     - Name: opengate
       PathPrefix: /opengate
       TargetURL: http://localhost:8080
-      StripPrefix: true
+      StripPrefix: false
       Authentication:
         Required: false
     - Name: gateway 

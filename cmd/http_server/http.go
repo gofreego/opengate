@@ -11,14 +11,12 @@ import (
 	"github.com/gofreego/opengate/internal/service"
 	"github.com/gofreego/opengate/pkg/utils"
 
-	"github.com/gin-gonic/gin"
-	"github.com/gofreego/goutils/api"
 	"github.com/gofreego/goutils/api/debug"
 	"github.com/gofreego/goutils/logger"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 )
 
-// GlobalConfig represents global gateway settings
+// Config represents admin server settings
 type Config struct {
 	Port           int           `json:"port" yaml:"Port"`
 	GinMode        string        `json:"ginMode" yaml:"GinMode"`
@@ -87,20 +85,6 @@ func (a *HTTPServer) Run(ctx context.Context) error {
 	// Register Swagger handler
 	utils.RegisterSwaggerHandler(grpcMux, "/opengate/v1/swagger", "./api/docs/proto", "/opengate/v1/opengate.swagger.json")
 
-	// Create gin router for proxy routes
-	gin.SetMode(a.cfg.GinMode)
-	ginRouter := gin.New()
-	ginRouter.Use(gin.Recovery())
-	ginRouter.Use(api.RequestTimeMiddleware)
-	ginRouter.Use(api.RequestIDMiddleware)
-
-	if a.cfg.EnableCORS {
-		ginRouter.Use(api.OptionRequestMiddleware)
-	}
-
-	// Catch-all route handler - forwards all non-matching requests to service.RouteRequest
-	ginRouter.NoRoute(a.service.RouteRequest)
-
 	// Create combined handler that routes based on path
 	finalHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		path := r.URL.Path
@@ -117,8 +101,8 @@ func (a *HTTPServer) Run(ctx context.Context) error {
 			return
 		}
 
-		// All other requests go to gin router (proxy)
-		ginRouter.ServeHTTP(w, r)
+		// Return 404 for other paths (proxy is on gateway server)
+		http.NotFound(w, r)
 	})
 
 	// Apply CORS middleware if enabled
@@ -139,7 +123,7 @@ func (a *HTTPServer) Run(ctx context.Context) error {
 	if a.cfg.Debug.Enabled {
 		logger.Info(ctx, "Debug dashboard available at `http://localhost:%d/opengate/v1/debug`", a.cfg.Port)
 	}
-	logger.Info(ctx, "Started HTTP server on port %d", a.cfg.Port)
+	logger.Info(ctx, "Started Admin HTTP server on port %d", a.cfg.Port)
 	logger.Info(ctx, "Admin UI available at `http://localhost:%d/gateway/`", a.cfg.Port)
 	logger.Info(ctx, "API endpoints available at `http://localhost:%d/opengate/v1/`", a.cfg.Port)
 	logger.Info(ctx, "Swagger UI available at `http://localhost:%d/opengate/v1/swagger`", a.cfg.Port)
@@ -149,7 +133,7 @@ func (a *HTTPServer) Run(ctx context.Context) error {
 	if err != nil && err != http.ErrServerClosed {
 		logger.Panic(ctx, "failed to start http server : %v", err)
 	}
-	logger.Info(ctx, "HTTP server stopped")
+	logger.Info(ctx, "Admin HTTP server stopped")
 	return nil
 }
 

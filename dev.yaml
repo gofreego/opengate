@@ -5,8 +5,17 @@ Logger:
   Level: debug
 AppNames:
 - HTTP_SERVER
-Server:
+- GATEWAY_SERVER
+AdminServer:
   Port: 8083
+  GinMode: debug
+  ReadTimeout: 30s
+  WriteTimeout: 30s
+  IdleTimeout: 120s
+  MaxHeaderBytes: 1048576
+  EnableCors: true
+GatewayServer:
+  Port: 8080
   GinMode: debug
   ReadTimeout: 30s
   WriteTimeout: 30s

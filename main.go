@@ -7,6 +7,7 @@ import (
 	"io/fs"
 	"net/http"
 
+	gateway_server "github.com/gofreego/opengate/cmd/gateway_server"
 	"github.com/gofreego/opengate/cmd/http_server"
 	"github.com/gofreego/opengate/internal/configs"
 	"github.com/gofreego/opengate/internal/repository"
@@ -62,9 +63,13 @@ func main() {
 	// Create service instance
 	svc := service.NewService(ctx, &conf.Service, repo, cacheInstance)
 
-	// Create HTTP server (combines API + proxy + UI on same port)
-	httpServer := http_server.NewHTTPServer(&conf.Server, svc, env, getUIFileSystem(), getIndexHTML())
+	// Create Admin HTTP server (APIs + UI)
+	httpServer := http_server.NewHTTPServer(&conf.AdminServer, svc, env, getUIFileSystem(), getIndexHTML())
 	go httpServer.Run(ctx)
 
-	apputils.GracefulShutdown(ctx, httpServer)
+	// Create Gateway server (proxy/routing)
+	gatewayServer := gateway_server.NewGatewayServer(&conf.GatewayServer, svc)
+	go gatewayServer.Run(ctx)
+
+	apputils.GracefulShutdown(ctx, httpServer, gatewayServer)
 }

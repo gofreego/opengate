@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 
+	gateway_server "github.com/gofreego/opengate/cmd/gateway_server"
 	"github.com/gofreego/opengate/cmd/http_server"
 	repo "github.com/gofreego/opengate/internal/repository"
 	"github.com/gofreego/opengate/internal/service"
@@ -14,13 +15,14 @@ import (
 )
 
 type Configuration struct {
-	LogConfig  bool               `yaml:"LogConfig"`
-	Logger     logger.Config      `yaml:"Logger"`
-	AppNames   []string           `yaml:"AppNames"`
-	Server     http_server.Config `yaml:"Server"`
-	Repository repo.Config        `yaml:"Repository"`
-	Service    service.Config     `yaml:"Service"`
-	Cache      cache.Config       `yaml:"Cache"`
+	LogConfig     bool                  `yaml:"LogConfig"`
+	Logger        logger.Config         `yaml:"Logger"`
+	AppNames      []string              `yaml:"AppNames"`
+	AdminServer   http_server.Config    `yaml:"AdminServer"`
+	GatewayServer gateway_server.Config `yaml:"GatewayServer"`
+	Repository    repo.Config           `yaml:"Repository"`
+	Service       service.Config        `yaml:"Service"`
+	Cache         cache.Config          `yaml:"Cache"`
 }
 
 func LoadConfig(ctx context.Context, path string, env string) *Configuration {

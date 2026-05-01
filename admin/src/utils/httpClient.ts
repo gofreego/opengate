@@ -1,6 +1,6 @@
 import { HttpClient } from '@gofreego/tsutils'
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8080'
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'https://api.bappaapp.com'
 
 // Get dev headers from environment (for development/testing)
 const getDevHeaders = (): Record<string, string> => {

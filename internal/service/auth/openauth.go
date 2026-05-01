@@ -15,6 +15,8 @@ import (
 	"github.com/gofreego/openauth/pkg/clients/openauth"
 	"github.com/gofreego/openauth/pkg/jwtutils"
 	"github.com/gofreego/opengate/internal/constants"
+
+	goutilsConsts "github.com/gofreego/goutils/constants"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 )
@@ -39,7 +41,7 @@ func NewOpenAuthStrategy(ctx context.Context, config *openauth.ClientConfig, cac
 
 func (s *OpenAuthStrategy) Authenticate(ctx *gin.Context) error {
 	reqContext := ctx.Request.Context()
-	token := ctx.GetHeader(constants.HEADER_AUTHORIZATION)
+	token := ctx.GetHeader(goutilsConsts.HEADER_AUTHORIZATION)
 	if token == "" {
 		// Fallback to cookie if header is not present
 		if cookie, err := ctx.Cookie(constants.COOKIE_AUTHORIZATION); err == nil {
@@ -74,7 +76,7 @@ func (s *OpenAuthStrategy) Authenticate(ctx *gin.Context) error {
 		AccessToken: token,
 	}
 
-	reqContext = metadata.AppendToOutgoingContext(reqContext, constants.HEADER_AUTHORIZATION, token)
+	reqContext = metadata.AppendToOutgoingContext(reqContext, goutilsConsts.HEADER_AUTHORIZATION, token)
 
 	_, err = s.client.IsAuthenticated(reqContext, authRequest)
 	if err != nil {

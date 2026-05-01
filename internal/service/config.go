@@ -6,10 +6,10 @@ import (
 	"net/url"
 	"time"
 
+	"github.com/gofreego/goutils/utils"
 	"github.com/gofreego/opengate/api/opengate_v1"
 	"github.com/gofreego/opengate/internal/constants"
 	"github.com/gofreego/opengate/internal/models"
-	"github.com/gofreego/opengate/pkg/utils"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/status"
 )

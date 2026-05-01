@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	goutilsConsts "github.com/gofreego/goutils/constants"
 	"github.com/gofreego/goutils/logger"
 	"github.com/gofreego/openauth/pkg/jwtutils"
 	"github.com/gofreego/opengate/internal/constants"
@@ -94,11 +95,11 @@ func (s *Service) configureProxy(ctx *gin.Context, proxy *httputil.ReverseProxy,
 		originalDirector(req)
 
 		// Clear user headers to prevent spoofing
-		req.Header.Del(constants.HEADER_AUTHORIZATION)
-		req.Header.Del(constants.HEADER_USER_ID)
-		req.Header.Del(constants.HEADER_USER_UUID)
-		req.Header.Del(constants.HEADER_PROFILE_IDS)
-		req.Header.Del(constants.HEADER_PERMISSIONS)
+		req.Header.Del(goutilsConsts.HEADER_AUTHORIZATION)
+		req.Header.Del(goutilsConsts.USER_ID)
+		req.Header.Del(goutilsConsts.HEADER_USER_UUID)
+		req.Header.Del(goutilsConsts.HEADER_PROFILE_IDS)
+		req.Header.Del(goutilsConsts.PERMISSIONS)
 
 		// Add forwarding headers
 		req.Header.Set("X-Forwarded-Host", req.Host)
@@ -109,20 +110,20 @@ func (s *Service) configureProxy(ctx *gin.Context, proxy *httputil.ReverseProxy,
 		if claims, exists := ctx.Get(constants.JWT_CLAIMS); exists {
 			if jwtClaims, ok := claims.(*jwtutils.JWTClaims); ok {
 				if jwtClaims.UserID != 0 {
-					req.Header.Set(constants.HEADER_USER_ID, fmt.Sprintf("%d", jwtClaims.UserID))
+					req.Header.Set(goutilsConsts.USER_ID, fmt.Sprintf("%d", jwtClaims.UserID))
 				}
 				if jwtClaims.UserUUID != "" {
-					req.Header.Set(constants.HEADER_USER_UUID, jwtClaims.UserUUID)
+					req.Header.Set(goutilsConsts.HEADER_USER_UUID, jwtClaims.UserUUID)
 				}
 				if len(jwtClaims.Profiles) > 0 {
 					profileIDs := make([]string, len(jwtClaims.Profiles))
 					for i, p := range jwtClaims.Profiles {
 						profileIDs[i] = fmt.Sprintf("%d", p.Id)
 					}
-					req.Header.Set(constants.HEADER_PROFILE_IDS, strings.Join(profileIDs, ","))
+					req.Header.Set(goutilsConsts.HEADER_PROFILE_IDS, strings.Join(profileIDs, ","))
 				}
 				if len(jwtClaims.Permissions) > 0 {
-					req.Header.Set(constants.HEADER_PERMISSIONS, strings.Join(jwtClaims.Permissions, ","))
+					req.Header.Set(goutilsConsts.PERMISSIONS, strings.Join(jwtClaims.Permissions, ","))
 				}
 			}
 		}
@@ -164,6 +165,6 @@ func getScheme(req *http.Request) string {
 }
 
 func isAuthenticationHeaderAvailable(ctx *gin.Context) bool {
-	authHeader := ctx.Request.Header.Get(constants.HEADER_AUTHORIZATION)
+	authHeader := ctx.Request.Header.Get(goutilsConsts.HEADER_AUTHORIZATION)
 	return authHeader != ""
 }

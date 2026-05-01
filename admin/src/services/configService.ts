@@ -10,6 +10,7 @@ import type {
   UpdateConfigResponse,
   DeleteConfigResponse,
   GetRoutesResponse,
+  GetStatsResponse,
 } from '../apis/proto/opengate/v1/config'
 
 const BASE_URL = '/opengate/v1'
@@ -50,6 +51,11 @@ export const configService = {
 
   async getRoutes(): Promise<GetRoutesResponse> {
     const response = await httpClient.get<GetRoutesResponse>(`${BASE_URL}/routes`)
+    return response.data
+  },
+
+  async getStats(): Promise<GetStatsResponse> {
+    const response = await httpClient.get<GetStatsResponse>(`${BASE_URL}/stats`)
     return response.data
   },
 }

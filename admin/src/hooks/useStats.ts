@@ -1,23 +1,23 @@
 import { useState, useCallback } from 'react'
 import { useNotification } from '@gofreego/tsutils'
 import { configService } from '../services/configService'
-import type { Route } from '../apis/proto/opengate/v1/config'
+import type { GetStatsResponse } from '../apis/proto/opengate/v1/config'
 
-export const useRoutes = () => {
-  const [routes, setRoutes] = useState<Route[]>([])
+export const useStats = () => {
+  const [stats, setStats] = useState<GetStatsResponse | null>(null)
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const { showNotification } = useNotification()
 
-  const loadRoutes = useCallback(async () => {
+  const loadStats = useCallback(async () => {
     setLoading(true)
     setError(null)
 
     try {
-      const response = await configService.getRoutes()
-      setRoutes(response.routes || [])
+      const response = await configService.getStats()
+      setStats(response)
     } catch (err) {
-      const message = 'Failed to load routes'
+      const message = 'Failed to load stats'
       setError(message)
       showNotification(message, 'error')
     } finally {
@@ -26,9 +26,9 @@ export const useRoutes = () => {
   }, [showNotification])
 
   return {
-    routes,
+    stats,
     loading,
     error,
-    loadRoutes,
+    loadStats,
   }
 }

@@ -1,6 +1,6 @@
 import { Container, Box, Typography, Card, CardContent, Skeleton, Alert } from '@mui/material'
 import RouteIcon from '@mui/icons-material/AltRoute'
-import { useRoutes } from '../../hooks/useRoutes'
+import { useStats } from '../../hooks/useStats'
 import { useEffect } from 'react'
 import { PageHeader } from '../../components'
 
@@ -65,16 +65,16 @@ const StatCardSkeleton = () => {
 }
 
 export const DashboardPage = () => {
-  const { routes, loading, error, loadRoutes } = useRoutes()
+  const { stats, loading, error, loadStats } = useStats()
 
   useEffect(() => {
-    loadRoutes()
-  }, [loadRoutes])
+    loadStats()
+  }, [loadStats])
 
-  const stats = [
+  const statCards = [
     {
       title: 'Total Routes',
-      count: routes.length,
+      count: stats?.totalRoutes ?? 0,
       icon: <RouteIcon sx={{ fontSize: 28 }} />,
       color: '#2196f3',
     },
@@ -108,7 +108,7 @@ export const DashboardPage = () => {
           ? Array.from({ length: 1 }).map((_, idx) => (
               <StatCardSkeleton key={idx} />
             ))
-          : stats.map((stat) => (
+          : statCards.map((stat) => (
               <StatCard
                 key={stat.title}
                 title={stat.title}

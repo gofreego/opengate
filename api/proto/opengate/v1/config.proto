@@ -123,3 +123,12 @@ message DeleteConfigRequest {
 message DeleteConfigResponse {
     string message = 1;
 }
+
+// GetStatsRequest is the request to get dashboard stats
+message GetStatsRequest {}
+
+// GetStatsResponse contains dashboard statistics
+message GetStatsResponse {
+    int32 total_routes = 1;
+    string message = 2;
+}

@@ -26,6 +26,7 @@ const (
 	OpenGateService_UpdateConfig_FullMethodName = "/opengate.v1.OpenGateService/UpdateConfig"
 	OpenGateService_DeleteConfig_FullMethodName = "/opengate.v1.OpenGateService/DeleteConfig"
 	OpenGateService_GetRoutes_FullMethodName    = "/opengate.v1.OpenGateService/GetRoutes"
+	OpenGateService_GetStats_FullMethodName     = "/opengate.v1.OpenGateService/GetStats"
 )
 
 // OpenGateServiceClient is the client API for OpenGateService service.
@@ -46,6 +47,8 @@ type OpenGateServiceClient interface {
 	DeleteConfig(ctx context.Context, in *DeleteConfigRequest, opts ...grpc.CallOption) (*DeleteConfigResponse, error)
 	// GetRoutes retrieves all routes for routing purposes
 	GetRoutes(ctx context.Context, in *GetRoutesRequest, opts ...grpc.CallOption) (*GetRoutesResponse, error)
+	// GetStats retrieves dashboard statistics
+	GetStats(ctx context.Context, in *GetStatsRequest, opts ...grpc.CallOption) (*GetStatsResponse, error)
 }
 
 type openGateServiceClient struct {
@@ -126,6 +129,16 @@ func (c *openGateServiceClient) GetRoutes(ctx context.Context, in *GetRoutesRequ
 	return out, nil
 }
 
+func (c *openGateServiceClient) GetStats(ctx context.Context, in *GetStatsRequest, opts ...grpc.CallOption) (*GetStatsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetStatsResponse)
+	err := c.cc.Invoke(ctx, OpenGateService_GetStats_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // OpenGateServiceServer is the server API for OpenGateService service.
 // All implementations must embed UnimplementedOpenGateServiceServer
 // for forward compatibility.
@@ -144,6 +157,8 @@ type OpenGateServiceServer interface {
 	DeleteConfig(context.Context, *DeleteConfigRequest) (*DeleteConfigResponse, error)
 	// GetRoutes retrieves all routes for routing purposes
 	GetRoutes(context.Context, *GetRoutesRequest) (*GetRoutesResponse, error)
+	// GetStats retrieves dashboard statistics
+	GetStats(context.Context, *GetStatsRequest) (*GetStatsResponse, error)
 	mustEmbedUnimplementedOpenGateServiceServer()
 }
 
@@ -174,6 +189,9 @@ func (UnimplementedOpenGateServiceServer) DeleteConfig(context.Context, *DeleteC
 }
 func (UnimplementedOpenGateServiceServer) GetRoutes(context.Context, *GetRoutesRequest) (*GetRoutesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetRoutes not implemented")
+}
+func (UnimplementedOpenGateServiceServer) GetStats(context.Context, *GetStatsRequest) (*GetStatsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetStats not implemented")
 }
 func (UnimplementedOpenGateServiceServer) mustEmbedUnimplementedOpenGateServiceServer() {}
 func (UnimplementedOpenGateServiceServer) testEmbeddedByValue()                         {}
@@ -322,6 +340,24 @@ func _OpenGateService_GetRoutes_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _OpenGateService_GetStats_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetStatsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OpenGateServiceServer).GetStats(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OpenGateService_GetStats_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OpenGateServiceServer).GetStats(ctx, req.(*GetStatsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // OpenGateService_ServiceDesc is the grpc.ServiceDesc for OpenGateService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -356,6 +392,10 @@ var OpenGateService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetRoutes",
 			Handler:    _OpenGateService_GetRoutes_Handler,
+		},
+		{
+			MethodName: "GetStats",
+			Handler:    _OpenGateService_GetStats_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -19,6 +19,10 @@
       "description": "Endpoints for retrieving routes for routing"
     },
     {
+      "name": "Stats",
+      "description": "Endpoints for dashboard statistics"
+    },
+    {
       "name": "OpenGateService"
     }
   ],
@@ -266,6 +270,30 @@
           "Routes"
         ]
       }
+    },
+    "/opengate/v1/stats": {
+      "get": {
+        "summary": "Get dashboard stats",
+        "description": "Retrieve statistics for the admin dashboard.",
+        "operationId": "OpenGateService_GetStats",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetStatsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "Stats"
+        ]
+      }
     }
   },
   "definitions": {
@@ -486,6 +514,19 @@
         }
       },
       "title": "GetRoutesResponse contains all routes for the routing manager"
+    },
+    "v1GetStatsResponse": {
+      "type": "object",
+      "properties": {
+        "totalRoutes": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "title": "GetStatsResponse contains dashboard statistics"
     },
     "v1ListConfigsResponse": {
       "type": "object",

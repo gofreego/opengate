@@ -59,6 +59,10 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
     {
       name: "Routes"
       description: "Endpoints for retrieving routes for routing"
+    },
+    {
+      name: "Stats"
+      description: "Endpoints for dashboard statistics"
     }
   ]
 };
@@ -148,6 +152,18 @@ service OpenGateService {
             tags: "Routes"
             summary: "Get all routes"
             description: "Retrieve all routes for the routing manager."
+        };
+    }
+
+    // GetStats retrieves dashboard statistics
+    rpc GetStats (GetStatsRequest) returns (GetStatsResponse) {
+        option (google.api.http) = {
+            get: "/opengate/v1/stats"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            tags: "Stats"
+            summary: "Get dashboard stats"
+            description: "Retrieve statistics for the admin dashboard."
         };
     }
 }

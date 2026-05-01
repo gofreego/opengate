@@ -1,2 +1,2 @@
 export { useConfigs } from './useConfigs'
-export { useRoutes } from './useRoutes'
+export { useStats } from './useStats'

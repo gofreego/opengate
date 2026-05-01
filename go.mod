@@ -8,7 +8,6 @@ require (
 	github.com/gofreego/goutils v1.3.9-0.20260501122027-3f3fd78840d2
 	github.com/gofreego/openauth v1.0.8-0.20251207051252-3ca52c4ef853
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.27.2
-	github.com/lib/pq v1.10.9
 	google.golang.org/genproto/googleapis/api v0.0.0-20250818200422-3122310a409c
 	google.golang.org/grpc v1.75.0
 	google.golang.org/protobuf v1.36.7
@@ -48,6 +47,7 @@ require (
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/cpuid/v2 v2.2.7 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
+	github.com/lib/pq v1.10.9 // indirect
 	github.com/mattn/go-colorable v0.1.14 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mitchellh/go-homedir v1.1.0 // indirect

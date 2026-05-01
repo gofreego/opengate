@@ -1048,6 +1048,96 @@ func (x *DeleteConfigResponse) GetMessage() string {
 	return ""
 }
 
+// GetStatsRequest is the request to get dashboard stats
+type GetStatsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetStatsRequest) Reset() {
+	*x = GetStatsRequest{}
+	mi := &file_proto_opengate_v1_config_proto_msgTypes[16]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetStatsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetStatsRequest) ProtoMessage() {}
+
+func (x *GetStatsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_opengate_v1_config_proto_msgTypes[16]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetStatsRequest.ProtoReflect.Descriptor instead.
+func (*GetStatsRequest) Descriptor() ([]byte, []int) {
+	return file_proto_opengate_v1_config_proto_rawDescGZIP(), []int{16}
+}
+
+// GetStatsResponse contains dashboard statistics
+type GetStatsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	TotalRoutes   int32                  `protobuf:"varint,1,opt,name=total_routes,json=totalRoutes,proto3" json:"total_routes,omitempty"`
+	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetStatsResponse) Reset() {
+	*x = GetStatsResponse{}
+	mi := &file_proto_opengate_v1_config_proto_msgTypes[17]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetStatsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetStatsResponse) ProtoMessage() {}
+
+func (x *GetStatsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_proto_opengate_v1_config_proto_msgTypes[17]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetStatsResponse.ProtoReflect.Descriptor instead.
+func (*GetStatsResponse) Descriptor() ([]byte, []int) {
+	return file_proto_opengate_v1_config_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *GetStatsResponse) GetTotalRoutes() int32 {
+	if x != nil {
+		return x.TotalRoutes
+	}
+	return 0
+}
+
+func (x *GetStatsResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
 var File_proto_opengate_v1_config_proto protoreflect.FileDescriptor
 
 const file_proto_opengate_v1_config_proto_rawDesc = "" +
@@ -1142,7 +1232,11 @@ const file_proto_opengate_v1_config_proto_rawDesc = "" +
 	"\x13DeleteConfigRequest\x12\x17\n" +
 	"\x02id\x18\x01 \x01(\x03B\a\xfaB\x04\"\x02 \x00R\x02id\"0\n" +
 	"\x14DeleteConfigResponse\x12\x18\n" +
-	"\amessage\x18\x01 \x01(\tR\amessageB\x0fZ\r./opengate_v1b\x06proto3"
+	"\amessage\x18\x01 \x01(\tR\amessage\"\x11\n" +
+	"\x0fGetStatsRequest\"O\n" +
+	"\x10GetStatsResponse\x12!\n" +
+	"\ftotal_routes\x18\x01 \x01(\x05R\vtotalRoutes\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessageB\x0fZ\r./opengate_v1b\x06proto3"
 
 var (
 	file_proto_opengate_v1_config_proto_rawDescOnce sync.Once
@@ -1156,7 +1250,7 @@ func file_proto_opengate_v1_config_proto_rawDescGZIP() []byte {
 	return file_proto_opengate_v1_config_proto_rawDescData
 }
 
-var file_proto_opengate_v1_config_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
+var file_proto_opengate_v1_config_proto_msgTypes = make([]protoimpl.MessageInfo, 18)
 var file_proto_opengate_v1_config_proto_goTypes = []any{
 	(*AuthenticationException)(nil), // 0: opengate.v1.AuthenticationException
 	(*Authentication)(nil),          // 1: opengate.v1.Authentication
@@ -1174,6 +1268,8 @@ var file_proto_opengate_v1_config_proto_goTypes = []any{
 	(*UpdateConfigResponse)(nil),    // 13: opengate.v1.UpdateConfigResponse
 	(*DeleteConfigRequest)(nil),     // 14: opengate.v1.DeleteConfigRequest
 	(*DeleteConfigResponse)(nil),    // 15: opengate.v1.DeleteConfigResponse
+	(*GetStatsRequest)(nil),         // 16: opengate.v1.GetStatsRequest
+	(*GetStatsResponse)(nil),        // 17: opengate.v1.GetStatsResponse
 }
 var file_proto_opengate_v1_config_proto_depIdxs = []int32{
 	0,  // 0: opengate.v1.Authentication.except:type_name -> opengate.v1.AuthenticationException
@@ -1204,7 +1300,7 @@ func file_proto_opengate_v1_config_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_proto_opengate_v1_config_proto_rawDesc), len(file_proto_opengate_v1_config_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   16,
+			NumMessages:   18,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

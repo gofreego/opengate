@@ -27,6 +27,8 @@ import {
   GetConfigResponse,
   GetRoutesRequest,
   GetRoutesResponse,
+  GetStatsRequest,
+  GetStatsResponse,
   ListConfigsRequest,
   ListConfigsResponse,
   UpdateConfigRequest,
@@ -110,6 +112,16 @@ export const OpenGateServiceService = {
     responseSerialize: (value: GetRoutesResponse): Buffer => Buffer.from(GetRoutesResponse.encode(value).finish()),
     responseDeserialize: (value: Buffer): GetRoutesResponse => GetRoutesResponse.decode(value),
   },
+  /** GetStats retrieves dashboard statistics */
+  getStats: {
+    path: "/opengate.v1.OpenGateService/GetStats" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: GetStatsRequest): Buffer => Buffer.from(GetStatsRequest.encode(value).finish()),
+    requestDeserialize: (value: Buffer): GetStatsRequest => GetStatsRequest.decode(value),
+    responseSerialize: (value: GetStatsResponse): Buffer => Buffer.from(GetStatsResponse.encode(value).finish()),
+    responseDeserialize: (value: Buffer): GetStatsResponse => GetStatsResponse.decode(value),
+  },
 } as const;
 
 export interface OpenGateServiceServer extends UntypedServiceImplementation {
@@ -127,6 +139,8 @@ export interface OpenGateServiceServer extends UntypedServiceImplementation {
   deleteConfig: handleUnaryCall<DeleteConfigRequest, DeleteConfigResponse>;
   /** GetRoutes retrieves all routes for routing purposes */
   getRoutes: handleUnaryCall<GetRoutesRequest, GetRoutesResponse>;
+  /** GetStats retrieves dashboard statistics */
+  getStats: handleUnaryCall<GetStatsRequest, GetStatsResponse>;
 }
 
 export interface OpenGateServiceClient extends Client {
@@ -238,6 +252,22 @@ export interface OpenGateServiceClient extends Client {
     metadata: Metadata,
     options: Partial<CallOptions>,
     callback: (error: ServiceError | null, response: GetRoutesResponse) => void,
+  ): ClientUnaryCall;
+  /** GetStats retrieves dashboard statistics */
+  getStats(
+    request: GetStatsRequest,
+    callback: (error: ServiceError | null, response: GetStatsResponse) => void,
+  ): ClientUnaryCall;
+  getStats(
+    request: GetStatsRequest,
+    metadata: Metadata,
+    callback: (error: ServiceError | null, response: GetStatsResponse) => void,
+  ): ClientUnaryCall;
+  getStats(
+    request: GetStatsRequest,
+    metadata: Metadata,
+    options: Partial<CallOptions>,
+    callback: (error: ServiceError | null, response: GetStatsResponse) => void,
   ): ClientUnaryCall;
 }
 

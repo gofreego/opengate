@@ -187,6 +187,28 @@ func (s *Service) GetRoutes(ctx context.Context, req *opengate_v1.GetRoutesReque
 	}, nil
 }
 
+// GetStats retrieves dashboard statistics
+func (s *Service) GetStats(ctx context.Context, req *opengate_v1.GetStatsRequest) (*opengate_v1.GetStatsResponse, error) {
+	// Check read permission
+	if !utils.HasPermission(ctx, constants.PERMISSION_ROUTES_READ) {
+		return nil, status.Error(codes.PermissionDenied, "permission denied: routes:read required")
+	}
+
+	// Get total count of configs using ListConfigs with limit 1
+	_, total, err := s.repo.ListConfigs(ctx, &models.ConfigFilter{
+		Limit:  1,
+		Offset: 0,
+	})
+	if err != nil {
+		return nil, err
+	}
+
+	return &opengate_v1.GetStatsResponse{
+		TotalRoutes: int32(total),
+		Message:     "Stats retrieved successfully",
+	}, nil
+}
+
 // validateCreateConfigRequest validates the create config request
 func validateCreateConfigRequest(req *opengate_v1.CreateConfigRequest) error {
 	if req.GetName() == "" {

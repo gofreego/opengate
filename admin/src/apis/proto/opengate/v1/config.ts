@@ -137,6 +137,16 @@ export interface DeleteConfigResponse {
   message: string;
 }
 
+/** GetStatsRequest is the request to get dashboard stats */
+export interface GetStatsRequest {
+}
+
+/** GetStatsResponse contains dashboard statistics */
+export interface GetStatsResponse {
+  totalRoutes: number;
+  message: string;
+}
+
 function createBaseAuthenticationException(): AuthenticationException {
   return { path: "", methods: [] };
 }
@@ -1814,6 +1824,129 @@ export const DeleteConfigResponse: MessageFns<DeleteConfigResponse> = {
   },
   fromPartial<I extends Exact<DeepPartial<DeleteConfigResponse>, I>>(object: I): DeleteConfigResponse {
     const message = createBaseDeleteConfigResponse();
+    message.message = object.message ?? "";
+    return message;
+  },
+};
+
+function createBaseGetStatsRequest(): GetStatsRequest {
+  return {};
+}
+
+export const GetStatsRequest: MessageFns<GetStatsRequest> = {
+  encode(_: GetStatsRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GetStatsRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetStatsRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(_: any): GetStatsRequest {
+    return {};
+  },
+
+  toJSON(_: GetStatsRequest): unknown {
+    const obj: any = {};
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<GetStatsRequest>, I>>(base?: I): GetStatsRequest {
+    return GetStatsRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<GetStatsRequest>, I>>(_: I): GetStatsRequest {
+    const message = createBaseGetStatsRequest();
+    return message;
+  },
+};
+
+function createBaseGetStatsResponse(): GetStatsResponse {
+  return { totalRoutes: 0, message: "" };
+}
+
+export const GetStatsResponse: MessageFns<GetStatsResponse> = {
+  encode(message: GetStatsResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.totalRoutes !== 0) {
+      writer.uint32(8).int32(message.totalRoutes);
+    }
+    if (message.message !== "") {
+      writer.uint32(18).string(message.message);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): GetStatsResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    const end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseGetStatsResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.totalRoutes = reader.int32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 18) {
+            break;
+          }
+
+          message.message = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): GetStatsResponse {
+    return {
+      totalRoutes: isSet(object.totalRoutes)
+        ? globalThis.Number(object.totalRoutes)
+        : isSet(object.total_routes)
+        ? globalThis.Number(object.total_routes)
+        : 0,
+      message: isSet(object.message) ? globalThis.String(object.message) : "",
+    };
+  },
+
+  toJSON(message: GetStatsResponse): unknown {
+    const obj: any = {};
+    if (message.totalRoutes !== 0) {
+      obj.totalRoutes = Math.round(message.totalRoutes);
+    }
+    if (message.message !== "") {
+      obj.message = message.message;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<GetStatsResponse>, I>>(base?: I): GetStatsResponse {
+    return GetStatsResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<GetStatsResponse>, I>>(object: I): GetStatsResponse {
+    const message = createBaseGetStatsResponse();
+    message.totalRoutes = object.totalRoutes ?? 0;
     message.message = object.message ?? "";
     return message;
   },

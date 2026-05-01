@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { Box, Container, Button, TextField, InputAdornment } from '@mui/material'
 import { Add as AddIcon, Search as SearchIcon } from '@mui/icons-material'
-import { ConfirmDialog, useNotification } from '@gofreego/tsutils'
+import { ConfirmDialog } from '@gofreego/tsutils'
 import { useConfigs } from '../../hooks/useConfigs'
 import { RouteTable } from './components/RouteTable'
 import { RouteFormDialog } from './components/RouteFormDialog'
@@ -26,8 +26,6 @@ export const RoutesPage = () => {
     getConfigById,
     clearSelectedConfig,
   } = useConfigs()
-
-  const { showNotification } = useNotification()
 
   const [openFormDialog, setOpenFormDialog] = useState(false)
   const [openViewDialog, setOpenViewDialog] = useState(false)
@@ -93,10 +91,7 @@ export const RoutesPage = () => {
 
   const handleConfirmDelete = async () => {
     if (deleteId) {
-      const success = await deleteConfig(deleteId)
-      if (success) {
-        showNotification('Config deleted successfully', 'success')
-      }
+      await deleteConfig(deleteId)
       setOpenConfirmDialog(false)
       setDeleteId('')
       loadConfigs({ limit: LIMIT, offset: 0, search: searchTerm, append: false })

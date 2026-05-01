@@ -1,4 +1,5 @@
 import { useState, useCallback } from 'react'
+import { useNotification } from '@gofreego/tsutils'
 import { configService } from '../services/configService'
 import type { Config, CreateConfigRequest, UpdateConfigRequest } from '../apis/proto/opengate/v1/config'
 
@@ -17,6 +18,7 @@ export const useConfigs = () => {
   const [error, setError] = useState<string | null>(null)
   const [total, setTotal] = useState(0)
   const [hasMore, setHasMore] = useState(false)
+  const { showNotification } = useNotification()
 
   const loadConfigs = useCallback(async (options: UseConfigsOptions = {}) => {
     const { limit = 10, offset = 0, search, append = false } = options
@@ -41,12 +43,14 @@ export const useConfigs = () => {
       setTotal(response.total || 0)
       setHasMore(offset + newConfigs.length < (response.total || 0))
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load configs')
+      const message = 'Failed to load routes'
+      setError(message)
+      showNotification(message, 'error')
     } finally {
       setLoading(false)
       setLoadingMore(false)
     }
-  }, [])
+  }, [showNotification])
 
   const getConfigById = useCallback(async (id: string): Promise<Config | null> => {
     try {
@@ -54,10 +58,12 @@ export const useConfigs = () => {
       setSelectedConfig(response.config || null)
       return response.config || null
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to load config')
+      const message = 'Failed to load route'
+      setError(message)
+      showNotification(message, 'error')
       return null
     }
-  }, [])
+  }, [showNotification])
 
   const createConfig = useCallback(async (data: CreateConfigRequest): Promise<Config | null> => {
     setLoading(true)
@@ -65,14 +71,17 @@ export const useConfigs = () => {
 
     try {
       const response = await configService.create(data)
+      showNotification('Route created successfully', 'success')
       return response.config || null
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to create config')
+      const message = 'Failed to create route'
+      setError(message)
+      showNotification(message, 'error')
       return null
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [showNotification])
 
   const updateConfig = useCallback(async (id: string, data: Omit<UpdateConfigRequest, 'id'>): Promise<Config | null> => {
     setLoading(true)
@@ -80,14 +89,17 @@ export const useConfigs = () => {
 
     try {
       const response = await configService.update(id, data)
+      showNotification('Route updated successfully', 'success')
       return response.config || null
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to update config')
+      const message = 'Failed to update route'
+      setError(message)
+      showNotification(message, 'error')
       return null
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [showNotification])
 
   const deleteConfig = useCallback(async (id: string): Promise<boolean> => {
     setLoading(true)
@@ -96,14 +108,17 @@ export const useConfigs = () => {
     try {
       await configService.delete(id)
       setConfigs(prev => prev.filter(c => c.id !== id))
+      showNotification('Route deleted successfully', 'success')
       return true
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to delete config')
+      const message = 'Failed to delete route'
+      setError(message)
+      showNotification(message, 'error')
       return false
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [showNotification])
 
   const clearSelectedConfig = useCallback(() => {
     setSelectedConfig(null)

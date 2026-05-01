@@ -26,8 +26,7 @@ var File_proto_opengate_v1_opengate_proto protoreflect.FileDescriptor
 
 const file_proto_opengate_v1_opengate_proto_rawDesc = "" +
 	"\n" +
-	" proto/opengate/v1/opengate.proto\x12\vopengate.v1\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a proto/opengate/common/ping.proto\x1a\x1eproto/opengate/v1/config.proto2\xa1\n" +
-	"\n" +
+	" proto/opengate/v1/opengate.proto\x12\vopengate.v1\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a proto/opengate/common/ping.proto\x1a\x1eproto/opengate/v1/config.proto2\xd4\v\n" +
 	"\x0fOpenGateService\x12\x8f\x01\n" +
 	"\x04Ping\x12\x18.opengate.v1.PingRequest\x1a\x19.opengate.v1.PingResponse\"R\x92A6\n" +
 	"\x04Ping\x12\x0fPing the server\x1a\x1dCheck if the server is alive.\x82\xd3\xe4\x93\x02\x13\x12\x11/opengate/v1/ping\x12\xcd\x01\n" +
@@ -42,7 +41,9 @@ const file_proto_opengate_v1_opengate_proto_rawDesc = "" +
 	"\fDeleteConfig\x12 .opengate.v1.DeleteConfigRequest\x1a!.opengate.v1.DeleteConfigResponse\"g\x92AC\n" +
 	"\aConfigs\x12\x0fDelete a config\x1a'Delete a route configuration by its ID.\x82\xd3\xe4\x93\x02\x1b*\x19/opengate/v1/configs/{id}\x12\xb0\x01\n" +
 	"\tGetRoutes\x12\x1d.opengate.v1.GetRoutesRequest\x1a\x1e.opengate.v1.GetRoutesResponse\"d\x92AF\n" +
-	"\x06Routes\x12\x0eGet all routes\x1a,Retrieve all routes for the routing manager.\x82\xd3\xe4\x93\x02\x15\x12\x13/opengate/v1/routesB\x9d\x03\x92A\x8a\x03\x12Q\n" +
+	"\x06Routes\x12\x0eGet all routes\x1a,Retrieve all routes for the routing manager.\x82\xd3\xe4\x93\x02\x15\x12\x13/opengate/v1/routes\x12\xb0\x01\n" +
+	"\bGetStats\x12\x1c.opengate.v1.GetStatsRequest\x1a\x1d.opengate.v1.GetStatsResponse\"g\x92AJ\n" +
+	"\x05Stats\x12\x13Get dashboard stats\x1a,Retrieve statistics for the admin dashboard.\x82\xd3\xe4\x93\x02\x14\x12\x12/opengate/v1/statsB\xca\x03\x92A\xb7\x03\x12Q\n" +
 	"\fOpenGate API\x129OpenGate API Gateway - Configuration and Route Management2\x06v1.0.0Z\x86\x01\n" +
 	"L\n" +
 	"\vPermissions\x12=\b\x02\x12)Comma-separated list of user permissions.\x1a\fX-User-Perms \x02\n" +
@@ -55,7 +56,8 @@ const file_proto_opengate_v1_opengate_proto_rawDesc = "" +
 	"\x06UserID\x12\x00j\x1e\n" +
 	"\x04Ping\x12\x16Health check endpointsj6\n" +
 	"\aConfigs\x12+Endpoints for managing route configurationsj5\n" +
-	"\x06Routes\x12+Endpoints for retrieving routes for routingZ\r./opengate_v1b\x06proto3"
+	"\x06Routes\x12+Endpoints for retrieving routes for routingj+\n" +
+	"\x05Stats\x12\"Endpoints for dashboard statisticsZ\r./opengate_v1b\x06proto3"
 
 var file_proto_opengate_v1_opengate_proto_goTypes = []any{
 	(*PingRequest)(nil),          // 0: opengate.v1.PingRequest
@@ -65,13 +67,15 @@ var file_proto_opengate_v1_opengate_proto_goTypes = []any{
 	(*UpdateConfigRequest)(nil),  // 4: opengate.v1.UpdateConfigRequest
 	(*DeleteConfigRequest)(nil),  // 5: opengate.v1.DeleteConfigRequest
 	(*GetRoutesRequest)(nil),     // 6: opengate.v1.GetRoutesRequest
-	(*PingResponse)(nil),         // 7: opengate.v1.PingResponse
-	(*CreateConfigResponse)(nil), // 8: opengate.v1.CreateConfigResponse
-	(*GetConfigResponse)(nil),    // 9: opengate.v1.GetConfigResponse
-	(*ListConfigsResponse)(nil),  // 10: opengate.v1.ListConfigsResponse
-	(*UpdateConfigResponse)(nil), // 11: opengate.v1.UpdateConfigResponse
-	(*DeleteConfigResponse)(nil), // 12: opengate.v1.DeleteConfigResponse
-	(*GetRoutesResponse)(nil),    // 13: opengate.v1.GetRoutesResponse
+	(*GetStatsRequest)(nil),      // 7: opengate.v1.GetStatsRequest
+	(*PingResponse)(nil),         // 8: opengate.v1.PingResponse
+	(*CreateConfigResponse)(nil), // 9: opengate.v1.CreateConfigResponse
+	(*GetConfigResponse)(nil),    // 10: opengate.v1.GetConfigResponse
+	(*ListConfigsResponse)(nil),  // 11: opengate.v1.ListConfigsResponse
+	(*UpdateConfigResponse)(nil), // 12: opengate.v1.UpdateConfigResponse
+	(*DeleteConfigResponse)(nil), // 13: opengate.v1.DeleteConfigResponse
+	(*GetRoutesResponse)(nil),    // 14: opengate.v1.GetRoutesResponse
+	(*GetStatsResponse)(nil),     // 15: opengate.v1.GetStatsResponse
 }
 var file_proto_opengate_v1_opengate_proto_depIdxs = []int32{
 	0,  // 0: opengate.v1.OpenGateService.Ping:input_type -> opengate.v1.PingRequest
@@ -81,15 +85,17 @@ var file_proto_opengate_v1_opengate_proto_depIdxs = []int32{
 	4,  // 4: opengate.v1.OpenGateService.UpdateConfig:input_type -> opengate.v1.UpdateConfigRequest
 	5,  // 5: opengate.v1.OpenGateService.DeleteConfig:input_type -> opengate.v1.DeleteConfigRequest
 	6,  // 6: opengate.v1.OpenGateService.GetRoutes:input_type -> opengate.v1.GetRoutesRequest
-	7,  // 7: opengate.v1.OpenGateService.Ping:output_type -> opengate.v1.PingResponse
-	8,  // 8: opengate.v1.OpenGateService.CreateConfig:output_type -> opengate.v1.CreateConfigResponse
-	9,  // 9: opengate.v1.OpenGateService.GetConfig:output_type -> opengate.v1.GetConfigResponse
-	10, // 10: opengate.v1.OpenGateService.ListConfigs:output_type -> opengate.v1.ListConfigsResponse
-	11, // 11: opengate.v1.OpenGateService.UpdateConfig:output_type -> opengate.v1.UpdateConfigResponse
-	12, // 12: opengate.v1.OpenGateService.DeleteConfig:output_type -> opengate.v1.DeleteConfigResponse
-	13, // 13: opengate.v1.OpenGateService.GetRoutes:output_type -> opengate.v1.GetRoutesResponse
-	7,  // [7:14] is the sub-list for method output_type
-	0,  // [0:7] is the sub-list for method input_type
+	7,  // 7: opengate.v1.OpenGateService.GetStats:input_type -> opengate.v1.GetStatsRequest
+	8,  // 8: opengate.v1.OpenGateService.Ping:output_type -> opengate.v1.PingResponse
+	9,  // 9: opengate.v1.OpenGateService.CreateConfig:output_type -> opengate.v1.CreateConfigResponse
+	10, // 10: opengate.v1.OpenGateService.GetConfig:output_type -> opengate.v1.GetConfigResponse
+	11, // 11: opengate.v1.OpenGateService.ListConfigs:output_type -> opengate.v1.ListConfigsResponse
+	12, // 12: opengate.v1.OpenGateService.UpdateConfig:output_type -> opengate.v1.UpdateConfigResponse
+	13, // 13: opengate.v1.OpenGateService.DeleteConfig:output_type -> opengate.v1.DeleteConfigResponse
+	14, // 14: opengate.v1.OpenGateService.GetRoutes:output_type -> opengate.v1.GetRoutesResponse
+	15, // 15: opengate.v1.OpenGateService.GetStats:output_type -> opengate.v1.GetStatsResponse
+	8,  // [8:16] is the sub-list for method output_type
+	0,  // [0:8] is the sub-list for method input_type
 	0,  // [0:0] is the sub-list for extension type_name
 	0,  // [0:0] is the sub-list for extension extendee
 	0,  // [0:0] is the sub-list for field type_name

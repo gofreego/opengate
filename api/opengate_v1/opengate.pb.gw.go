@@ -276,6 +276,27 @@ func local_request_OpenGateService_GetRoutes_0(ctx context.Context, marshaler ru
 	return msg, metadata, err
 }
 
+func request_OpenGateService_GetStats_0(ctx context.Context, marshaler runtime.Marshaler, client OpenGateServiceClient, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq GetStatsRequest
+		metadata runtime.ServerMetadata
+	)
+	if req.Body != nil {
+		_, _ = io.Copy(io.Discard, req.Body)
+	}
+	msg, err := client.GetStats(ctx, &protoReq, grpc.Header(&metadata.HeaderMD), grpc.Trailer(&metadata.TrailerMD))
+	return msg, metadata, err
+}
+
+func local_request_OpenGateService_GetStats_0(ctx context.Context, marshaler runtime.Marshaler, server OpenGateServiceServer, req *http.Request, pathParams map[string]string) (proto.Message, runtime.ServerMetadata, error) {
+	var (
+		protoReq GetStatsRequest
+		metadata runtime.ServerMetadata
+	)
+	msg, err := server.GetStats(ctx, &protoReq)
+	return msg, metadata, err
+}
+
 // RegisterOpenGateServiceHandlerServer registers the http handlers for service OpenGateService to "mux".
 // UnaryRPC     :call OpenGateServiceServer directly.
 // StreamingRPC :currently unsupported pending https://github.com/grpc/grpc-go/issues/906.
@@ -421,6 +442,26 @@ func RegisterOpenGateServiceHandlerServer(ctx context.Context, mux *runtime.Serv
 			return
 		}
 		forward_OpenGateService_GetRoutes_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
+	mux.Handle(http.MethodGet, pattern_OpenGateService_GetStats_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		var stream runtime.ServerTransportStream
+		ctx = grpc.NewContextWithServerTransportStream(ctx, &stream)
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateIncomingContext(ctx, mux, req, "/opengate.v1.OpenGateService/GetStats", runtime.WithHTTPPathPattern("/opengate/v1/stats"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := local_request_OpenGateService_GetStats_0(annotatedContext, inboundMarshaler, server, req, pathParams)
+		md.HeaderMD, md.TrailerMD = metadata.Join(md.HeaderMD, stream.Header()), metadata.Join(md.TrailerMD, stream.Trailer())
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_OpenGateService_GetStats_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
 
 	return nil
@@ -581,6 +622,23 @@ func RegisterOpenGateServiceHandlerClient(ctx context.Context, mux *runtime.Serv
 		}
 		forward_OpenGateService_GetRoutes_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
 	})
+	mux.Handle(http.MethodGet, pattern_OpenGateService_GetStats_0, func(w http.ResponseWriter, req *http.Request, pathParams map[string]string) {
+		ctx, cancel := context.WithCancel(req.Context())
+		defer cancel()
+		inboundMarshaler, outboundMarshaler := runtime.MarshalerForRequest(mux, req)
+		annotatedContext, err := runtime.AnnotateContext(ctx, mux, req, "/opengate.v1.OpenGateService/GetStats", runtime.WithHTTPPathPattern("/opengate/v1/stats"))
+		if err != nil {
+			runtime.HTTPError(ctx, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		resp, md, err := request_OpenGateService_GetStats_0(annotatedContext, inboundMarshaler, client, req, pathParams)
+		annotatedContext = runtime.NewServerMetadataContext(annotatedContext, md)
+		if err != nil {
+			runtime.HTTPError(annotatedContext, mux, outboundMarshaler, w, req, err)
+			return
+		}
+		forward_OpenGateService_GetStats_0(annotatedContext, mux, outboundMarshaler, w, req, resp, mux.GetForwardResponseOptions()...)
+	})
 	return nil
 }
 
@@ -592,6 +650,7 @@ var (
 	pattern_OpenGateService_UpdateConfig_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"opengate", "v1", "configs", "id"}, ""))
 	pattern_OpenGateService_DeleteConfig_0 = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2, 1, 0, 4, 1, 5, 3}, []string{"opengate", "v1", "configs", "id"}, ""))
 	pattern_OpenGateService_GetRoutes_0    = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"opengate", "v1", "routes"}, ""))
+	pattern_OpenGateService_GetStats_0     = runtime.MustPattern(runtime.NewPattern(1, []int{2, 0, 2, 1, 2, 2}, []string{"opengate", "v1", "stats"}, ""))
 )
 
 var (
@@ -602,4 +661,5 @@ var (
 	forward_OpenGateService_UpdateConfig_0 = runtime.ForwardResponseMessage
 	forward_OpenGateService_DeleteConfig_0 = runtime.ForwardResponseMessage
 	forward_OpenGateService_GetRoutes_0    = runtime.ForwardResponseMessage
+	forward_OpenGateService_GetStats_0     = runtime.ForwardResponseMessage
 )

@@ -30,7 +30,7 @@ Repository:
     Postgres:
       primary:
         Host: 192.168.1.100
-        Port: 5433
+        Port: 5432
         Username: "admin"
         Password: OSwfiTlc1r5W7Z
         DBName: opengate

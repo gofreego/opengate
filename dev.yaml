@@ -29,7 +29,7 @@ Repository:
     Name: Postgres
     Postgres:
       primary:
-        Host: localhost
+        Host: 192.168.1.100
         Port: 5433
         Username: "admin"
         Password: OSwfiTlc1r5W7Z

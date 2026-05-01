@@ -13,9 +13,9 @@ import (
 )
 
 type Config struct {
-	Auth           auth.Config             `yaml:"Auth"`
-	ChangeDetector changedetector.Config   `yaml:"ChangeDetector"`
-	InitialRoutes  []models.ServiceRoute   `yaml:"InitialRoutes"`
+	Auth           auth.Config           `yaml:"Auth"`
+	ChangeDetector changedetector.Config `yaml:"ChangeDetector"`
+	InitialRoutes  []models.ServiceRoute `yaml:"InitialRoutes"`
 }
 
 type Repository interface {

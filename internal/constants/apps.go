@@ -13,3 +13,9 @@ const (
 
 	COOKIE_AUTHORIZATION = "authorization"
 )
+
+// Route permissions
+const (
+	PERMISSION_ROUTES_READ  = "routes:read"
+	PERMISSION_ROUTES_WRITE = "routes:write"
+)

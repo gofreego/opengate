@@ -7,7 +7,11 @@ import (
 	"time"
 
 	"github.com/gofreego/opengate/api/opengate_v1"
+	"github.com/gofreego/opengate/internal/constants"
 	"github.com/gofreego/opengate/internal/models"
+	"github.com/gofreego/opengate/pkg/utils"
+	"google.golang.org/grpc/codes"
+	"google.golang.org/grpc/status"
 )
 
 const (
@@ -18,6 +22,11 @@ const (
 
 // CreateConfig creates a new route configuration
 func (s *Service) CreateConfig(ctx context.Context, req *opengate_v1.CreateConfigRequest) (*opengate_v1.CreateConfigResponse, error) {
+	// Check write permission
+	if !utils.HasPermission(ctx, constants.PERMISSION_ROUTES_WRITE) {
+		return nil, status.Error(codes.PermissionDenied, "permission denied: routes:write required")
+	}
+
 	// Validate request
 	if err := validateCreateConfigRequest(req); err != nil {
 		return nil, err
@@ -40,6 +49,11 @@ func (s *Service) CreateConfig(ctx context.Context, req *opengate_v1.CreateConfi
 
 // GetConfig retrieves a config by ID
 func (s *Service) GetConfig(ctx context.Context, req *opengate_v1.GetConfigRequest) (*opengate_v1.GetConfigResponse, error) {
+	// Check read permission
+	if !utils.HasPermission(ctx, constants.PERMISSION_ROUTES_READ) {
+		return nil, status.Error(codes.PermissionDenied, "permission denied: routes:read required")
+	}
+
 	if req.GetId() <= 0 {
 		return nil, fmt.Errorf("invalid config id")
 	}
@@ -57,6 +71,11 @@ func (s *Service) GetConfig(ctx context.Context, req *opengate_v1.GetConfigReque
 
 // ListConfigs retrieves configs with pagination
 func (s *Service) ListConfigs(ctx context.Context, req *opengate_v1.ListConfigsRequest) (*opengate_v1.ListConfigsResponse, error) {
+	// Check read permission
+	if !utils.HasPermission(ctx, constants.PERMISSION_ROUTES_READ) {
+		return nil, status.Error(codes.PermissionDenied, "permission denied: routes:read required")
+	}
+
 	limit := int(req.GetLimit())
 	if limit <= 0 {
 		limit = DefaultLimit
@@ -95,6 +114,11 @@ func (s *Service) ListConfigs(ctx context.Context, req *opengate_v1.ListConfigsR
 
 // UpdateConfig updates an existing config
 func (s *Service) UpdateConfig(ctx context.Context, req *opengate_v1.UpdateConfigRequest) (*opengate_v1.UpdateConfigResponse, error) {
+	// Check write permission
+	if !utils.HasPermission(ctx, constants.PERMISSION_ROUTES_WRITE) {
+		return nil, status.Error(codes.PermissionDenied, "permission denied: routes:write required")
+	}
+
 	if req.GetId() <= 0 {
 		return nil, fmt.Errorf("invalid config id")
 	}
@@ -121,6 +145,11 @@ func (s *Service) UpdateConfig(ctx context.Context, req *opengate_v1.UpdateConfi
 
 // DeleteConfig deletes a config by ID
 func (s *Service) DeleteConfig(ctx context.Context, req *opengate_v1.DeleteConfigRequest) (*opengate_v1.DeleteConfigResponse, error) {
+	// Check write permission
+	if !utils.HasPermission(ctx, constants.PERMISSION_ROUTES_WRITE) {
+		return nil, status.Error(codes.PermissionDenied, "permission denied: routes:write required")
+	}
+
 	if req.GetId() <= 0 {
 		return nil, fmt.Errorf("invalid config id")
 	}
@@ -137,6 +166,11 @@ func (s *Service) DeleteConfig(ctx context.Context, req *opengate_v1.DeleteConfi
 
 // GetRoutes retrieves all routes for the routing manager
 func (s *Service) GetRoutes(ctx context.Context, req *opengate_v1.GetRoutesRequest) (*opengate_v1.GetRoutesResponse, error) {
+	// Check read permission
+	if !utils.HasPermission(ctx, constants.PERMISSION_ROUTES_READ) {
+		return nil, status.Error(codes.PermissionDenied, "permission denied: routes:read required")
+	}
+
 	routes, err := s.repo.GetRoutes(ctx)
 	if err != nil {
 		return nil, err

@@ -9,7 +9,7 @@ AppNames:
 Server:
   GatewayPort: 8083
   AdminPort: 8080
-  GinMode: debug
+  GinMode: release
   ReadTimeout: 30s
   WriteTimeout: 30s
   IdleTimeout: 120s

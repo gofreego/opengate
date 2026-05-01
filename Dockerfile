@@ -23,6 +23,8 @@ RUN go mod download
 # Copy the source code
 COPY . .
 
+# Copy the built admin UI
+COPY --from=ui-builder /app/admin/dist /app/admin/dist
 # Build the application
 RUN CGO_ENABLED=0 GOOS=linux go build -o application main.go
 
@@ -38,9 +40,6 @@ RUN apk --no-cache add ca-certificates
 COPY --from=builder /app/application .
 COPY dev.yaml .
 COPY resources/configs/routes /app/resources/configs/routes
-
-# Copy the built admin UI
-COPY --from=ui-builder /app/admin/dist /app/admin/dist
 
 # Set executable permission (optional as it should be inherited from build)
 RUN chmod +x application

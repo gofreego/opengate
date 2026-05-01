@@ -20,11 +20,22 @@ const (
 	DefaultLimit   = 20
 )
 
+// checkPermission checks if the user has the required permission (if permission checking is enabled)
+func (s *Service) checkPermission(ctx context.Context, permission string) error {
+	if !s.cfg.EnablePermissionCheck {
+		return nil
+	}
+	if !utils.HasPermission(ctx, permission) {
+		return status.Errorf(codes.PermissionDenied, "permission denied: %s required", permission)
+	}
+	return nil
+}
+
 // CreateConfig creates a new route configuration
 func (s *Service) CreateConfig(ctx context.Context, req *opengate_v1.CreateConfigRequest) (*opengate_v1.CreateConfigResponse, error) {
 	// Check write permission
-	if !utils.HasPermission(ctx, constants.PERMISSION_ROUTES_WRITE) {
-		return nil, status.Error(codes.PermissionDenied, "permission denied: routes:write required")
+	if err := s.checkPermission(ctx, constants.PERMISSION_ROUTES_WRITE); err != nil {
+		return nil, err
 	}
 
 	// Validate request
@@ -50,8 +61,8 @@ func (s *Service) CreateConfig(ctx context.Context, req *opengate_v1.CreateConfi
 // GetConfig retrieves a config by ID
 func (s *Service) GetConfig(ctx context.Context, req *opengate_v1.GetConfigRequest) (*opengate_v1.GetConfigResponse, error) {
 	// Check read permission
-	if !utils.HasPermission(ctx, constants.PERMISSION_ROUTES_READ) {
-		return nil, status.Error(codes.PermissionDenied, "permission denied: routes:read required")
+	if err := s.checkPermission(ctx, constants.PERMISSION_ROUTES_READ); err != nil {
+		return nil, err
 	}
 
 	if req.GetId() <= 0 {
@@ -72,8 +83,8 @@ func (s *Service) GetConfig(ctx context.Context, req *opengate_v1.GetConfigReque
 // ListConfigs retrieves configs with pagination
 func (s *Service) ListConfigs(ctx context.Context, req *opengate_v1.ListConfigsRequest) (*opengate_v1.ListConfigsResponse, error) {
 	// Check read permission
-	if !utils.HasPermission(ctx, constants.PERMISSION_ROUTES_READ) {
-		return nil, status.Error(codes.PermissionDenied, "permission denied: routes:read required")
+	if err := s.checkPermission(ctx, constants.PERMISSION_ROUTES_READ); err != nil {
+		return nil, err
 	}
 
 	limit := int(req.GetLimit())
@@ -115,8 +126,8 @@ func (s *Service) ListConfigs(ctx context.Context, req *opengate_v1.ListConfigsR
 // UpdateConfig updates an existing config
 func (s *Service) UpdateConfig(ctx context.Context, req *opengate_v1.UpdateConfigRequest) (*opengate_v1.UpdateConfigResponse, error) {
 	// Check write permission
-	if !utils.HasPermission(ctx, constants.PERMISSION_ROUTES_WRITE) {
-		return nil, status.Error(codes.PermissionDenied, "permission denied: routes:write required")
+	if err := s.checkPermission(ctx, constants.PERMISSION_ROUTES_WRITE); err != nil {
+		return nil, err
 	}
 
 	if req.GetId() <= 0 {
@@ -146,8 +157,8 @@ func (s *Service) UpdateConfig(ctx context.Context, req *opengate_v1.UpdateConfi
 // DeleteConfig deletes a config by ID
 func (s *Service) DeleteConfig(ctx context.Context, req *opengate_v1.DeleteConfigRequest) (*opengate_v1.DeleteConfigResponse, error) {
 	// Check write permission
-	if !utils.HasPermission(ctx, constants.PERMISSION_ROUTES_WRITE) {
-		return nil, status.Error(codes.PermissionDenied, "permission denied: routes:write required")
+	if err := s.checkPermission(ctx, constants.PERMISSION_ROUTES_WRITE); err != nil {
+		return nil, err
 	}
 
 	if req.GetId() <= 0 {
@@ -167,8 +178,8 @@ func (s *Service) DeleteConfig(ctx context.Context, req *opengate_v1.DeleteConfi
 // GetRoutes retrieves all routes for the routing manager
 func (s *Service) GetRoutes(ctx context.Context, req *opengate_v1.GetRoutesRequest) (*opengate_v1.GetRoutesResponse, error) {
 	// Check read permission
-	if !utils.HasPermission(ctx, constants.PERMISSION_ROUTES_READ) {
-		return nil, status.Error(codes.PermissionDenied, "permission denied: routes:read required")
+	if err := s.checkPermission(ctx, constants.PERMISSION_ROUTES_READ); err != nil {
+		return nil, err
 	}
 
 	routes, err := s.repo.GetRoutes(ctx)
@@ -190,8 +201,8 @@ func (s *Service) GetRoutes(ctx context.Context, req *opengate_v1.GetRoutesReque
 // GetStats retrieves dashboard statistics
 func (s *Service) GetStats(ctx context.Context, req *opengate_v1.GetStatsRequest) (*opengate_v1.GetStatsResponse, error) {
 	// Check read permission
-	if !utils.HasPermission(ctx, constants.PERMISSION_ROUTES_READ) {
-		return nil, status.Error(codes.PermissionDenied, "permission denied: routes:read required")
+	if err := s.checkPermission(ctx, constants.PERMISSION_ROUTES_READ); err != nil {
+		return nil, err
 	}
 
 	// Get total count of configs using ListConfigs with limit 1

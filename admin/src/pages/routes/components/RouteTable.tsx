@@ -30,7 +30,7 @@ interface ConfigTableProps {
   onLoadMore: () => void
 }
 
-export const ConfigTable = ({
+export const RouteTable = ({
   configs,
   loading,
   loadingMore,

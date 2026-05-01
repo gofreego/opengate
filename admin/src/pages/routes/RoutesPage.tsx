@@ -4,13 +4,13 @@ import { Box, Container, Button, TextField, InputAdornment } from '@mui/material
 import { Add as AddIcon, Search as SearchIcon } from '@mui/icons-material'
 import { ConfirmDialog, useNotification } from '@gofreego/tsutils'
 import { useConfigs } from '../../hooks/useConfigs'
-import { ConfigTable } from './components/ConfigTable'
-import { ConfigFormDialog } from './components/ConfigFormDialog'
-import { ConfigViewDialog } from './components/ConfigViewDialog'
+import { RouteTable } from './components/RouteTable'
+import { RouteFormDialog } from './components/RouteFormDialog'
+import { RouteViewDialog } from './components/RouteViewDialog'
 import { PageHeader } from '../../components'
 import type { Config, CreateConfigRequest, UpdateConfigRequest } from '../../apis/proto/opengate/v1/config'
 
-export const ConfigsPage = () => {
+export const RoutesPage = () => {
   const [searchParams, setSearchParams] = useSearchParams()
 
   const {
@@ -127,7 +127,7 @@ export const ConfigsPage = () => {
   return (
     <Container maxWidth="lg" sx={{ py: 4 }}>
       <PageHeader
-        title="Configs"
+        title="Routes"
         subtitle="Manage your API gateway route configurations"
         action={
           <Button
@@ -135,7 +135,7 @@ export const ConfigsPage = () => {
             startIcon={<AddIcon />}
             onClick={handleCreate}
           >
-            Add Config
+            Add Route
           </Button>
         }
       />
@@ -143,7 +143,7 @@ export const ConfigsPage = () => {
       {/* Search */}
       <Box sx={{ mb: 3 }}>
         <TextField
-          placeholder="Search configs..."
+          placeholder="Search routes..."
           value={searchInput}
           onChange={(e) => setSearchInput(e.target.value)}
           size="small"
@@ -164,7 +164,7 @@ export const ConfigsPage = () => {
       </Box>
 
       {/* Table */}
-      <ConfigTable
+      <RouteTable
         configs={configs}
         loading={loading}
         loadingMore={loadingMore}
@@ -176,7 +176,7 @@ export const ConfigsPage = () => {
       />
 
       {/* Form Dialog */}
-      <ConfigFormDialog
+      <RouteFormDialog
         open={openFormDialog}
         onClose={handleCloseFormDialog}
         onSave={handleSave}
@@ -184,7 +184,7 @@ export const ConfigsPage = () => {
       />
 
       {/* View Dialog */}
-      <ConfigViewDialog
+      <RouteViewDialog
         open={openViewDialog}
         onClose={handleCloseViewDialog}
         config={selectedConfig}
@@ -197,8 +197,8 @@ export const ConfigsPage = () => {
       {/* Confirm Delete Dialog */}
       <ConfirmDialog
         open={openConfirmDialog}
-        title="Delete Config"
-        message="Are you sure you want to delete this config? This action cannot be undone."
+        title="Delete Route"
+        message="Are you sure you want to delete this route? This action cannot be undone."
         onConfirm={handleConfirmDelete}
         onCancel={() => {
           setOpenConfirmDialog(false)

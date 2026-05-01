@@ -2,7 +2,7 @@ import { ThemeProvider, SidebarLayout, NotificationProvider } from '@gofreego/ts
 import DashboardIcon from '@mui/icons-material/Dashboard'
 import RouteIcon from '@mui/icons-material/AltRoute'
 import { DashboardPage } from './pages/dashboard/DashboardPage'
-import { ConfigsPage } from './pages/configs/ConfigsPage'
+import { RoutesPage } from './pages/routes/RoutesPage'
 
 function App() {
   const menuItems = [
@@ -18,7 +18,7 @@ function App() {
       label: 'Routes',
       path: '/gateway/routes',
       icon: <RouteIcon />,
-      component: <ConfigsPage />,
+      component: <RoutesPage />,
     },
   ]
 

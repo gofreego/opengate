@@ -32,7 +32,7 @@ interface ConfigFormDialogProps {
   editData: Config | null
 }
 
-export const ConfigFormDialog = ({
+export const RouteFormDialog = ({
   open,
   onClose,
   onSave,

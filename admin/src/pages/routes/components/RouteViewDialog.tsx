@@ -32,7 +32,7 @@ const formatTimeout = (timeout: string | undefined): string => {
   return `${seconds}s`
 }
 
-export const ConfigViewDialog = ({
+export const RouteViewDialog = ({
   open,
   onClose,
   config,

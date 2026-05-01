@@ -43,6 +43,10 @@ func getIndexHTML() []byte {
 	return data
 }
 
+func getUIHandler() http.Handler {
+	return http_server.GetUIHandler(getUIFileSystem(), getIndexHTML())
+}
+
 func main() {
 	flag.StringVar(&env, "env", "dev", "-env=dev")
 	flag.StringVar(&path, "path", ".", "-path=./")
@@ -64,11 +68,11 @@ func main() {
 	svc := service.NewService(ctx, &conf.Service, repo, cacheInstance)
 
 	// Create Admin HTTP server (APIs + UI)
-	httpServer := http_server.NewHTTPServer(&conf.AdminServer, svc, env, getUIFileSystem(), getIndexHTML())
+	httpServer := http_server.NewHTTPServer(&conf.Server, svc, env, getUIHandler())
 	go httpServer.Run(ctx)
 
 	// Create Gateway server (proxy/routing)
-	gatewayServer := gateway_server.NewGatewayServer(&conf.GatewayServer, svc)
+	gatewayServer := gateway_server.NewGatewayServer(&conf.Server, svc)
 	go gatewayServer.Run(ctx)
 
 	apputils.GracefulShutdown(ctx, httpServer, gatewayServer)

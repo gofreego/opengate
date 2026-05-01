@@ -6,7 +6,7 @@ import (
 )
 
 // UI Handler with SPA Fallback
-func getUIHandler(uifs http.FileSystem, indexHTML []byte) http.Handler {
+func GetUIHandler(uifs http.FileSystem, indexHTML []byte) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// If requesting /, redirect to /gateway/
 		if r.URL.Path == "/" {

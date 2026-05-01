@@ -5,31 +5,18 @@ import (
 	"fmt"
 	"net/http"
 	"strings"
-	"time"
 
 	"github.com/gofreego/opengate/api/opengate_v1"
+	"github.com/gofreego/opengate/internal/configs"
 	"github.com/gofreego/opengate/internal/service"
 	"github.com/gofreego/opengate/pkg/utils"
 
-	"github.com/gofreego/goutils/api/debug"
 	"github.com/gofreego/goutils/logger"
 	"github.com/grpc-ecosystem/grpc-gateway/v2/runtime"
 )
 
-// Config represents admin server settings
-type Config struct {
-	Port           int           `json:"port" yaml:"Port"`
-	GinMode        string        `json:"ginMode" yaml:"GinMode"`
-	ReadTimeout    time.Duration `json:"readTimeout" yaml:"ReadTimeout"`
-	WriteTimeout   time.Duration `json:"writeTimeout" yaml:"WriteTimeout"`
-	IdleTimeout    time.Duration `json:"idleTimeout" yaml:"IdleTimeout"`
-	MaxHeaderBytes int           `json:"maxHeaderBytes" yaml:"MaxHeaderBytes"`
-	EnableCORS     bool          `json:"enableCors" yaml:"EnableCors"`
-	Debug          debug.Config  `json:"debug" yaml:"Debug"`
-}
-
 type HTTPServer struct {
-	cfg       *Config
+	cfg       *configs.Server
 	server    *http.Server
 	service   *service.Service
 	env       string
@@ -49,18 +36,18 @@ func (a *HTTPServer) Shutdown(ctx context.Context) {
 	}
 }
 
-func NewHTTPServer(cfg *Config, service *service.Service, env string, uifs http.FileSystem, indexHTML []byte) *HTTPServer {
+func NewHTTPServer(cfg *configs.Server, service *service.Service, env string, uiHandler http.Handler) *HTTPServer {
 	return &HTTPServer{
 		cfg:       cfg,
 		service:   service,
 		env:       env,
-		uiHandler: getUIHandler(uifs, indexHTML),
+		uiHandler: uiHandler,
 	}
 }
 
 func (a *HTTPServer) Run(ctx context.Context) error {
 
-	if a.cfg.Port == 0 {
+	if a.cfg.AdminPort == 0 {
 		logger.Panic(ctx, "http port is not provided")
 	}
 
@@ -108,11 +95,11 @@ func (a *HTTPServer) Run(ctx context.Context) error {
 	// Apply CORS middleware if enabled
 	var handler http.Handler = finalHandler
 	if a.cfg.EnableCORS {
-		handler = corsMiddleware(finalHandler)
+		handler = utils.CorsMiddleware(finalHandler)
 	}
 
 	a.server = &http.Server{
-		Addr:           fmt.Sprintf(":%d", a.cfg.Port),
+		Addr:           fmt.Sprintf(":%d", a.cfg.AdminPort),
 		Handler:        logger.WithRequestMiddleware(logger.WithRequestTimeMiddleware(handler)),
 		ReadTimeout:    a.cfg.ReadTimeout,
 		WriteTimeout:   a.cfg.WriteTimeout,
@@ -121,12 +108,12 @@ func (a *HTTPServer) Run(ctx context.Context) error {
 	}
 
 	if a.cfg.Debug.Enabled {
-		logger.Info(ctx, "Debug dashboard available at `http://localhost:%d/opengate/v1/debug`", a.cfg.Port)
+		logger.Info(ctx, "Debug dashboard available at `http://localhost:%d/opengate/v1/debug`", a.cfg.AdminPort)
 	}
-	logger.Info(ctx, "Started Admin HTTP server on port %d", a.cfg.Port)
-	logger.Info(ctx, "Admin UI available at `http://localhost:%d/gateway/`", a.cfg.Port)
-	logger.Info(ctx, "API endpoints available at `http://localhost:%d/opengate/v1/`", a.cfg.Port)
-	logger.Info(ctx, "Swagger UI available at `http://localhost:%d/opengate/v1/swagger`", a.cfg.Port)
+	logger.Info(ctx, "Started Admin HTTP server on port %d", a.cfg.AdminPort)
+	logger.Info(ctx, "Admin UI available at `http://localhost:%d/gateway/`", a.cfg.AdminPort)
+	logger.Info(ctx, "API endpoints available at `http://localhost:%d/opengate/v1/`", a.cfg.AdminPort)
+	logger.Info(ctx, "Swagger UI available at `http://localhost:%d/opengate/v1/swagger`", a.cfg.AdminPort)
 
 	// Start HTTP server
 	err = a.server.ListenAndServe()
@@ -135,25 +122,4 @@ func (a *HTTPServer) Run(ctx context.Context) error {
 	}
 	logger.Info(ctx, "Admin HTTP server stopped")
 	return nil
-}
-
-// corsMiddleware adds CORS headers to responses
-func corsMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		origin := r.Header.Get("Origin")
-		if origin != "" {
-			w.Header().Set("Access-Control-Allow-Origin", origin)
-			w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, PATCH")
-			w.Header().Set("Access-Control-Allow-Headers", "Accept, Authorization, Content-Type, X-CSRF-Token, X-User-Id, X-User-Perms")
-			w.Header().Set("Access-Control-Max-Age", "3600")
-		}
-
-		// Handle preflight requests
-		if r.Method == "OPTIONS" {
-			w.WriteHeader(http.StatusNoContent)
-			return
-		}
-
-		next.ServeHTTP(w, r)
-	})
 }

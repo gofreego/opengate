@@ -4,28 +4,18 @@ import (
 	"context"
 	"fmt"
 	"net/http"
-	"time"
 
+	"github.com/gofreego/opengate/internal/configs"
 	"github.com/gofreego/opengate/internal/service"
+	"github.com/gofreego/opengate/pkg/utils"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gofreego/goutils/api"
 	"github.com/gofreego/goutils/logger"
 )
 
-// Config represents gateway server settings
-type Config struct {
-	Port           int           `json:"port" yaml:"Port"`
-	GinMode        string        `json:"ginMode" yaml:"GinMode"`
-	ReadTimeout    time.Duration `json:"readTimeout" yaml:"ReadTimeout"`
-	WriteTimeout   time.Duration `json:"writeTimeout" yaml:"WriteTimeout"`
-	IdleTimeout    time.Duration `json:"idleTimeout" yaml:"IdleTimeout"`
-	MaxHeaderBytes int           `json:"maxHeaderBytes" yaml:"MaxHeaderBytes"`
-	EnableCORS     bool          `json:"enableCors" yaml:"EnableCors"`
-}
-
 type GatewayServer struct {
-	cfg     *Config
+	cfg     *configs.Server
 	server  *http.Server
 	service *service.Service
 }
@@ -43,7 +33,7 @@ func (g *GatewayServer) Shutdown(ctx context.Context) {
 	}
 }
 
-func NewGatewayServer(cfg *Config, service *service.Service) *GatewayServer {
+func NewGatewayServer(cfg *configs.Server, service *service.Service) *GatewayServer {
 	return &GatewayServer{
 		cfg:     cfg,
 		service: service,
@@ -51,7 +41,7 @@ func NewGatewayServer(cfg *Config, service *service.Service) *GatewayServer {
 }
 
 func (g *GatewayServer) Run(ctx context.Context) error {
-	if g.cfg.Port == 0 {
+	if g.cfg.GatewayPort == 0 {
 		logger.Panic(ctx, "gateway port is not provided")
 	}
 
@@ -72,11 +62,11 @@ func (g *GatewayServer) Run(ctx context.Context) error {
 	// Apply CORS middleware if enabled
 	var handler http.Handler = ginRouter
 	if g.cfg.EnableCORS {
-		handler = corsMiddleware(ginRouter)
+		handler = utils.CorsMiddleware(ginRouter)
 	}
 
 	g.server = &http.Server{
-		Addr:           fmt.Sprintf(":%d", g.cfg.Port),
+		Addr:           fmt.Sprintf(":%d", g.cfg.GatewayPort),
 		Handler:        logger.WithRequestMiddleware(logger.WithRequestTimeMiddleware(handler)),
 		ReadTimeout:    g.cfg.ReadTimeout,
 		WriteTimeout:   g.cfg.WriteTimeout,
@@ -84,7 +74,7 @@ func (g *GatewayServer) Run(ctx context.Context) error {
 		MaxHeaderBytes: g.cfg.MaxHeaderBytes,
 	}
 
-	logger.Info(ctx, "Started Gateway server on port %d", g.cfg.Port)
+	logger.Info(ctx, "Started Gateway server on port %d", g.cfg.GatewayPort)
 
 	// Start HTTP server
 	err := g.server.ListenAndServe()
@@ -93,25 +83,4 @@ func (g *GatewayServer) Run(ctx context.Context) error {
 	}
 	logger.Info(ctx, "Gateway server stopped")
 	return nil
-}
-
-// corsMiddleware adds CORS headers to responses
-func corsMiddleware(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		origin := r.Header.Get("Origin")
-		if origin != "" {
-			w.Header().Set("Access-Control-Allow-Origin", origin)
-			w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS, PATCH")
-			w.Header().Set("Access-Control-Allow-Headers", "Accept, Authorization, Content-Type, X-CSRF-Token, X-User-Id, X-User-Perms")
-			w.Header().Set("Access-Control-Max-Age", "3600")
-		}
-
-		// Handle preflight requests
-		if r.Method == "OPTIONS" {
-			w.WriteHeader(http.StatusNoContent)
-			return
-		}
-
-		next.ServeHTTP(w, r)
-	})
 }

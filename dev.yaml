@@ -27,8 +27,8 @@ Repository:
     Name: Postgres
     Postgres:
       primary:
-        Host: 192.168.1.100
-        Port: 5432
+        Host: localhost
+        Port: 5433
         Username: "admin"
         Password: OSwfiTlc1r5W7Z
         DBName: opengate
@@ -48,6 +48,14 @@ Service:
       Username: admin
       Password: admin123
       Tls: false
+      Timeout: 30s
+  InitialRoutes:
+    - Name: openauth
+      PathPrefix: /openauth
+      TargetURL: http://192.168.1.100:8085
+      StripPrefix: false
+      Authentication:
+        Required: false
       Timeout: 30s
 Cache:
   name: memory

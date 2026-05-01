@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/gofreego/goutils/cache"
+	"github.com/gofreego/goutils/logger"
 	"github.com/gofreego/opengate/api/opengate_v1"
 	"github.com/gofreego/opengate/internal/models"
 	"github.com/gofreego/opengate/internal/service/auth"
@@ -12,8 +13,9 @@ import (
 )
 
 type Config struct {
-	Auth           auth.Config           `yaml:"Auth"`
-	ChangeDetector changedetector.Config `yaml:"ChangeDetector"`
+	Auth           auth.Config             `yaml:"Auth"`
+	ChangeDetector changedetector.Config   `yaml:"ChangeDetector"`
+	InitialRoutes  []models.ServiceRoute   `yaml:"InitialRoutes"`
 }
 
 type Repository interface {
@@ -47,6 +49,53 @@ func NewService(ctx context.Context, cfg *Config, repo Repository, cache cache.C
 		routeManager: routemanager.New(),
 		authManager:  authManager,
 	}
+	// Seed initial routes from config
+	service.seedInitialRoutes(ctx)
 	go changedetector.New(repo, service.routeManager, &cfg.ChangeDetector).DetectChanges(ctx)
 	return service
+}
+
+// seedInitialRoutes seeds initial routes from config if they don't exist
+func (s *Service) seedInitialRoutes(ctx context.Context) {
+	if len(s.cfg.InitialRoutes) == 0 {
+		return
+	}
+
+	// Get existing routes
+	existingConfigs, _, err := s.repo.ListConfigs(ctx, &models.ConfigFilter{Limit: 1000})
+	if err != nil {
+		logger.Error(ctx, "failed to list existing configs for seeding: %v", err)
+		return
+	}
+
+	// Create a map of existing route names for quick lookup
+	existingNames := make(map[string]bool)
+	for _, cfg := range existingConfigs {
+		existingNames[cfg.Name] = true
+	}
+
+	// Seed routes that don't exist
+	for _, route := range s.cfg.InitialRoutes {
+		if existingNames[route.Name] {
+			logger.Debug(ctx, "route %s already exists, skipping seed", route.Name)
+			continue
+		}
+
+		config := &models.Config{
+			Name:           route.Name,
+			PathPrefix:     route.PathPrefix,
+			TargetURL:      route.TargetURL,
+			StripPrefix:    route.StripPrefix,
+			Authentication: route.Authentication,
+			Middleware:     route.Middleware,
+			Timeout:        route.Timeout,
+		}
+
+		_, err := s.repo.CreateConfig(ctx, config)
+		if err != nil {
+			logger.Error(ctx, "failed to seed route %s: %v", route.Name, err)
+			continue
+		}
+		logger.Info(ctx, "seeded initial route: %s", route.Name)
+	}
 }

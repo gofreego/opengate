@@ -17,6 +17,7 @@ function App() {
   }, [])
 
   const handleLoginFailed = () => {
+    console.log("Login failed, redirecting to -> ", LOGIN_URL)
     window.location.href = LOGIN_URL
   }
 
@@ -58,9 +59,6 @@ function App() {
             >
               <Route path="gateway/dashboard" element={<DashboardPage />} />
               <Route path="gateway/routes" element={<RoutesPage />} />
-              /**
-              in case no match redirect to dashboard
-              */
               <Route path="*" element={<Navigate to="/gateway/dashboard" replace />} />
             </Route>
           </Routes>

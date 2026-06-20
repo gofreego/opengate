@@ -1,6 +1,6 @@
-import { useEffect } from 'react'
-import { ThemeProvider, SidebarLayout, NotificationProvider, LoginCallbackPage, NotFoundPage, ProtectedRoute } from '@gofreego/tsutils'
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { ThemeProvider, SidebarLayout, NotificationProvider, LoginCallbackPage, ProtectedRoute } from '@gofreego/tsutils'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import DashboardIcon from '@mui/icons-material/Dashboard'
 import RouteIcon from '@mui/icons-material/AltRoute'
 import { DashboardPage } from './pages/dashboard/DashboardPage'
@@ -10,8 +10,10 @@ import { authService, sessionManager } from './services'
 const LOGIN_URL = import.meta.env.VITE_LOGIN_URL as string
 
 function App() {
+  const [isInitialized, setIsInitialized] = useState(false);
   useEffect(() => {
     authService.initializeAuth()
+    setIsInitialized(true);
   }, [])
 
   const handleLoginFailed = () => {
@@ -33,12 +35,19 @@ function App() {
     },
   ]
 
+  if (!isInitialized) {
+    // return loading spinner or placeholder
+    return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+      <div>Loading...</div>
+    </div>
+  }
+
   return (
     <ThemeProvider>
       <NotificationProvider>
         <BrowserRouter>
           <Routes>
-            <Route path="/gateway/login-callback" element={<LoginCallbackPage authService={authService} onLoginFailed={handleLoginFailed} />} />
+            <Route path="/gateway/login-callback" element={<LoginCallbackPage authService={authService} navigateTo="/gateway/dashboard" onLoginFailed={handleLoginFailed} />} />
             <Route
               path="/"
               element={
@@ -49,7 +58,10 @@ function App() {
             >
               <Route path="gateway/dashboard" element={<DashboardPage />} />
               <Route path="gateway/routes" element={<RoutesPage />} />
-              <Route path="*" element={<NotFoundPage />} />
+              /**
+              in case no match redirect to dashboard
+              */
+              <Route path="*" element={<Navigate to="/gateway/dashboard" replace />} />
             </Route>
           </Routes>
         </BrowserRouter>

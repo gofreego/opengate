@@ -3,8 +3,10 @@ import { ThemeProvider, SidebarLayout, NotificationProvider, LoginCallbackPage, 
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import DashboardIcon from '@mui/icons-material/Dashboard'
 import RouteIcon from '@mui/icons-material/AltRoute'
+import SettingsIcon from '@mui/icons-material/Settings'
 import { DashboardPage } from './pages/dashboard/DashboardPage'
 import { RoutesPage } from './pages/routes/RoutesPage'
+import { SettingsPage } from './pages/settings'
 import { authService, sessionManager } from './services'
 
 const LOGIN_URL = import.meta.env.VITE_LOGIN_URL as string
@@ -34,6 +36,12 @@ function App() {
       path: '/gateway/routes',
       icon: <RouteIcon />,
     },
+    {
+      id: 'settings',
+      label: 'Settings',
+      path: '/gateway/settings',
+      icon: <SettingsIcon />,
+    },
   ]
 
   if (!isInitialized) {
@@ -59,6 +67,7 @@ function App() {
             >
               <Route path="gateway/dashboard" element={<DashboardPage />} />
               <Route path="gateway/routes" element={<RoutesPage />} />
+              <Route path="gateway/settings" element={<SettingsPage />} />
               <Route path="*" element={<Navigate to="/gateway/dashboard" replace />} />
             </Route>
           </Routes>

@@ -10,13 +10,15 @@ import (
 	"github.com/gofreego/opengate/internal/service/auth"
 	changedetector "github.com/gofreego/opengate/internal/service/change_detector"
 	routemanager "github.com/gofreego/opengate/internal/service/route_manager"
+	settingsmanager "github.com/gofreego/opengate/internal/service/settings_manager"
 )
 
 type Config struct {
-	Auth                  auth.Config           `yaml:"Auth"`
-	ChangeDetector        changedetector.Config `yaml:"ChangeDetector"`
-	InitialRoutes         []models.ServiceRoute `yaml:"InitialRoutes"`
-	EnablePermissionCheck bool                  `yaml:"EnablePermissionCheck"`
+	Auth                  auth.Config              `yaml:"Auth"`
+	ChangeDetector        changedetector.Config    `yaml:"ChangeDetector"`
+	SettingsManager       settingsmanager.Config   `yaml:"SettingsManager"`
+	InitialRoutes         []models.ServiceRoute    `yaml:"InitialRoutes"`
+	EnablePermissionCheck bool                     `yaml:"EnablePermissionCheck"`
 }
 
 type Repository interface {
@@ -29,13 +31,18 @@ type Repository interface {
 	ListConfigs(ctx context.Context, filter *models.ConfigFilter) ([]*models.Config, int, error)
 	UpdateConfig(ctx context.Context, config *models.Config) (*models.Config, error)
 	DeleteConfig(ctx context.Context, id int64) error
+
+	// App settings operations
+	GetAppSettings(ctx context.Context) ([]*models.AppSetting, error)
+	UpsertAppSetting(ctx context.Context, setting *models.AppSetting) error
 }
 
 type Service struct {
-	repo         Repository
-	routeManager routemanager.Manager
-	authManager  auth.AuthManager
-	cfg          *Config
+	repo            Repository
+	settingsMgr     *settingsmanager.Manager
+	routeManager    routemanager.Manager
+	authManager     auth.AuthManager
+	cfg             *Config
 	opengate_v1.UnimplementedOpenGateServiceServer
 }
 
@@ -44,15 +51,18 @@ func NewService(ctx context.Context, cfg *Config, repo Repository, cache cache.C
 	if err != nil {
 		panic("failed to create AuthManager: " + err.Error())
 	}
+	settingsMgr := settingsmanager.New(repo, &cfg.SettingsManager)
 	service := &Service{
 		cfg:          cfg,
 		repo:         repo,
+		settingsMgr:  settingsMgr,
 		routeManager: routemanager.New(),
 		authManager:  authManager,
 	}
 	// Seed initial routes from config
 	service.seedInitialRoutes(ctx)
 	go changedetector.New(repo, service.routeManager, &cfg.ChangeDetector).DetectChanges(ctx)
+	go settingsMgr.Start(ctx)
 	return service
 }
 

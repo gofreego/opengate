@@ -25,7 +25,23 @@ func NewRepository(ctx context.Context, cfg *sqlutils.Config) (*Repository, erro
 	if err != nil {
 		return nil, err
 	}
-	return &Repository{connManager: connManager}, nil
+	repo := &Repository{connManager: connManager}
+	if err := repo.initAppSettingsTable(ctx); err != nil {
+		return nil, fmt.Errorf("failed to init app_settings table: %w", err)
+	}
+	return repo, nil
+}
+
+func (r *Repository) initAppSettingsTable(ctx context.Context) error {
+	query := `
+		CREATE TABLE IF NOT EXISTS app_settings (
+			key        TEXT PRIMARY KEY,
+			value      TEXT NOT NULL DEFAULT '',
+			updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+		)
+	`
+	_, err := r.connManager.Primary().ExecContext(ctx, query)
+	return err
 }
 
 // Ping checks the database connection
@@ -332,6 +348,41 @@ func (r *Repository) scanConfigRow(row *sql.Row) (*models.Config, error) {
 	}
 
 	return &config, nil
+}
+
+// GetAppSettings retrieves all app settings
+func (r *Repository) GetAppSettings(ctx context.Context) ([]*models.AppSetting, error) {
+	query := `SELECT key, value, updated_at FROM app_settings ORDER BY key`
+	rows, err := r.connManager.Primary().QueryContext(ctx, query)
+	if err != nil {
+		return nil, fmt.Errorf("failed to query app_settings: %w", err)
+	}
+	defer rows.Close()
+
+	var settings []*models.AppSetting
+	for rows.Next() {
+		var s models.AppSetting
+		if err := rows.Scan(&s.Key, &s.Value, &s.UpdatedAt); err != nil {
+			return nil, fmt.Errorf("failed to scan app_setting: %w", err)
+		}
+		settings = append(settings, &s)
+	}
+	return settings, rows.Err()
+}
+
+// UpsertAppSetting inserts or updates a single app setting
+func (r *Repository) UpsertAppSetting(ctx context.Context, setting *models.AppSetting) error {
+	query := `
+		INSERT INTO app_settings (key, value, updated_at)
+		VALUES ($1, $2, NOW())
+		ON CONFLICT (key) DO UPDATE
+			SET value = EXCLUDED.value, updated_at = NOW()
+	`
+	_, err := r.connManager.Primary().ExecContext(ctx, query, setting.Key, setting.Value)
+	if err != nil {
+		return fmt.Errorf("failed to upsert app_setting: %w", err)
+	}
+	return nil
 }
 
 // isUniqueViolation checks if the error is a PostgreSQL unique constraint violation

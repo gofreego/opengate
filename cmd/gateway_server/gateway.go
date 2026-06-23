@@ -51,19 +51,13 @@ func (g *GatewayServer) Run(ctx context.Context) error {
 	ginRouter.Use(gin.Recovery())
 	ginRouter.Use(api.RequestTimeMiddleware)
 	ginRouter.Use(api.RequestIDMiddleware)
-
-	if g.cfg.EnableCORS {
-		ginRouter.Use(api.OptionRequestMiddleware)
-	}
+	ginRouter.Use(api.OptionRequestMiddleware)
 
 	// Catch-all route handler - forwards all requests to service.RouteRequest
 	ginRouter.NoRoute(g.service.RouteRequest)
 
-	// Apply CORS middleware if enabled
-	var handler http.Handler = ginRouter
-	if g.cfg.EnableCORS {
-		handler = utils.CorsMiddleware(ginRouter)
-	}
+	// Apply CORS middleware using dynamic config from settings store
+	handler := utils.CorsMiddleware(ginRouter, g.service.GetCORSConfig)
 
 	g.server = &http.Server{
 		Addr:           fmt.Sprintf(":%d", g.cfg.GatewayPort),

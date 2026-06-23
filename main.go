@@ -23,12 +23,12 @@ var (
 	path string
 )
 
-//go:embed all:admin/dist
+//go:embed all:ui/dist
 var uiDist embed.FS
 
 func getUIFileSystem() http.FileSystem {
 	// Re-map the embedded filesystem to the root of 'dist'
-	fsys, err := fs.Sub(uiDist, "admin/dist")
+	fsys, err := fs.Sub(uiDist, "ui/dist")
 	if err != nil {
 		panic(err)
 	}
@@ -36,7 +36,7 @@ func getUIFileSystem() http.FileSystem {
 }
 
 func getIndexHTML() []byte {
-	data, err := fs.ReadFile(uiDist, "admin/dist/index.html")
+	data, err := fs.ReadFile(uiDist, "ui/dist/index.html")
 	if err != nil {
 		panic(err)
 	}

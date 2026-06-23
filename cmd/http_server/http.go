@@ -2,6 +2,7 @@ package http_server
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"net/http"
 	"strings"
@@ -69,6 +70,9 @@ func (a *HTTPServer) Run(ctx context.Context) error {
 		logger.Panic(ctx, "failed to register OpenGateService: %v", err)
 	}
 
+	// Register app-settings endpoints directly on the mux
+	a.registerAppSettingsHandlers(grpcMux)
+
 	// Register Swagger handler
 	utils.RegisterSwaggerHandler(grpcMux, "/opengate/v1/swagger", "./api/docs/proto", "/opengate/v1/opengate.swagger.json")
 
@@ -92,11 +96,8 @@ func (a *HTTPServer) Run(ctx context.Context) error {
 		http.NotFound(w, r)
 	})
 
-	// Apply CORS middleware if enabled
-	var handler http.Handler = finalHandler
-	if a.cfg.EnableCORS {
-		handler = utils.CorsMiddleware(finalHandler)
-	}
+	// Always apply CORS middleware using dynamic config from settings store
+	handler := utils.CorsMiddleware(finalHandler, a.service.GetCORSConfig)
 
 	a.server = &http.Server{
 		Addr:           fmt.Sprintf(":%d", a.cfg.AdminPort),
@@ -122,4 +123,47 @@ func (a *HTTPServer) Run(ctx context.Context) error {
 	}
 	logger.Info(ctx, "Admin HTTP server stopped")
 	return nil
+}
+
+type appSettingsResponse struct {
+	Settings map[string]json.RawMessage `json:"settings"`
+	Message  string                     `json:"message"`
+}
+
+type upsertSettingRequest struct {
+	Key   string          `json:"key"`
+	Value json.RawMessage `json:"value"`
+}
+
+func (a *HTTPServer) registerAppSettingsHandlers(mux *runtime.ServeMux) {
+	mux.HandlePath("GET", "/opengate/v1/app-settings", func(w http.ResponseWriter, r *http.Request, _ map[string]string) {
+		settings := a.service.GetAppSettings()
+		writeJSON(w, http.StatusOK, appSettingsResponse{
+			Settings: settings,
+			Message:  "App settings retrieved successfully",
+		})
+	})
+
+	mux.HandlePath("PUT", "/opengate/v1/app-settings", func(w http.ResponseWriter, r *http.Request, _ map[string]string) {
+		var req upsertSettingRequest
+		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+			http.Error(w, `{"message":"invalid request body"}`, http.StatusBadRequest)
+			return
+		}
+		if req.Key == "" {
+			http.Error(w, `{"message":"key is required"}`, http.StatusBadRequest)
+			return
+		}
+		if err := a.service.UpsertAppSetting(r.Context(), req.Key, req.Value); err != nil {
+			http.Error(w, fmt.Sprintf(`{"message":%q}`, err.Error()), http.StatusInternalServerError)
+			return
+		}
+		writeJSON(w, http.StatusOK, map[string]string{"message": "Setting updated successfully"})
+	})
+}
+
+func writeJSON(w http.ResponseWriter, status int, v interface{}) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+	json.NewEncoder(w).Encode(v)
 }

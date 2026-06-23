@@ -41,6 +41,8 @@ Repository:
         ConnMaxIdleTime: 5m
       replica: []
 Service:
+  SettingsManager:
+    RefreshInterval: 30s
   EnablePermissionCheck: false
   ChangeDetector:
     RouteUpdateInterval: 10s

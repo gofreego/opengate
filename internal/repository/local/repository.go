@@ -161,3 +161,13 @@ func (r *Repository) UpdateConfig(ctx context.Context, config *models.Config) (*
 func (r *Repository) DeleteConfig(ctx context.Context, id int64) error {
 	return ErrNotImplemented
 }
+
+// GetAppSettings is not implemented for local repository
+func (r *Repository) GetAppSettings(ctx context.Context) ([]*models.AppSetting, error) {
+	return nil, nil
+}
+
+// UpsertAppSetting is not implemented for local repository
+func (r *Repository) UpsertAppSetting(ctx context.Context, setting *models.AppSetting) error {
+	return ErrNotImplemented
+}

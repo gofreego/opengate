@@ -25,23 +25,7 @@ func NewRepository(ctx context.Context, cfg *sqlutils.Config) (*Repository, erro
 	if err != nil {
 		return nil, err
 	}
-	repo := &Repository{connManager: connManager}
-	if err := repo.initAppSettingsTable(ctx); err != nil {
-		return nil, fmt.Errorf("failed to init app_settings table: %w", err)
-	}
-	return repo, nil
-}
-
-func (r *Repository) initAppSettingsTable(ctx context.Context) error {
-	query := `
-		CREATE TABLE IF NOT EXISTS app_settings (
-			key        TEXT PRIMARY KEY,
-			value      TEXT NOT NULL DEFAULT '',
-			updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-		)
-	`
-	_, err := r.connManager.Primary().ExecContext(ctx, query)
-	return err
+	return &Repository{connManager: connManager}, nil
 }
 
 // Ping checks the database connection

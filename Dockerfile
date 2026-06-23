@@ -1,14 +1,14 @@
 # Build UI stage
 FROM node:20-alpine AS ui-builder
 
-WORKDIR /app/admin
+WORKDIR /app/ui
 
 # Copy package files
-COPY admin/package*.json ./
+COPY ui/package*.json ./
 RUN npm install
 
 # Copy source and build
-COPY admin/ .
+COPY ui/ .
 RUN npm run build
 
 # Build Go stage
@@ -23,8 +23,8 @@ RUN go mod download
 # Copy the source code
 COPY . .
 
-# Copy the built admin UI
-COPY --from=ui-builder /app/admin/dist /app/admin/dist
+# Copy the built UI
+COPY --from=ui-builder /app/ui/dist /app/ui/dist
 # Build the application
 RUN CGO_ENABLED=0 GOOS=linux go build -o application main.go
 

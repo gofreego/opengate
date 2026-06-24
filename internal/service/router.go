@@ -123,7 +123,7 @@ func (s *Service) configureProxy(ctx *gin.Context, proxy *httputil.ReverseProxy,
 					req.Header.Set(goutilsConsts.HEADER_PROFILE_IDS, strings.Join(profileIDs, ","))
 				}
 				if len(jwtClaims.Permissions) > 0 {
-					req.Header.Set(goutilsConsts.PERMISSIONS, strings.Join(jwtClaims.Permissions, ","))
+					req.Header.Set("x-user-perms", strings.Join(jwtClaims.Permissions, ","))
 				}
 			}
 		}

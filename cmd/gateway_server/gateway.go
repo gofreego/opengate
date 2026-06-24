@@ -51,7 +51,6 @@ func (g *GatewayServer) Run(ctx context.Context) error {
 	ginRouter.Use(gin.Recovery())
 	ginRouter.Use(api.RequestTimeMiddleware)
 	ginRouter.Use(api.RequestIDMiddleware)
-	ginRouter.Use(api.OptionRequestMiddleware)
 
 	// Catch-all route handler - forwards all requests to service.RouteRequest
 	ginRouter.NoRoute(g.service.RouteRequest)

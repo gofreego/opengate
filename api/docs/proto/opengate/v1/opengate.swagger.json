@@ -23,6 +23,10 @@
       "description": "Endpoints for dashboard statistics"
     },
     {
+      "name": "AppSettings",
+      "description": "Endpoints for managing application settings"
+    },
+    {
       "name": "OpenGateService"
     }
   ],
@@ -33,6 +37,62 @@
     "application/json"
   ],
   "paths": {
+    "/opengate/v1/app-settings": {
+      "get": {
+        "summary": "Get all app settings",
+        "description": "Retrieve all application settings as a key-value map.",
+        "operationId": "OpenGateService_GetAppSettings",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetAppSettingsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "AppSettings"
+        ]
+      },
+      "put": {
+        "summary": "Upsert an app setting",
+        "description": "Create or update an application setting by key.",
+        "operationId": "OpenGateService_UpsertAppSetting",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1UpsertAppSettingResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1UpsertAppSettingRequest"
+            }
+          }
+        ],
+        "tags": [
+          "AppSettings"
+        ]
+      }
+    },
     "/opengate/v1/configs": {
       "get": {
         "summary": "List configs",
@@ -337,6 +397,14 @@
       },
       "additionalProperties": {}
     },
+    "protobufNullValue": {
+      "type": "string",
+      "enum": [
+        "NULL_VALUE"
+      ],
+      "default": "NULL_VALUE",
+      "description": "`NullValue` is a singleton enumeration to represent the null value for the\n`Value` type union.\n\nThe JSON representation for `NullValue` is JSON `null`.\n\n - NULL_VALUE: Null value."
+    },
     "rpcStatus": {
       "type": "object",
       "properties": {
@@ -487,6 +555,18 @@
       },
       "title": "DeleteConfigResponse is the response after deleting a config"
     },
+    "v1GetAppSettingsResponse": {
+      "type": "object",
+      "properties": {
+        "settings": {
+          "type": "object"
+        },
+        "message": {
+          "type": "string"
+        }
+      },
+      "title": "GetAppSettingsResponse contains all app settings as a key → JSON-value map"
+    },
     "v1GetConfigResponse": {
       "type": "object",
       "properties": {
@@ -604,6 +684,25 @@
         }
       },
       "title": "UpdateConfigResponse is the response after updating a config"
+    },
+    "v1UpsertAppSettingRequest": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "type": "string"
+        },
+        "value": {}
+      },
+      "title": "UpsertAppSettingRequest is the request to create or update a single setting"
+    },
+    "v1UpsertAppSettingResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      },
+      "title": "UpsertAppSettingResponse is the response after upserting a setting"
     }
   },
   "securityDefinitions": {

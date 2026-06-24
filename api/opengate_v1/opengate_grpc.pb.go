@@ -19,14 +19,16 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	OpenGateService_Ping_FullMethodName         = "/opengate.v1.OpenGateService/Ping"
-	OpenGateService_CreateConfig_FullMethodName = "/opengate.v1.OpenGateService/CreateConfig"
-	OpenGateService_GetConfig_FullMethodName    = "/opengate.v1.OpenGateService/GetConfig"
-	OpenGateService_ListConfigs_FullMethodName  = "/opengate.v1.OpenGateService/ListConfigs"
-	OpenGateService_UpdateConfig_FullMethodName = "/opengate.v1.OpenGateService/UpdateConfig"
-	OpenGateService_DeleteConfig_FullMethodName = "/opengate.v1.OpenGateService/DeleteConfig"
-	OpenGateService_GetRoutes_FullMethodName    = "/opengate.v1.OpenGateService/GetRoutes"
-	OpenGateService_GetStats_FullMethodName     = "/opengate.v1.OpenGateService/GetStats"
+	OpenGateService_Ping_FullMethodName             = "/opengate.v1.OpenGateService/Ping"
+	OpenGateService_CreateConfig_FullMethodName     = "/opengate.v1.OpenGateService/CreateConfig"
+	OpenGateService_GetConfig_FullMethodName        = "/opengate.v1.OpenGateService/GetConfig"
+	OpenGateService_ListConfigs_FullMethodName      = "/opengate.v1.OpenGateService/ListConfigs"
+	OpenGateService_UpdateConfig_FullMethodName     = "/opengate.v1.OpenGateService/UpdateConfig"
+	OpenGateService_DeleteConfig_FullMethodName     = "/opengate.v1.OpenGateService/DeleteConfig"
+	OpenGateService_GetRoutes_FullMethodName        = "/opengate.v1.OpenGateService/GetRoutes"
+	OpenGateService_GetStats_FullMethodName         = "/opengate.v1.OpenGateService/GetStats"
+	OpenGateService_GetAppSettings_FullMethodName   = "/opengate.v1.OpenGateService/GetAppSettings"
+	OpenGateService_UpsertAppSetting_FullMethodName = "/opengate.v1.OpenGateService/UpsertAppSetting"
 )
 
 // OpenGateServiceClient is the client API for OpenGateService service.
@@ -49,6 +51,10 @@ type OpenGateServiceClient interface {
 	GetRoutes(ctx context.Context, in *GetRoutesRequest, opts ...grpc.CallOption) (*GetRoutesResponse, error)
 	// GetStats retrieves dashboard statistics
 	GetStats(ctx context.Context, in *GetStatsRequest, opts ...grpc.CallOption) (*GetStatsResponse, error)
+	// GetAppSettings retrieves all application settings
+	GetAppSettings(ctx context.Context, in *GetAppSettingsRequest, opts ...grpc.CallOption) (*GetAppSettingsResponse, error)
+	// UpsertAppSetting creates or updates a single application setting
+	UpsertAppSetting(ctx context.Context, in *UpsertAppSettingRequest, opts ...grpc.CallOption) (*UpsertAppSettingResponse, error)
 }
 
 type openGateServiceClient struct {
@@ -139,6 +145,26 @@ func (c *openGateServiceClient) GetStats(ctx context.Context, in *GetStatsReques
 	return out, nil
 }
 
+func (c *openGateServiceClient) GetAppSettings(ctx context.Context, in *GetAppSettingsRequest, opts ...grpc.CallOption) (*GetAppSettingsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetAppSettingsResponse)
+	err := c.cc.Invoke(ctx, OpenGateService_GetAppSettings_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *openGateServiceClient) UpsertAppSetting(ctx context.Context, in *UpsertAppSettingRequest, opts ...grpc.CallOption) (*UpsertAppSettingResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpsertAppSettingResponse)
+	err := c.cc.Invoke(ctx, OpenGateService_UpsertAppSetting_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // OpenGateServiceServer is the server API for OpenGateService service.
 // All implementations must embed UnimplementedOpenGateServiceServer
 // for forward compatibility.
@@ -159,6 +185,10 @@ type OpenGateServiceServer interface {
 	GetRoutes(context.Context, *GetRoutesRequest) (*GetRoutesResponse, error)
 	// GetStats retrieves dashboard statistics
 	GetStats(context.Context, *GetStatsRequest) (*GetStatsResponse, error)
+	// GetAppSettings retrieves all application settings
+	GetAppSettings(context.Context, *GetAppSettingsRequest) (*GetAppSettingsResponse, error)
+	// UpsertAppSetting creates or updates a single application setting
+	UpsertAppSetting(context.Context, *UpsertAppSettingRequest) (*UpsertAppSettingResponse, error)
 	mustEmbedUnimplementedOpenGateServiceServer()
 }
 
@@ -192,6 +222,12 @@ func (UnimplementedOpenGateServiceServer) GetRoutes(context.Context, *GetRoutesR
 }
 func (UnimplementedOpenGateServiceServer) GetStats(context.Context, *GetStatsRequest) (*GetStatsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetStats not implemented")
+}
+func (UnimplementedOpenGateServiceServer) GetAppSettings(context.Context, *GetAppSettingsRequest) (*GetAppSettingsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAppSettings not implemented")
+}
+func (UnimplementedOpenGateServiceServer) UpsertAppSetting(context.Context, *UpsertAppSettingRequest) (*UpsertAppSettingResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpsertAppSetting not implemented")
 }
 func (UnimplementedOpenGateServiceServer) mustEmbedUnimplementedOpenGateServiceServer() {}
 func (UnimplementedOpenGateServiceServer) testEmbeddedByValue()                         {}
@@ -358,6 +394,42 @@ func _OpenGateService_GetStats_Handler(srv interface{}, ctx context.Context, dec
 	return interceptor(ctx, in, info, handler)
 }
 
+func _OpenGateService_GetAppSettings_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAppSettingsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OpenGateServiceServer).GetAppSettings(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OpenGateService_GetAppSettings_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OpenGateServiceServer).GetAppSettings(ctx, req.(*GetAppSettingsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _OpenGateService_UpsertAppSetting_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpsertAppSettingRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(OpenGateServiceServer).UpsertAppSetting(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: OpenGateService_UpsertAppSetting_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(OpenGateServiceServer).UpsertAppSetting(ctx, req.(*UpsertAppSettingRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // OpenGateService_ServiceDesc is the grpc.ServiceDesc for OpenGateService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -396,6 +468,14 @@ var OpenGateService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetStats",
 			Handler:    _OpenGateService_GetStats_Handler,
+		},
+		{
+			MethodName: "GetAppSettings",
+			Handler:    _OpenGateService_GetAppSettings_Handler,
+		},
+		{
+			MethodName: "UpsertAppSetting",
+			Handler:    _OpenGateService_UpsertAppSetting_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

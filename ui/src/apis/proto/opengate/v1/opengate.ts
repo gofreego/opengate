@@ -19,6 +19,12 @@ import {
 } from "@grpc/grpc-js";
 import { PingRequest, PingResponse } from "../common/ping";
 import {
+  GetAppSettingsRequest,
+  GetAppSettingsResponse,
+  UpsertAppSettingRequest,
+  UpsertAppSettingResponse,
+} from "./app_settings";
+import {
   CreateConfigRequest,
   CreateConfigResponse,
   DeleteConfigRequest,
@@ -122,6 +128,30 @@ export const OpenGateServiceService = {
     responseSerialize: (value: GetStatsResponse): Buffer => Buffer.from(GetStatsResponse.encode(value).finish()),
     responseDeserialize: (value: Buffer): GetStatsResponse => GetStatsResponse.decode(value),
   },
+  /** GetAppSettings retrieves all application settings */
+  getAppSettings: {
+    path: "/opengate.v1.OpenGateService/GetAppSettings" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: GetAppSettingsRequest): Buffer =>
+      Buffer.from(GetAppSettingsRequest.encode(value).finish()),
+    requestDeserialize: (value: Buffer): GetAppSettingsRequest => GetAppSettingsRequest.decode(value),
+    responseSerialize: (value: GetAppSettingsResponse): Buffer =>
+      Buffer.from(GetAppSettingsResponse.encode(value).finish()),
+    responseDeserialize: (value: Buffer): GetAppSettingsResponse => GetAppSettingsResponse.decode(value),
+  },
+  /** UpsertAppSetting creates or updates a single application setting */
+  upsertAppSetting: {
+    path: "/opengate.v1.OpenGateService/UpsertAppSetting" as const,
+    requestStream: false as const,
+    responseStream: false as const,
+    requestSerialize: (value: UpsertAppSettingRequest): Buffer =>
+      Buffer.from(UpsertAppSettingRequest.encode(value).finish()),
+    requestDeserialize: (value: Buffer): UpsertAppSettingRequest => UpsertAppSettingRequest.decode(value),
+    responseSerialize: (value: UpsertAppSettingResponse): Buffer =>
+      Buffer.from(UpsertAppSettingResponse.encode(value).finish()),
+    responseDeserialize: (value: Buffer): UpsertAppSettingResponse => UpsertAppSettingResponse.decode(value),
+  },
 } as const;
 
 export interface OpenGateServiceServer extends UntypedServiceImplementation {
@@ -141,6 +171,10 @@ export interface OpenGateServiceServer extends UntypedServiceImplementation {
   getRoutes: handleUnaryCall<GetRoutesRequest, GetRoutesResponse>;
   /** GetStats retrieves dashboard statistics */
   getStats: handleUnaryCall<GetStatsRequest, GetStatsResponse>;
+  /** GetAppSettings retrieves all application settings */
+  getAppSettings: handleUnaryCall<GetAppSettingsRequest, GetAppSettingsResponse>;
+  /** UpsertAppSetting creates or updates a single application setting */
+  upsertAppSetting: handleUnaryCall<UpsertAppSettingRequest, UpsertAppSettingResponse>;
 }
 
 export interface OpenGateServiceClient extends Client {
@@ -268,6 +302,38 @@ export interface OpenGateServiceClient extends Client {
     metadata: Metadata,
     options: Partial<CallOptions>,
     callback: (error: ServiceError | null, response: GetStatsResponse) => void,
+  ): ClientUnaryCall;
+  /** GetAppSettings retrieves all application settings */
+  getAppSettings(
+    request: GetAppSettingsRequest,
+    callback: (error: ServiceError | null, response: GetAppSettingsResponse) => void,
+  ): ClientUnaryCall;
+  getAppSettings(
+    request: GetAppSettingsRequest,
+    metadata: Metadata,
+    callback: (error: ServiceError | null, response: GetAppSettingsResponse) => void,
+  ): ClientUnaryCall;
+  getAppSettings(
+    request: GetAppSettingsRequest,
+    metadata: Metadata,
+    options: Partial<CallOptions>,
+    callback: (error: ServiceError | null, response: GetAppSettingsResponse) => void,
+  ): ClientUnaryCall;
+  /** UpsertAppSetting creates or updates a single application setting */
+  upsertAppSetting(
+    request: UpsertAppSettingRequest,
+    callback: (error: ServiceError | null, response: UpsertAppSettingResponse) => void,
+  ): ClientUnaryCall;
+  upsertAppSetting(
+    request: UpsertAppSettingRequest,
+    metadata: Metadata,
+    callback: (error: ServiceError | null, response: UpsertAppSettingResponse) => void,
+  ): ClientUnaryCall;
+  upsertAppSetting(
+    request: UpsertAppSettingRequest,
+    metadata: Metadata,
+    options: Partial<CallOptions>,
+    callback: (error: ServiceError | null, response: UpsertAppSettingResponse) => void,
   ): ClientUnaryCall;
 }
 

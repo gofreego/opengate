@@ -1,0 +1,27 @@
+syntax = "proto3";
+package opengate.v1;
+
+import "google/protobuf/struct.proto";
+import "validate/validate.proto";
+
+option go_package = "./opengate_v1";
+
+// GetAppSettingsRequest is the request to retrieve all app settings
+message GetAppSettingsRequest {}
+
+// GetAppSettingsResponse contains all app settings as a key → JSON-value map
+message GetAppSettingsResponse {
+    google.protobuf.Struct settings = 1;
+    string message = 2;
+}
+
+// UpsertAppSettingRequest is the request to create or update a single setting
+message UpsertAppSettingRequest {
+    string key = 1 [(validate.rules).string.min_len = 1];
+    google.protobuf.Value value = 2;
+}
+
+// UpsertAppSettingResponse is the response after upserting a setting
+message UpsertAppSettingResponse {
+    string message = 1;
+}

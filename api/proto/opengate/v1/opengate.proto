@@ -7,6 +7,7 @@ import "google/api/annotations.proto";
 import "protoc-gen-openapiv2/options/annotations.proto";
 import "proto/opengate/common/ping.proto";
 import "proto/opengate/v1/config.proto";
+import "proto/opengate/v1/app_settings.proto";
 
 option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
   info: {
@@ -63,6 +64,10 @@ option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_swagger) = {
     {
       name: "Stats"
       description: "Endpoints for dashboard statistics"
+    },
+    {
+      name: "AppSettings"
+      description: "Endpoints for managing application settings"
     }
   ]
 };
@@ -164,6 +169,31 @@ service OpenGateService {
             tags: "Stats"
             summary: "Get dashboard stats"
             description: "Retrieve statistics for the admin dashboard."
+        };
+    }
+
+    // GetAppSettings retrieves all application settings
+    rpc GetAppSettings (GetAppSettingsRequest) returns (GetAppSettingsResponse) {
+        option (google.api.http) = {
+            get: "/opengate/v1/app-settings"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            tags: "AppSettings"
+            summary: "Get all app settings"
+            description: "Retrieve all application settings as a key-value map."
+        };
+    }
+
+    // UpsertAppSetting creates or updates a single application setting
+    rpc UpsertAppSetting (UpsertAppSettingRequest) returns (UpsertAppSettingResponse) {
+        option (google.api.http) = {
+            put: "/opengate/v1/app-settings"
+            body: "*"
+        };
+        option (grpc.gateway.protoc_gen_openapiv2.options.openapiv2_operation) = {
+            tags: "AppSettings"
+            summary: "Upsert an app setting"
+            description: "Create or update an application setting by key."
         };
     }
 }

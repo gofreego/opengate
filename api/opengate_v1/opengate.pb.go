@@ -26,7 +26,7 @@ var File_proto_opengate_v1_opengate_proto protoreflect.FileDescriptor
 
 const file_proto_opengate_v1_opengate_proto_rawDesc = "" +
 	"\n" +
-	" proto/opengate/v1/opengate.proto\x12\vopengate.v1\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a proto/opengate/common/ping.proto\x1a\x1eproto/opengate/v1/config.proto2\xd4\v\n" +
+	" proto/opengate/v1/opengate.proto\x12\vopengate.v1\x1a\x1cgoogle/api/annotations.proto\x1a.protoc-gen-openapiv2/options/annotations.proto\x1a proto/opengate/common/ping.proto\x1a\x1eproto/opengate/v1/config.proto\x1a$proto/opengate/v1/app_settings.proto2\x90\x0f\n" +
 	"\x0fOpenGateService\x12\x8f\x01\n" +
 	"\x04Ping\x12\x18.opengate.v1.PingRequest\x1a\x19.opengate.v1.PingResponse\"R\x92A6\n" +
 	"\x04Ping\x12\x0fPing the server\x1a\x1dCheck if the server is alive.\x82\xd3\xe4\x93\x02\x13\x12\x11/opengate/v1/ping\x12\xcd\x01\n" +
@@ -43,7 +43,11 @@ const file_proto_opengate_v1_opengate_proto_rawDesc = "" +
 	"\tGetRoutes\x12\x1d.opengate.v1.GetRoutesRequest\x1a\x1e.opengate.v1.GetRoutesResponse\"d\x92AF\n" +
 	"\x06Routes\x12\x0eGet all routes\x1a,Retrieve all routes for the routing manager.\x82\xd3\xe4\x93\x02\x15\x12\x13/opengate/v1/routes\x12\xb0\x01\n" +
 	"\bGetStats\x12\x1c.opengate.v1.GetStatsRequest\x1a\x1d.opengate.v1.GetStatsResponse\"g\x92AJ\n" +
-	"\x05Stats\x12\x13Get dashboard stats\x1a,Retrieve statistics for the admin dashboard.\x82\xd3\xe4\x93\x02\x14\x12\x12/opengate/v1/statsB\xca\x03\x92A\xb7\x03\x12Q\n" +
+	"\x05Stats\x12\x13Get dashboard stats\x1a,Retrieve statistics for the admin dashboard.\x82\xd3\xe4\x93\x02\x14\x12\x12/opengate/v1/stats\x12\xd9\x01\n" +
+	"\x0eGetAppSettings\x12\".opengate.v1.GetAppSettingsRequest\x1a#.opengate.v1.GetAppSettingsResponse\"~\x92AZ\n" +
+	"\vAppSettings\x12\x14Get all app settings\x1a5Retrieve all application settings as a key-value map.\x82\xd3\xe4\x93\x02\x1b\x12\x19/opengate/v1/app-settings\x12\xdd\x01\n" +
+	"\x10UpsertAppSetting\x12$.opengate.v1.UpsertAppSettingRequest\x1a%.opengate.v1.UpsertAppSettingResponse\"|\x92AU\n" +
+	"\vAppSettings\x12\x15Upsert an app setting\x1a/Create or update an application setting by key.\x82\xd3\xe4\x93\x02\x1e:\x01*\x1a\x19/opengate/v1/app-settingsB\x86\x04\x92A\xf3\x03\x12Q\n" +
 	"\fOpenGate API\x129OpenGate API Gateway - Configuration and Route Management2\x06v1.0.0Z\x86\x01\n" +
 	"L\n" +
 	"\vPermissions\x12=\b\x02\x12)Comma-separated list of user permissions.\x1a\fX-User-Perms \x02\n" +
@@ -57,25 +61,30 @@ const file_proto_opengate_v1_opengate_proto_rawDesc = "" +
 	"\x04Ping\x12\x16Health check endpointsj6\n" +
 	"\aConfigs\x12+Endpoints for managing route configurationsj5\n" +
 	"\x06Routes\x12+Endpoints for retrieving routes for routingj+\n" +
-	"\x05Stats\x12\"Endpoints for dashboard statisticsZ\r./opengate_v1b\x06proto3"
+	"\x05Stats\x12\"Endpoints for dashboard statisticsj:\n" +
+	"\vAppSettings\x12+Endpoints for managing application settingsZ\r./opengate_v1b\x06proto3"
 
 var file_proto_opengate_v1_opengate_proto_goTypes = []any{
-	(*PingRequest)(nil),          // 0: opengate.v1.PingRequest
-	(*CreateConfigRequest)(nil),  // 1: opengate.v1.CreateConfigRequest
-	(*GetConfigRequest)(nil),     // 2: opengate.v1.GetConfigRequest
-	(*ListConfigsRequest)(nil),   // 3: opengate.v1.ListConfigsRequest
-	(*UpdateConfigRequest)(nil),  // 4: opengate.v1.UpdateConfigRequest
-	(*DeleteConfigRequest)(nil),  // 5: opengate.v1.DeleteConfigRequest
-	(*GetRoutesRequest)(nil),     // 6: opengate.v1.GetRoutesRequest
-	(*GetStatsRequest)(nil),      // 7: opengate.v1.GetStatsRequest
-	(*PingResponse)(nil),         // 8: opengate.v1.PingResponse
-	(*CreateConfigResponse)(nil), // 9: opengate.v1.CreateConfigResponse
-	(*GetConfigResponse)(nil),    // 10: opengate.v1.GetConfigResponse
-	(*ListConfigsResponse)(nil),  // 11: opengate.v1.ListConfigsResponse
-	(*UpdateConfigResponse)(nil), // 12: opengate.v1.UpdateConfigResponse
-	(*DeleteConfigResponse)(nil), // 13: opengate.v1.DeleteConfigResponse
-	(*GetRoutesResponse)(nil),    // 14: opengate.v1.GetRoutesResponse
-	(*GetStatsResponse)(nil),     // 15: opengate.v1.GetStatsResponse
+	(*PingRequest)(nil),              // 0: opengate.v1.PingRequest
+	(*CreateConfigRequest)(nil),      // 1: opengate.v1.CreateConfigRequest
+	(*GetConfigRequest)(nil),         // 2: opengate.v1.GetConfigRequest
+	(*ListConfigsRequest)(nil),       // 3: opengate.v1.ListConfigsRequest
+	(*UpdateConfigRequest)(nil),      // 4: opengate.v1.UpdateConfigRequest
+	(*DeleteConfigRequest)(nil),      // 5: opengate.v1.DeleteConfigRequest
+	(*GetRoutesRequest)(nil),         // 6: opengate.v1.GetRoutesRequest
+	(*GetStatsRequest)(nil),          // 7: opengate.v1.GetStatsRequest
+	(*GetAppSettingsRequest)(nil),    // 8: opengate.v1.GetAppSettingsRequest
+	(*UpsertAppSettingRequest)(nil),  // 9: opengate.v1.UpsertAppSettingRequest
+	(*PingResponse)(nil),             // 10: opengate.v1.PingResponse
+	(*CreateConfigResponse)(nil),     // 11: opengate.v1.CreateConfigResponse
+	(*GetConfigResponse)(nil),        // 12: opengate.v1.GetConfigResponse
+	(*ListConfigsResponse)(nil),      // 13: opengate.v1.ListConfigsResponse
+	(*UpdateConfigResponse)(nil),     // 14: opengate.v1.UpdateConfigResponse
+	(*DeleteConfigResponse)(nil),     // 15: opengate.v1.DeleteConfigResponse
+	(*GetRoutesResponse)(nil),        // 16: opengate.v1.GetRoutesResponse
+	(*GetStatsResponse)(nil),         // 17: opengate.v1.GetStatsResponse
+	(*GetAppSettingsResponse)(nil),   // 18: opengate.v1.GetAppSettingsResponse
+	(*UpsertAppSettingResponse)(nil), // 19: opengate.v1.UpsertAppSettingResponse
 }
 var file_proto_opengate_v1_opengate_proto_depIdxs = []int32{
 	0,  // 0: opengate.v1.OpenGateService.Ping:input_type -> opengate.v1.PingRequest
@@ -86,16 +95,20 @@ var file_proto_opengate_v1_opengate_proto_depIdxs = []int32{
 	5,  // 5: opengate.v1.OpenGateService.DeleteConfig:input_type -> opengate.v1.DeleteConfigRequest
 	6,  // 6: opengate.v1.OpenGateService.GetRoutes:input_type -> opengate.v1.GetRoutesRequest
 	7,  // 7: opengate.v1.OpenGateService.GetStats:input_type -> opengate.v1.GetStatsRequest
-	8,  // 8: opengate.v1.OpenGateService.Ping:output_type -> opengate.v1.PingResponse
-	9,  // 9: opengate.v1.OpenGateService.CreateConfig:output_type -> opengate.v1.CreateConfigResponse
-	10, // 10: opengate.v1.OpenGateService.GetConfig:output_type -> opengate.v1.GetConfigResponse
-	11, // 11: opengate.v1.OpenGateService.ListConfigs:output_type -> opengate.v1.ListConfigsResponse
-	12, // 12: opengate.v1.OpenGateService.UpdateConfig:output_type -> opengate.v1.UpdateConfigResponse
-	13, // 13: opengate.v1.OpenGateService.DeleteConfig:output_type -> opengate.v1.DeleteConfigResponse
-	14, // 14: opengate.v1.OpenGateService.GetRoutes:output_type -> opengate.v1.GetRoutesResponse
-	15, // 15: opengate.v1.OpenGateService.GetStats:output_type -> opengate.v1.GetStatsResponse
-	8,  // [8:16] is the sub-list for method output_type
-	0,  // [0:8] is the sub-list for method input_type
+	8,  // 8: opengate.v1.OpenGateService.GetAppSettings:input_type -> opengate.v1.GetAppSettingsRequest
+	9,  // 9: opengate.v1.OpenGateService.UpsertAppSetting:input_type -> opengate.v1.UpsertAppSettingRequest
+	10, // 10: opengate.v1.OpenGateService.Ping:output_type -> opengate.v1.PingResponse
+	11, // 11: opengate.v1.OpenGateService.CreateConfig:output_type -> opengate.v1.CreateConfigResponse
+	12, // 12: opengate.v1.OpenGateService.GetConfig:output_type -> opengate.v1.GetConfigResponse
+	13, // 13: opengate.v1.OpenGateService.ListConfigs:output_type -> opengate.v1.ListConfigsResponse
+	14, // 14: opengate.v1.OpenGateService.UpdateConfig:output_type -> opengate.v1.UpdateConfigResponse
+	15, // 15: opengate.v1.OpenGateService.DeleteConfig:output_type -> opengate.v1.DeleteConfigResponse
+	16, // 16: opengate.v1.OpenGateService.GetRoutes:output_type -> opengate.v1.GetRoutesResponse
+	17, // 17: opengate.v1.OpenGateService.GetStats:output_type -> opengate.v1.GetStatsResponse
+	18, // 18: opengate.v1.OpenGateService.GetAppSettings:output_type -> opengate.v1.GetAppSettingsResponse
+	19, // 19: opengate.v1.OpenGateService.UpsertAppSetting:output_type -> opengate.v1.UpsertAppSettingResponse
+	10, // [10:20] is the sub-list for method output_type
+	0,  // [0:10] is the sub-list for method input_type
 	0,  // [0:0] is the sub-list for extension type_name
 	0,  // [0:0] is the sub-list for extension extendee
 	0,  // [0:0] is the sub-list for field type_name
@@ -108,6 +121,7 @@ func file_proto_opengate_v1_opengate_proto_init() {
 	}
 	file_proto_opengate_common_ping_proto_init()
 	file_proto_opengate_v1_config_proto_init()
+	file_proto_opengate_v1_app_settings_proto_init()
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{

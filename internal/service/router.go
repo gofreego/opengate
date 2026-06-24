@@ -25,7 +25,7 @@ func (s *Service) RouteRequest(ctx *gin.Context) {
 	}
 
 	// Check authentication if required
-	if isAuthenticationHeaderAvailable(ctx) || route.Authentication.IsAuthenticationRequired(ctx.Request.URL.Path, ctx.Request.Method) {
+	if route.Authentication.IsAuthenticationRequired(ctx.Request.URL.Path, ctx.Request.Method) {
 		if err := s.authManager.Authenticate(ctx); err != nil {
 			logger.Warn(ctx, "Authentication failed for route: %s, error: %v", route.Name, err)
 			ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication required"})

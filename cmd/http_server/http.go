@@ -92,12 +92,9 @@ func (a *HTTPServer) Run(ctx context.Context) error {
 		http.NotFound(w, r)
 	})
 
-	// Always apply CORS middleware using dynamic config from settings store
-	handler := utils.CorsMiddleware(finalHandler, a.service.GetCORSConfig)
-
 	a.server = &http.Server{
 		Addr:           fmt.Sprintf(":%d", a.cfg.AdminPort),
-		Handler:        logger.WithRequestMiddleware(logger.WithRequestTimeMiddleware(handler)),
+		Handler:        logger.WithRequestMiddleware(logger.WithRequestTimeMiddleware(finalHandler)),
 		ReadTimeout:    a.cfg.ReadTimeout,
 		WriteTimeout:   a.cfg.WriteTimeout,
 		IdleTimeout:    a.cfg.IdleTimeout,

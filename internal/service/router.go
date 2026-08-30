@@ -24,12 +24,19 @@ func (s *Service) RouteRequest(ctx *gin.Context) {
 		return
 	}
 
-	// Check authentication if required
-	if route.Authentication.IsAuthenticationRequired(ctx.Request.URL.Path, ctx.Request.Method) {
+	// Check authentication if required, or opportunistically when the caller
+	// sent a token anyway — so routes that are optional-auth still get JWT
+	// claims (X-Profile-Ids etc.) attached for logged-in callers, while
+	// guests without a token are only rejected when auth is actually required.
+	required := route.Authentication.IsAuthenticationRequired(ctx.Request.URL.Path, ctx.Request.Method)
+	if required || isAuthenticationHeaderAvailable(ctx) {
 		if err := s.authManager.Authenticate(ctx); err != nil {
-			logger.Warn(ctx, "Authentication failed for route: %s, error: %v", route.Name, err)
-			ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication required"})
-			return
+			if required {
+				logger.Warn(ctx, "Authentication failed for route: %s, error: %v", route.Name, err)
+				ctx.JSON(http.StatusUnauthorized, gin.H{"error": "Authentication required"})
+				return
+			}
+			logger.Debug(ctx, "Optional authentication failed for route: %s, proceeding as guest: %v", route.Name, err)
 		}
 	}
 

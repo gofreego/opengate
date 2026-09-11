@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: opengate
+  labels:
+    app: opengate
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: opengate
+  template:
+    metadata:
+      labels:
+        app: opengate
+    spec:
+      containers:
+        - name: opengate
+          image: 192.168.1.100:5000/opengate:pilot
+          imagePullPolicy: Always
+          ports:
+            - name: gateway
+              containerPort: 8083
+            - name: admin
+              containerPort: 8080
+          readinessProbe:
+            tcpSocket:
+              port: gateway
+            initialDelaySeconds: 3
+            periodSeconds: 5
+          livenessProbe:
+            tcpSocket:
+              port: gateway
+            initialDelaySeconds: 10
+            periodSeconds: 15
+          resources:
+            requests:
+              cpu: 50m
+              memory: 64Mi
+            limits:
+              cpu: 250m
+              memory: 256Mi

@@ -1,14 +1,15 @@
-# Real production hostname (api.bappaapp.com) — but NOT publicly reachable
-# through this Ingress yet. Public traffic still enters via the existing
-# docker-compose nginx-proxy (infra/docker/nginx), which would need
-# api.conf's proxy_pass switched to ingress-nginx before this becomes live,
-# same as was done for zshala.com. Not done yet — deploy+verify only.
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: opengate
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
 spec:
   ingressClassName: nginx
+  tls:
+    - hosts:
+        - api.bappaapp.com
+      secretName: api-bappaapp-com-tls
   rules:
     - host: api.bappaapp.com
       http:

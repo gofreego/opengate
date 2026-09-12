@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: opengate
-          image: 192.168.1.100:5000/opengate:pilot
+          image: ghcr.io/gofreego/opengate:pilot-82e3661
           imagePullPolicy: Always
           ports:
             - name: gateway

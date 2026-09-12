@@ -35,7 +35,8 @@ jobs:
           tags: ghcr.io/gofreego/opengate:${{ steps.vars.outputs.tag }}
 
       - name: Update k8s manifest
-        run: sed -i "s|image: .*opengate:.*|image: ghcr.io/gofreego/opengate:${{ steps.vars.outputs.tag }}|" k8s/deployment.yaml
+        run: |
+          sed -i "s|image: .*opengate:.*|image: ghcr.io/gofreego/opengate:${{ steps.vars.outputs.tag }}|" k8s/deployment.yaml
 
       - name: Commit and push updated manifest
         run: |

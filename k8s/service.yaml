@@ -7,7 +7,7 @@ spec:
     app: opengate
   ports:
     - name: gateway
-      port: 8083
+      port: 80
       targetPort: gateway
     - name: admin
       port: 8080

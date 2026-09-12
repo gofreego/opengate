@@ -7,7 +7,7 @@ AppNames:
 - HTTP_SERVER
 - GATEWAY_SERVER
 Server:
-  GatewayPort: 8083
+  GatewayPort: 80
   AdminPort: 8080
   GinMode: release
   ReadTimeout: 30s
@@ -49,7 +49,7 @@ Service:
   Auth:
     Name: "OpenAuth"
     OpenAuth:
-      Host: 192.168.1.100:8086
+      Host: openauth.zshala-com.svc.cluster.local:8081
       Username: admin
       Password: admin123
       Tls: false
@@ -57,7 +57,7 @@ Service:
   InitialRoutes:
     - Name: openauth
       PathPrefix: /openauth
-      TargetURL: http://192.168.1.100:8085
+      TargetURL: http://openauth.zshala-com.svc.cluster.local:80
       StripPrefix: false
       Authentication:
         Required: false

@@ -45,7 +45,7 @@ COPY resources/configs/routes /app/resources/configs/routes
 RUN chmod +x application
 
 # Expose the port the application uses
-EXPOSE 8083
+EXPOSE 80
 EXPOSE 8080
 
 # Define the command to run your application

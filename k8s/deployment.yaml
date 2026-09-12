@@ -20,7 +20,7 @@ spec:
           imagePullPolicy: Always
           ports:
             - name: gateway
-              containerPort: 8083
+              containerPort: 80
             - name: admin
               containerPort: 8080
           readinessProbe:

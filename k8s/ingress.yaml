@@ -10,8 +10,21 @@ spec:
     - hosts:
         - api.bappaapp.com
       secretName: api-bappaapp-com-tls
+    - hosts:
+        - api.zshala.com
+      secretName: api-zshala-com-tls
   rules:
     - host: api.bappaapp.com
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: opengate
+                port:
+                  name: gateway
+    - host: api.zshala.com
       http:
         paths:
           - path: /

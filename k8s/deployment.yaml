@@ -18,11 +18,20 @@ spec:
         - name: opengate
           image: ghcr.io/gofreego/opengate:pilot-a2d8482
           imagePullPolicy: Always
+          command:
+            - /app/application
+          args:
+            - -env=prod
+            - -path=/etc/opengate/config
           ports:
             - name: gateway
               containerPort: 80
             - name: admin
               containerPort: 8080
+          volumeMounts:
+            - name: config
+              mountPath: /etc/opengate/config
+              readOnly: true
           readinessProbe:
             tcpSocket:
               port: gateway
@@ -40,3 +49,10 @@ spec:
             limits:
               cpu: 250m
               memory: 512Mi
+      volumes:
+        - name: config
+          secret:
+            # Created out-of-band from the private configs-prod repo, not by
+            # anything in this repo's own manifests - see infra's
+            # opengate-config-secret role.
+            secretName: opengate-config

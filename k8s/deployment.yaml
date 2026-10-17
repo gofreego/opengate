@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: opengate
-          image: ghcr.io/gofreego/opengate:pilot-a2d8482
+          image: ghcr.io/gofreego/opengate:pilot-688ec21
           imagePullPolicy: Always
           command:
             - /app/application
